@@ -1,9 +1,17 @@
+cmake_minimum_required(VERSION 3.19)
+project(HyprView VERSION "0.1")
 
-cmake_minimum_required(VERSION 3.16)
-project(HyprView)
+# Use C++23
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_CXX_STANDARD 20)
+# Ensure correct include paths when generating compile_commands.json
+if(CMAKE_EXPORT_COMPILE_COMMANDS)
+    set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES
+        ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
+endif()
 
+# Find and link Qt5
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 add_executable(hyprview src/main.cpp)

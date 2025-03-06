@@ -1,5 +1,5 @@
-#include <QApplication>
-#include <QLabel>
+#include <qapplication.h>
+#include <qlabel.h>
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
