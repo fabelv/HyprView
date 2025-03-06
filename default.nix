@@ -30,4 +30,9 @@ in pkgs.stdenv.mkDerivation {
     mkdir -p $out/bin
     cp hyprview $out/bin/
   '';
+
+  env = {
+    QT_QPA_PLATFORM_PLUGIN_PATH = "${qt5.qtbase}/lib/qt-5/plugins/platforms";
+  };
 }
+
