@@ -16,6 +16,7 @@ in pkgs.stdenv.mkDerivation {
   buildInputs = [
     qt5.full
     pkgs.wayland
+    pkgs.nlohmann_json.dev # Add .dev to ensure headers are available
   ];
   
   configurePhase = ''

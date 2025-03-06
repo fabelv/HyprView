@@ -14,6 +14,7 @@ in pkgs.mkShell {
   buildInputs = [
     qt5.full
     pkgs.wayland
+    pkgs.nlohmann_json
   ];
 
   shellHook = ''
