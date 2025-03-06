@@ -1,0 +1,37 @@
+# Build artifacts
+/build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# Nix store outputs and temporary files
+/result
+/nix/store/
+.nix-gcroots/
+.nix-defexpr/
+.nix-channels
+
+# Nix flake lock file (optional, if you want deterministic builds, keep it)
+# /flake.lock
+
+# Editor/IDE specific
+.idea/
+.vscode/
+*.swp
+*~ 
+
+# Logs and temporary files
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Qt-specific files (if using Qt Creator)
+*.pro.user
+*.qmake.stash
+
+# Cache files
+.cache/
+
