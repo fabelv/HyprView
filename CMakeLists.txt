@@ -14,19 +14,22 @@ endif()
 # Find and link Qt5
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
-# Add source files
-add_executable(hyprview 
-    src/main.cpp
-    src/models/monitor.cpp
-)
+# Find and link nlohmann_json
+find_package(nlohmann_json REQUIRED)
 
-# Link Qt5 libraries
+# Automatically collect all source files
+file(GLOB_RECURSE SRC_FILES src/*.cpp)
+
+# Ensure Qt MOC runs for QObject-derived classes
+set(CMAKE_AUTOMOC ON)
+
+# Add executable
+add_executable(hyprview ${SRC_FILES})
+
+# Link Qt libraries
 target_link_libraries(hyprview PRIVATE Qt5::Widgets)
 
 # Include directories for headers
-target_include_directories(hyprview PRIVATE src/models)
-
-# Manually include nlohmann_json
-find_package(nlohmann_json REQUIRED)
+target_include_directories(hyprview PRIVATE src models services utils)
 target_include_directories(hyprview PRIVATE ${nlohmann_json_INCLUDE_DIRS})
 
