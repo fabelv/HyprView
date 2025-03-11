@@ -61,6 +61,9 @@
         <property name="bottomMargin">
          <number>0</number>
         </property>
+        <item>
+         <widget class="QWidget" name="monitorViewWidget" native="true"/>
+        </item>
        </layout>
       </widget>
      </item>
@@ -85,6 +88,9 @@
         <property name="bottomMargin">
          <number>0</number>
         </property>
+        <item>
+         <widget class="QWidget" name="detailsWidget" native="true"/>
+        </item>
        </layout>
       </widget>
      </item>
