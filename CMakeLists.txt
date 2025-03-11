@@ -20,8 +20,13 @@ find_package(nlohmann_json REQUIRED)
 # Automatically collect all source files
 file(GLOB_RECURSE SRC_FILES src/*.cpp)
 
-# Ensure Qt MOC runs for QObject-derived classes
+# Ensure Qt MOC, UIC, and RCC run for QObject-derived classes
+set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+
+# Define UI files location
+set(CMAKE_AUTOUIC_SEARCH_PATHS src/ui)  
 
 # Add executable
 add_executable(hyprview ${SRC_FILES})
@@ -29,7 +34,6 @@ add_executable(hyprview ${SRC_FILES})
 # Link Qt libraries
 target_link_libraries(hyprview PRIVATE Qt5::Widgets)
 
-# Include directories for headers
-target_include_directories(hyprview PRIVATE src models services utils)
-target_include_directories(hyprview PRIVATE ${nlohmann_json_INCLUDE_DIRS})
+# Ensure auto-generated UI headers are found
+target_include_directories(hyprview PRIVATE ${CMAKE_BINARY_DIR}/hyprview_autogen/include)
 
