@@ -17,16 +17,16 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 # Find and link nlohmann_json
 find_package(nlohmann_json REQUIRED)
 
-# Automatically collect all source files
-file(GLOB_RECURSE SRC_FILES src/*.cpp)
-
 # Ensure Qt MOC, UIC, and RCC run for QObject-derived classes
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 # Define UI files location
 set(CMAKE_AUTOUIC_SEARCH_PATHS src/ui)  
+
+# Automatically collect all source files
+file(GLOB_RECURSE SRC_FILES src/*.cpp)
 
 # Add executable
 add_executable(hyprview ${SRC_FILES})
