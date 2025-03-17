@@ -9,6 +9,8 @@ in pkgs.mkShell {
     pkgs.clang
     pkgs.qtcreator
     qt5.full
+    pkgs.vscode-extensions.vadimcn.vscode-lldb
+    pkgs.lldb_20
   ];
 
   buildInputs = [
@@ -19,6 +21,7 @@ in pkgs.mkShell {
 
   shellHook = ''
     export QT_QPA_PLATFORM_PLUGIN_PATH=${qt5.qtbase}/lib/qt-5/plugins/platforms
+    export LLDB_PATH="${pkgs.lldb_20}/bin/lldb-dap"
   '';
 }
 

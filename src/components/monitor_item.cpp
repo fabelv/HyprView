@@ -31,7 +31,7 @@ void MonitorItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 void MonitorItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
-    setBrush(QBrush(Qt::gray));
+    /*setBrush(QBrush(Qt::gray));*/
     emit moved(monitor.getId(), pos().x(), pos().y());
     QGraphicsRectItem::mouseReleaseEvent(event);
 }
