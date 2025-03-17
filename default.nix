@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  qt5 = pkgs.libsForQt5;
+  qt = pkgs.qt6Packages;
 in pkgs.stdenv.mkDerivation {
   pname = "hyprview";
   version = "1.0";
@@ -10,11 +10,11 @@ in pkgs.stdenv.mkDerivation {
   nativeBuildInputs = [
     pkgs.cmake
     pkgs.ninja
-    qt5.full
+    qt.full
   ];
 
   buildInputs = [
-    qt5.full
+    qt.full
     pkgs.wayland
     pkgs.nlohmann_json
   ];
@@ -33,7 +33,7 @@ in pkgs.stdenv.mkDerivation {
   '';
 
   env = {
-    QT_QPA_PLATFORM_PLUGIN_PATH = "${qt5.qtbase}/lib/qt-5/plugins/platforms";
+    QT_QPA_PLATFORM_PLUGIN_PATH = "${qt.qtbase}/lib/qt-6/plugins/platforms";
   };
 }
 

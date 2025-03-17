@@ -11,8 +11,8 @@ if(CMAKE_EXPORT_COMPILE_COMMANDS)
         ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
 endif()
 
-# Find and link Qt5
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
+# Find and link Qt6
+find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
 # Find and link nlohmann_json
 find_package(nlohmann_json REQUIRED)
@@ -32,7 +32,7 @@ file(GLOB_RECURSE SRC_FILES src/*.cpp)
 add_executable(hyprview ${SRC_FILES})
 
 # Link Qt libraries
-target_link_libraries(hyprview PRIVATE Qt5::Widgets)
+target_link_libraries(hyprview PRIVATE Qt6::Widgets)
 
 # Ensure auto-generated UI headers are found
 target_include_directories(hyprview PRIVATE ${CMAKE_BINARY_DIR}/hyprview_autogen/include)
