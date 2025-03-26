@@ -5,35 +5,41 @@ project(HyprView VERSION "0.1")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Ensure correct include paths when generating compile_commands.json
+# Optional: Keep compile_commands.json include paths correct
 if(CMAKE_EXPORT_COMPILE_COMMANDS)
     set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES
         ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
 endif()
 
-# Find and link Qt6
-find_package(Qt6 COMPONENTS Widgets REQUIRED)
+# Find Qt6 QML & Quick
+find_package(Qt6 COMPONENTS Qml Quick REQUIRED)
 
-# Find and link nlohmann_json
+# Optional: still include nlohmann_json if you use it in C++
 find_package(nlohmann_json REQUIRED)
 
-# Ensure Qt MOC, UIC, and RCC run for QObject-derived classes
-set(CMAKE_AUTOUIC ON)
+# Enable Qt codegen (for Q_OBJECT, resources)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-# Define UI files location
-set(CMAKE_AUTOUIC_SEARCH_PATHS src/ui)  
-
-# Automatically collect all source files
+# Gather C++ source files
 file(GLOB_RECURSE SRC_FILES src/*.cpp)
 
-# Add executable
-add_executable(hyprview ${SRC_FILES})
+# Define executable
+add_executable(hyprview
+    ${SRC_FILES}
+)
 
-# Link Qt libraries
-target_link_libraries(hyprview PRIVATE Qt6::Widgets)
+# Add QML resources (must be after add_executable)
+qt6_add_resources(QML_RESOURCES src/qml/qml.qrc)
+target_sources(hyprview PRIVATE ${QML_RESOURCES})
 
-# Ensure auto-generated UI headers are found
+# Link against Qt libraries
+target_link_libraries(hyprview PRIVATE
+    Qt6::Qml
+    Qt6::Quick
+    nlohmann_json::nlohmann_json
+)
+
+# (Optional) for better autocompletion
 target_include_directories(hyprview PRIVATE ${CMAKE_BINARY_DIR}/hyprview_autogen/include)
 

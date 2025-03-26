@@ -1,14 +1,16 @@
-#include <QApplication>
-#include <QLabel>
-#include <QString>
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
 
 int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
-    
-    QString text = QString("Hello from Qt %1!").arg(QT_VERSION_STR);
-    QLabel label(text);
-    label.show();
-    
+    QGuiApplication app(argc, argv);
+
+    QQmlApplicationEngine engine;
+    const QUrl url(u"qrc:/qml/main.qml"_qs);
+    engine.load(url);
+
+    if (engine.rootObjects().isEmpty())
+        return -1;
+
     return app.exec();
 }
 
