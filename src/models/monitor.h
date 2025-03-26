@@ -1,71 +1,117 @@
-#ifndef MONITOR_H
-#define MONITOR_H
+#pragma once
 
-#include <string>
-#include <vector>
+#include <QObject>
+#include <QString>
+#include <QStringList>
 
-class Monitor {
-    private:
-        int id;
-        std::string name;
-        std::string description;
-        std::string make;
-        std::string model;
-        std::string serial;
-        int width;
-        int height;
-        double refreshRate;
-        int positionX;
-        int positionY;
-        double scale;
-        int transform;
-        bool focused;
-        bool dpmsStatus;
-        bool vrr;
-        int solitary;
-        bool activelyTearing;
-        std::string directScanoutTo;
-        bool disabled;
-        std::string currentFormat;
-        std::string mirrorOf;
-        std::vector<std::string> availableModes;
+class Monitor : public QObject {
+    Q_OBJECT
 
-    public:
-        Monitor();
-        Monitor(int id, const std::string& name, const std::string& description,
-                const std::string& make, const std::string& model, const std::string& serial,
-                int width, int height, double refreshRate, int x, int y, double scale, int transform,
-                bool focused, bool dpmsStatus, bool vrr, int solitary, bool activelyTearing,
-                const std::string& directScanoutTo, bool disabled, const std::string& currentFormat,
-                const std::string& mirrorOf, const std::vector<std::string>& availableModes);
+    Q_PROPERTY(int id READ getId WRITE setId NOTIFY changed)
+    Q_PROPERTY(QString name READ getName WRITE setName NOTIFY changed)
+    Q_PROPERTY(QString description READ getDescription WRITE setDescription NOTIFY changed)
+    Q_PROPERTY(QString make READ getMake WRITE setMake NOTIFY changed)
+    Q_PROPERTY(QString model READ getModel WRITE setModel NOTIFY changed)
+    Q_PROPERTY(QString serial READ getSerial WRITE setSerial NOTIFY changed)
+    Q_PROPERTY(int width READ getWidth WRITE setWidth NOTIFY changed)
+    Q_PROPERTY(int height READ getHeight WRITE setHeight NOTIFY changed)
+    Q_PROPERTY(double refreshRate READ getRefreshRate WRITE setRefreshRate NOTIFY changed)
+    Q_PROPERTY(int positionX READ getPositionX WRITE setPositionX NOTIFY changed)
+    Q_PROPERTY(int positionY READ getPositionY WRITE setPositionY NOTIFY changed)
+    Q_PROPERTY(double scale READ getScale WRITE setScale NOTIFY changed)
+    Q_PROPERTY(int transform READ getTransform WRITE setTransform NOTIFY changed)
+    Q_PROPERTY(bool focused READ isFocused WRITE setFocused NOTIFY changed)
+    Q_PROPERTY(bool dpmsStatus READ getDpmsStatus WRITE setDpmsStatus NOTIFY changed)
+    Q_PROPERTY(bool vrr READ isVrrEnabled WRITE setVrrEnabled NOTIFY changed)
+    Q_PROPERTY(QString solitary READ getSolitary WRITE setSolitary NOTIFY changed)
+    Q_PROPERTY(bool activelyTearing READ isActivelyTearing WRITE setActivelyTearing NOTIFY changed)
+    Q_PROPERTY(QString directScanoutTo READ getDirectScanoutTo WRITE setDirectScanoutTo NOTIFY changed)
+    Q_PROPERTY(bool disabled READ isDisabled WRITE setDisabled NOTIFY changed)
+    Q_PROPERTY(QString currentFormat READ getCurrentFormat WRITE setCurrentFormat NOTIFY changed)
+    Q_PROPERTY(QString mirrorOf READ getMirrorOf WRITE setMirrorOf NOTIFY changed)
+    Q_PROPERTY(QStringList availableModes READ getAvailableModes WRITE setAvailableModes NOTIFY changed)
 
-        std::string toString() const;
+public:
+    explicit Monitor(QObject* parent = nullptr);
 
-        // Getters
-        int getId() const { return id; }
-        std::string getName() const { return name; }
-        std::string getDescription() const { return description; }
-        std::string getMake() const { return make; }
-        std::string getModel() const { return model; }
-        std::string getSerial() const { return serial; }
-        int getWidth() const { return width; }
-        int getHeight() const { return height; }
-        double getRefreshRate() const { return refreshRate; }
-        int getPositionX() const { return positionX; }
-        int getPositionY() const { return positionY; }
-        double getScale() const { return scale; }
-        int getTransform() const { return transform; }
-        bool isFocused() const { return focused; }
-        bool getDpmsStatus() const { return dpmsStatus; }
-        bool isVrrEnabled() const { return vrr; }
-        int getSolitary() const { return solitary; }
-        bool isActivelyTearing() const { return activelyTearing; }
-        std::string getDirectScanoutTo() const { return directScanoutTo; }
-        bool isDisabled() const { return disabled; }
-        std::string getCurrentFormat() const { return currentFormat; }
-        std::string getMirrorOf() const { return mirrorOf; }
-        std::vector<std::string> getAvailableModes() const { return availableModes; }
+    QString toString() const;
+
+    // Getters
+    int getId() const;
+    QString getName() const;
+    QString getDescription() const;
+    QString getMake() const;
+    QString getModel() const;
+    QString getSerial() const;
+    int getWidth() const;
+    int getHeight() const;
+    double getRefreshRate() const;
+    int getPositionX() const;
+    int getPositionY() const;
+    double getScale() const;
+    int getTransform() const;
+    bool isFocused() const;
+    bool getDpmsStatus() const;
+    bool isVrrEnabled() const;
+    QString getSolitary() const;
+    bool isActivelyTearing() const;
+    QString getDirectScanoutTo() const;
+    bool isDisabled() const;
+    QString getCurrentFormat() const;
+    QString getMirrorOf() const;
+    QStringList getAvailableModes() const;
+
+    // Setters
+    void setId(int);
+    void setName(const QString&);
+    void setDescription(const QString&);
+    void setMake(const QString&);
+    void setModel(const QString&);
+    void setSerial(const QString&);
+    void setWidth(int);
+    void setHeight(int);
+    void setRefreshRate(double);
+    void setPositionX(int);
+    void setPositionY(int);
+    void setScale(double);
+    void setTransform(int);
+    void setFocused(bool);
+    void setDpmsStatus(bool);
+    void setVrrEnabled(bool);
+    void setSolitary(const QString&);
+    void setActivelyTearing(bool);
+    void setDirectScanoutTo(const QString&);
+    void setDisabled(bool);
+    void setCurrentFormat(const QString&);
+    void setMirrorOf(const QString&);
+    void setAvailableModes(const QStringList&);
+
+signals:
+    void changed();
+
+private:
+    int id;
+    QString name;
+    QString description;
+    QString make;
+    QString model;
+    QString serial;
+    int width;
+    int height;
+    double refreshRate;
+    int positionX;
+    int positionY;
+    double scale;
+    int transform;
+    bool focused;
+    bool dpmsStatus;
+    bool vrr;
+    QString solitary;
+    bool activelyTearing;
+    QString directScanoutTo;
+    bool disabled;
+    QString currentFormat;
+    QString mirrorOf;
+    QStringList availableModes;
 };
-
-#endif
 

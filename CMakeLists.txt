@@ -12,7 +12,7 @@ if(CMAKE_EXPORT_COMPILE_COMMANDS)
 endif()
 
 # Find Qt6 QML & Quick
-find_package(Qt6 COMPONENTS Qml Quick REQUIRED)
+find_package(Qt6 COMPONENTS Qml Quick QuickControls2 REQUIRED)
 
 # Optional: still include nlohmann_json if you use it in C++
 find_package(nlohmann_json REQUIRED)
@@ -37,6 +37,7 @@ target_sources(hyprview PRIVATE ${QML_RESOURCES})
 target_link_libraries(hyprview PRIVATE
     Qt6::Qml
     Qt6::Quick
+    Qt6::QuickControls2
     nlohmann_json::nlohmann_json
 )
 

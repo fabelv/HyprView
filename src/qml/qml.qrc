@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="/qml">
-    <file>main.qml</file>
+    <file>Main.qml</file>
+    <file>MonitorPreview.qml</file>
+    <file>MonitorDetails.qml</file>
   </qresource>
 </RCC>
+

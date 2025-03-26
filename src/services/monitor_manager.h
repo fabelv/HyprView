@@ -1,15 +1,13 @@
-#ifndef MONITOR_MANAGER
-#define MONITOR_MANAGER
+#pragma once
 
 #include "../models/monitor.h"
-#include <vector>
+#include <QList>
 
 class MonitorManager {
-    public:
-        virtual ~MonitorManager() = default;
+public:
+    virtual ~MonitorManager() = default;
 
-        virtual std::vector<Monitor> getMonitors() const = 0;
-        virtual bool applyMonitorConfiguration(const std::vector<Monitor>& monitors) = 0;
+    virtual QList<Monitor*> getMonitors() const = 0;
+    virtual bool applyMonitorConfiguration(const QList<Monitor*>& monitors) = 0;
 };
 
-#endif 

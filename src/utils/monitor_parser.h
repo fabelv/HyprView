@@ -1,14 +1,12 @@
-#ifndef MONITOR_PARSER_H
-#define MONITOR_PARSER_H
+#pragma once
 
 #include "../models/monitor.h"
-#include <vector>
-#include <string>
+#include <QList>
+#include <QString>
 
 class MonitorParser {
 public:
     virtual ~MonitorParser() = default;
-    virtual std::vector<Monitor> parseMonitorsFromJson(const std::string& jsonString) const = 0;
+    virtual QList<Monitor*> parseMonitorsFromJson(const QString& jsonString) const = 0;
 };
 
-#endif

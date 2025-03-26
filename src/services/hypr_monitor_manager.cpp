@@ -1,30 +1,31 @@
 #include "hypr_monitor_manager.h"
 #include <QProcess>
-#include <sstream>
 
-HyprMonitorManager::HyprMonitorManager(MonitorParser* parser) : parser(parser) {}
+HyprMonitorManager::HyprMonitorManager(MonitorParser* parser)
+    : parser(parser) {}
 
-std::vector<Monitor> HyprMonitorManager::getMonitors() const {
+QList<Monitor*> HyprMonitorManager::getMonitors() const {
     QProcess process;
     process.start("hyprctl", QStringList() << "monitors" << "-j");
     process.waitForFinished();
 
-    QByteArray output = process.readAllStandardOutput();
-    return parser->parseMonitorsFromJson(output.toStdString());
+    QString output = QString::fromUtf8(process.readAllStandardOutput());
+    return parser->parseMonitorsFromJson(output);
 }
 
-bool HyprMonitorManager::applyMonitorConfiguration(const std::vector<Monitor>& monitors) {
+bool HyprMonitorManager::applyMonitorConfiguration(const QList<Monitor*>& monitors) {
     for (const auto& monitor : monitors) {
-        std::ostringstream command;
-        command << "hyprctl keyword monitor "
-                << monitor.getName() << ","
-                << monitor.getWidth() << "x" << monitor.getHeight() << "@"
-                << monitor.getRefreshRate() << ","
-                << monitor.getPositionX() << "x" << monitor.getPositionY() << ","
-                << monitor.getScale();
+        QString cmd = QString("hyprctl keyword monitor %1,%2x%3@%4,%5x%6,%7")
+            .arg(monitor->getName())
+            .arg(monitor->getWidth())
+            .arg(monitor->getHeight())
+            .arg(monitor->getRefreshRate())
+            .arg(monitor->getPositionX())
+            .arg(monitor->getPositionY())
+            .arg(monitor->getScale());
 
         QProcess process;
-        process.start(command.str().c_str());
+        process.start(cmd);
         process.waitForFinished();
 
         if (process.exitCode() != 0) {

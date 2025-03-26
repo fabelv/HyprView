@@ -1,50 +1,56 @@
 #include "hypr_monitor_parser.h"
+#include <nlohmann/json.hpp>
 #include <iostream>
 
-std::vector<Monitor> HyprMonitorParser::parseMonitorsFromJson(const std::string& jsonString) const {
-    std::vector<Monitor> monitors;
-    
+QList<Monitor*> HyprMonitorParser::parseMonitorsFromJson(const QString& jsonString) const {
+    QList<Monitor*> monitors;
+
     try {
-        auto json = nlohmann::json::parse(jsonString);
+        auto json = nlohmann::json::parse(jsonString.toStdString());
         if (!json.is_array()) {
             std::cerr << "JSON is not an array!" << std::endl;
             return monitors;
         }
 
         for (const auto& obj : json) {
-            std::vector<std::string> availableModes;
-            for (const auto& mode : obj["availableModes"]) {
-                availableModes.push_back(mode.get<std::string>());
-            }
+            auto* monitor = new Monitor();
 
-            monitors.emplace_back(
-                obj["id"].is_number() ? obj["id"].get<int>() : std::stoi(obj["id"].get<std::string>()),
-                obj["name"].get<std::string>(),
-                obj["description"].get<std::string>(),
-                obj["make"].get<std::string>(),
-                obj["model"].get<std::string>(),
-                obj["serial"].get<std::string>(),
-                obj["width"].is_number() ? obj["width"].get<int>() : std::stoi(obj["width"].get<std::string>()),
-                obj["height"].is_number() ? obj["height"].get<int>() : std::stoi(obj["height"].get<std::string>()),
-                obj["refreshRate"].is_number() ? obj["refreshRate"].get<double>() : std::stod(obj["refreshRate"].get<std::string>()),
-                obj["x"].is_number() ? obj["x"].get<int>() : std::stoi(obj["x"].get<std::string>()),
-                obj["y"].is_number() ? obj["y"].get<int>() : std::stoi(obj["y"].get<std::string>()),
-                obj["scale"].is_number() ? obj["scale"].get<double>() : std::stod(obj["scale"].get<std::string>()),
-                obj["transform"].is_number() ? obj["transform"].get<int>() : std::stoi(obj["transform"].get<std::string>()),
-                obj["focused"].get<bool>(),
-                obj["dpmsStatus"].get<bool>(),
-                obj["vrr"].get<bool>(),
-                obj["solitary"].is_number() ? obj["solitary"].get<int>() : std::stoi(obj["solitary"].get<std::string>()),
-                obj["activelyTearing"].get<bool>(),
-                obj["directScanoutTo"].get<std::string>(),
-                obj["disabled"].get<bool>(),
-                obj["currentFormat"].get<std::string>(),
-                obj["mirrorOf"].get<std::string>(),
-                availableModes
-            );
+            monitor->setId(obj["id"].get<int>());
+            monitor->setName(QString::fromStdString(obj["name"].get<std::string>()));
+            monitor->setDescription(QString::fromStdString(obj["description"].get<std::string>()));
+            monitor->setMake(QString::fromStdString(obj["make"].get<std::string>()));
+            monitor->setModel(QString::fromStdString(obj["model"].get<std::string>()));
+            monitor->setSerial(QString::fromStdString(obj["serial"].get<std::string>()));
+            monitor->setWidth(obj["width"].get<int>());
+            monitor->setHeight(obj["height"].get<int>());
+            monitor->setRefreshRate(obj["refreshRate"].get<double>());
+            monitor->setPositionX(obj["x"].get<int>());
+            monitor->setPositionY(obj["y"].get<int>());
+            monitor->setScale(obj["scale"].get<double>());
+            monitor->setTransform(obj["transform"].get<int>());
+            monitor->setFocused(obj["focused"].get<bool>());
+            monitor->setDpmsStatus(obj["dpmsStatus"].get<bool>());
+            monitor->setVrrEnabled(obj["vrr"].get<bool>());
+
+            monitor->setSolitary(QString::fromStdString(obj["solitary"].get<std::string>()));
+
+            monitor->setActivelyTearing(obj["activelyTearing"].get<bool>());
+            monitor->setDirectScanoutTo(QString::fromStdString(obj["directScanoutTo"].get<std::string>()));
+            monitor->setDisabled(obj["disabled"].get<bool>());
+            monitor->setCurrentFormat(QString::fromStdString(obj["currentFormat"].get<std::string>()));
+            monitor->setMirrorOf(QString::fromStdString(obj["mirrorOf"].get<std::string>()));
+
+            QStringList modes;
+            for (const auto& mode : obj["availableModes"]) {
+                modes.append(QString::fromStdString(mode.get<std::string>()));
+            }
+            monitor->setAvailableModes(modes);
+
+            monitors.append(monitor);
         }
+
     } catch (const std::exception& e) {
-        std::cerr << "Error parsing JSON: " << e.what() << std::endl;
+        std::cerr << "Failed to parse monitor JSON: " << e.what() << std::endl;
     }
 
     return monitors;

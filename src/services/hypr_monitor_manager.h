@@ -1,19 +1,15 @@
-#ifndef HYPR_MONITOR_MANAGER
-#define HYPR_MONITOR_MANAGER
+#pragma once
 
 #include "monitor_manager.h"
 #include "../utils/monitor_parser.h"
-#include <vector>
 
 class HyprMonitorManager : public MonitorManager {
-    private:
-        MonitorParser* parser;
+private:
+    MonitorParser* parser;
 
-    public:
-        HyprMonitorManager(MonitorParser* parser);
-        std::vector<Monitor> getMonitors() const override;
-        bool applyMonitorConfiguration(const std::vector<Monitor>& monitors) override;
+public:
+    HyprMonitorManager(MonitorParser* parser);
+    QList<Monitor*> getMonitors() const override;
+    bool applyMonitorConfiguration(const QList<Monitor*>& monitors) override;
 };
-
-#endif
 
