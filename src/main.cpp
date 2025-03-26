@@ -27,8 +27,7 @@ int main(int argc, char *argv[]) {
     );
 
     // --- Load QML UI ---
-    const QUrl url(u"qrc:/qml/Main.qml"_qs);
-    engine.load(url);
+    engine.load(QUrl::fromLocalFile("src/qml/Main.qml"));
 
     if (engine.rootObjects().isEmpty())
         return -1;

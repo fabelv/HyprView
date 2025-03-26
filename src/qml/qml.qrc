@@ -1,6 +1,7 @@
 <RCC>
   <qresource prefix="/qml">
     <file>Main.qml</file>
+    <file>AppMenuBar.qml</file>
     <file>MonitorPreview.qml</file>
     <file>MonitorDetails.qml</file>
   </qresource>

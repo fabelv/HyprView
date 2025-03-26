@@ -4,23 +4,27 @@ import QtQuick.Layouts
 
 ApplicationWindow {
     visible: true
-    width: 1000
+    width: 1200 
     height: 600
-    title: "HyprView"
+    title: "QML Scratch"
+
+    menuBar: AppMenuBar { }
+
 
     RowLayout {
         anchors.fill: parent
-        spacing: 20
+        spacing: 10
 
         MonitorPreview {
-            Layout.preferredWidth: 600
+            Layout.preferredWidth: parent.width * 0.7
             Layout.fillHeight: true
         }
 
-        //MonitorDetails {
-        //    Layout.fillWidth: true
-        //    Layout.fillHeight: true
-        //}
+        MonitorDetails {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+        }
     }
+
 }
 
