@@ -16,49 +16,115 @@ ScrollView {
             Layout.alignment: Qt.AlignHCenter
         }
 
-        // Editable fields
+        // id
+        RowLayout {
+            Label { text: "ID:"; width: 120 }
+            TextField {
+                enabled: false
+                Layout.fillWidth: true
+                text: selectedMonitor.id
+                onTextChanged: selectedMonitor.id = text
+            }
+        }
+
+        // name
         RowLayout {
             Label { text: "Name:"; width: 120 }
             TextField {
+                enabled: false
                 Layout.fillWidth: true
                 text: selectedMonitor.name
                 onTextChanged: selectedMonitor.name = text
             }
         }
 
+        // description
         RowLayout {
             Label { text: "Description:"; width: 120 }
             TextField {
+                enabled: false
                 Layout.fillWidth: true
                 text: selectedMonitor.description
                 onTextChanged: selectedMonitor.description = text
             }
         }
 
+        // make
         RowLayout {
             Label { text: "Make:"; width: 120 }
             TextField {
+                enabled: false
                 Layout.fillWidth: true
                 text: selectedMonitor.make
                 onTextChanged: selectedMonitor.make = text
             }
         }
 
+        // model
         RowLayout {
             Label { text: "Model:"; width: 120 }
             TextField {
+                enabled: false
                 Layout.fillWidth: true
                 text: selectedMonitor.model
                 onTextChanged: selectedMonitor.model = text
             }
         }
 
+        // serial
         RowLayout {
             Label { text: "Serial:"; width: 120 }
             TextField {
+                enabled: false
                 Layout.fillWidth: true
                 text: selectedMonitor.serial
                 onTextChanged: selectedMonitor.serial = text
+            }
+        }
+
+        // width x height
+        RowLayout {
+            Label { text: "Width:"; width: 120 }
+            TextField {
+                enabled: false
+                Layout.fillWidth: true
+                text: selectedMonitor.width
+                onTextChanged: selectedMonitor.width = text
+            }
+            Label { text: "Height:"; width: 120 }
+            TextField {
+                enabled: false
+                Layout.fillWidth: true
+                text: selectedMonitor.height
+                onTextChanged: selectedMonitor.height = text
+            }
+
+        }
+
+        // refreshRate
+        RowLayout {
+            Label { text: "Refresh Rate:"; width: 120 }
+            TextField {
+                enabled: false
+                Layout.fillWidth: true
+                text: selectedMonitor.refreshRate
+                onTextChanged: selectedMonitor.refreshRate = text
+            }
+        }
+
+        // x y position
+        RowLayout {
+            Label { text: "X:"; width: 120 }
+            TextField {
+                Layout.fillWidth: true
+                text: selectedMonitor.positionX
+                onTextChanged: selectedMonitor.positionX = text
+            }
+            Label { text: "Y:"; width: 120 }
+            TextField {
+                Layout.fillWidth: true
+                text: selectedMonitor.positionY
+                onTextChanged: selectedMonitor.positionY = text
             }
         }
 
@@ -69,16 +135,6 @@ ScrollView {
                 model: selectedMonitor.availableModes
                 currentIndex: model.indexOf(selectedMonitor.currentFormat)
                 onCurrentIndexChanged: selectedMonitor.currentFormat = model[currentIndex]
-            }
-        }
-
-        RowLayout {
-            Label { text: "Scale:"; width: 120 }
-            Slider {
-                Layout.fillWidth: true
-                from: 0.5; to: 2.0; stepSize: 0.1
-                value: selectedMonitor.scale
-                onValueChanged: selectedMonitor.scale = value
             }
         }
 
@@ -102,14 +158,7 @@ ScrollView {
         }
 
         Component.onCompleted: {
-            info("ID:", selectedMonitor.id);
-            info("Width:", selectedMonitor.width);
-            info("Height:", selectedMonitor.height);
-            info("Refresh Rate:", selectedMonitor.refreshRate);
-            info("X:", selectedMonitor.positionX);
-            info("Y:", selectedMonitor.positionY);
             info("Transform:", selectedMonitor.transform);
-            info("Focused:", selectedMonitor.focused);
             info("DPMS:", selectedMonitor.dpmsStatus);
             info("VRR:", selectedMonitor.vrr);
             info("Solitary:", selectedMonitor.solitary);

@@ -28,7 +28,6 @@ QList<Monitor*> HyprMonitorParser::parseMonitorsFromJson(const QString& jsonStri
             monitor->setPositionY(obj["y"].get<int>());
             monitor->setScale(obj["scale"].get<double>());
             monitor->setTransform(obj["transform"].get<int>());
-            monitor->setFocused(obj["focused"].get<bool>());
             monitor->setDpmsStatus(obj["dpmsStatus"].get<bool>());
             monitor->setVrrEnabled(obj["vrr"].get<bool>());
 
