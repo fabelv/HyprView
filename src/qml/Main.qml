@@ -16,7 +16,7 @@ ApplicationWindow {
         spacing: 10
 
         MonitorPreview {
-            Layout.preferredWidth: parent.width * 0.7
+            Layout.preferredWidth: parent.width * 0.6
             Layout.fillHeight: true
         }
 

@@ -18,7 +18,7 @@ ScrollView {
 
         // id
         RowLayout {
-            Label { text: "ID:"; width: 120 }
+            Label { text: "ID:"; Layout.minimumWidth: 100}
             TextField {
                 enabled: false
                 Layout.fillWidth: true
@@ -29,7 +29,7 @@ ScrollView {
 
         // name
         RowLayout {
-            Label { text: "Name:"; width: 120 }
+            Label { text: "Name:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
@@ -40,7 +40,7 @@ ScrollView {
 
         // description
         RowLayout {
-            Label { text: "Description:"; width: 120 }
+            Label { text: "Description:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
@@ -51,7 +51,7 @@ ScrollView {
 
         // make
         RowLayout {
-            Label { text: "Make:"; width: 120 }
+            Label { text: "Make:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
@@ -62,7 +62,7 @@ ScrollView {
 
         // model
         RowLayout {
-            Label { text: "Model:"; width: 120 }
+            Label { text: "Model:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
@@ -73,7 +73,7 @@ ScrollView {
 
         // serial
         RowLayout {
-            Label { text: "Serial:"; width: 120 }
+            Label { text: "Serial:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
@@ -84,14 +84,14 @@ ScrollView {
 
         // width x height
         RowLayout {
-            Label { text: "Width:"; width: 120 }
+            Label { text: "Width:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
                 text: selectedMonitor.width
                 onTextChanged: selectedMonitor.width = text
             }
-            Label { text: "Height:"; width: 120 }
+            Label { text: "Height:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
@@ -103,7 +103,7 @@ ScrollView {
 
         // refreshRate
         RowLayout {
-            Label { text: "Refresh Rate:"; width: 120 }
+            Label { text: "Refresh Rate:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
@@ -114,13 +114,13 @@ ScrollView {
 
         // x y position
         RowLayout {
-            Label { text: "X:"; width: 120 }
+            Label { text: "X:"; Layout.minimumWidth: 100 }
             TextField {
                 Layout.fillWidth: true
                 text: selectedMonitor.positionX
                 onTextChanged: selectedMonitor.positionX = text
             }
-            Label { text: "Y:"; width: 120 }
+            Label { text: "Y:"; Layout.minimumWidth: 100 }
             TextField {
                 Layout.fillWidth: true
                 text: selectedMonitor.positionY
@@ -129,7 +129,7 @@ ScrollView {
         }
 
         RowLayout {
-            Label { text: "Mode:"; width: 120 }
+            Label { text: "Mode:"; Layout.minimumWidth: 100 }
             ComboBox {
                 Layout.fillWidth: true
                 model: selectedMonitor.availableModes
@@ -139,10 +139,58 @@ ScrollView {
         }
 
         RowLayout {
-            Label { text: "Enabled:"; width: 120 }
+            Label { text: "Enabled:"; Layout.minimumWidth: 100 }
             CheckBox {
                 checked: !selectedMonitor.disabled
                 onCheckedChanged: selectedMonitor.disabled = !checked
+            }
+        }
+        
+        RowLayout {
+            Label { text: "DPMS:"; Layout.minimumWidth: 100 }
+            CheckBox {
+                checked: !selectedMonitor.dpmsStatus
+                onCheckedChanged: selectedMonitor.dpmsStatus = !checked
+            }
+        }
+
+        RowLayout {
+            Label {
+                text: "Transform:"
+                Layout.minimumWidth: 100
+            }
+
+            ComboBox {
+                Layout.fillWidth: true
+
+                model: ListModel {
+                    ListElement { text: "normal (no transforms)"; value: 0 }
+                    ListElement { text: "90 degrees"; value: 1 }
+                    ListElement { text: "180 degrees"; value: 2 }
+                    ListElement { text: "270 degrees"; value: 3 }
+                    ListElement { text: "flipped"; value: 4 }
+                    ListElement { text: "flipped + 90 degrees"; value: 5 }
+                    ListElement { text: "flipped + 180 degrees"; value: 6 }
+                    ListElement { text: "flipped + 270 degrees"; value: 7 }
+                }
+
+                textRole: "text" // what is displayed
+                // set currentIndex based on transform value
+                Component.onCompleted: {
+                    currentIndex = findIndexByValue(selectedMonitor.transform)
+                }
+
+                onCurrentIndexChanged: {
+                    selectedMonitor.transform = model.get(currentIndex).value
+                }
+
+                function findIndexByValue(val) {
+                    for (var i = 0; i < model.count; ++i) {
+                        if (model.get(i).value === val)
+                            return i;
+                    }
+                    return 0 // fallback
+                }
             }
         }
 
@@ -151,7 +199,7 @@ ScrollView {
             return Qt.createQmlObject(`
                 import QtQuick 2.15; import QtQuick.Layouts 1.15; import QtQuick.Controls 2.15;
                 RowLayout {
-                    Label { text: "${label}"; width: 120 }
+                    Label { text: "${label}"; Layout.minimumWidth: 100 }
                     Label { text: "${value}" }
                 }
             `, root);
@@ -159,7 +207,6 @@ ScrollView {
 
         Component.onCompleted: {
             info("Transform:", selectedMonitor.transform);
-            info("DPMS:", selectedMonitor.dpmsStatus);
             info("VRR:", selectedMonitor.vrr);
             info("Solitary:", selectedMonitor.solitary);
             info("Tearing:", selectedMonitor.activelyTearing);
