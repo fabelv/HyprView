@@ -9,6 +9,9 @@ namespace core {
 class Monitor {
 public:
     Monitor();
+    Monitor(const Monitor& other) = default;
+
+    Monitor& operator=(const Monitor& other) = default;
 
     std::string toString() const;
     void applyModeString(const std::string& mode);

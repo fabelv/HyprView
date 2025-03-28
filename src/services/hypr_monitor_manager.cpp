@@ -9,7 +9,7 @@ namespace core {
 HyprMonitorManager::HyprMonitorManager(MonitorParser* parser)
     : parser(parser) {}
 
-std::vector<Monitor> HyprMonitorManager::getMonitors() const {
+std::vector<Monitor> HyprMonitorManager::getMonitors() {
     FILE* pipe = popen("hyprctl monitors -j", "r");
     if (!pipe) {
         log(LogLevel::Error, "Failed to run hyprctl command.");
@@ -23,7 +23,11 @@ std::vector<Monitor> HyprMonitorManager::getMonitors() const {
     }
     pclose(pipe);
 
-    return parser->parseMonitorsFromJson(output.str());
+    std::vector<Monitor> monitors = parser->parseMonitorsFromJson(output.str());
+
+    preUserEditMonitors = monitors;
+
+    return monitors;
 }
 
 
@@ -46,10 +50,6 @@ bool HyprMonitorManager::applyMonitorConfiguration(const std::vector<Monitor>& m
 
         cmd << ", vrr, " << (monitor.isVrrEnabled() ? "1" : "0");
 
-        // Later (optional):
-        // cmd << ", bitdepth, 10";
-        // cmd << ", cm, wide";
-
         log(LogLevel::Info, "Running: " + cmd.str());
 
         int result = std::system(cmd.str().c_str());
@@ -62,6 +62,9 @@ bool HyprMonitorManager::applyMonitorConfiguration(const std::vector<Monitor>& m
     return true;
 }
 
+bool HyprMonitorManager::revertMonitorConfiguration() const {
+    return applyMonitorConfiguration(this->preUserEditMonitors);
+}
 
 } // namespace core
 

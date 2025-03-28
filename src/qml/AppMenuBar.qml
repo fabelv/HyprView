@@ -8,8 +8,19 @@ MenuBar {
     }
     Menu {
         title: qsTr("&Actions")
-        Action { text: qsTr("&Apply") }
-        Action { text: qsTr("&Rescan") }
+        Action {
+            text: qsTr("&Apply")
+            onTriggered: {
+                monitorManager.apply()
+                window.showConfirmDialog()
+            }
+        }
+        Action {
+            text: qsTr("&Rescan")
+            onTriggered: {
+                monitorManager.rescan()
+            }
+        }
     }
     Menu {
         title: qsTr("&Help")

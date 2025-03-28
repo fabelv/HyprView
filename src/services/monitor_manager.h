@@ -9,8 +9,9 @@ class MonitorManager {
 public:
     virtual ~MonitorManager() = default;
 
-    virtual std::vector<Monitor> getMonitors() const = 0;
+    virtual std::vector<Monitor> getMonitors() = 0;
     virtual bool applyMonitorConfiguration(const std::vector<Monitor>& monitors) const = 0;
+    virtual bool revertMonitorConfiguration() const = 0;
 };
 
 } // namespace core

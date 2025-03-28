@@ -178,25 +178,6 @@ ScrollView {
             }
         }
 
-        // --- Enabled / DPMS ---
-        RowLayout {
-            Label { text: "Enabled:"; Layout.minimumWidth: 100 }
-            CheckBox {
-                enabled: !!selectedMonitor
-                checked: selectedMonitor ? !selectedMonitor.disabled : false
-                onCheckedChanged: if (selectedMonitor) selectedMonitor.disabled = !checked
-            }
-        }
-
-        RowLayout {
-            Label { text: "DPMS:"; Layout.minimumWidth: 100 }
-            CheckBox {
-                enabled: !!selectedMonitor
-                checked: selectedMonitor ? selectedMonitor.dpmsStatus : false
-                onCheckedChanged: if (selectedMonitor) selectedMonitor.dpmsStatus = checked
-            }
-        }
-
         // --- Transform ---
         RowLayout {
             Label { text: "Transform:"; Layout.minimumWidth: 100 }
@@ -261,6 +242,27 @@ ScrollView {
             }
         }
 
+
+        // --- Enabled / DPMS ---
+        RowLayout {
+            Label { text: "Enabled:"; Layout.minimumWidth: 100 }
+            CheckBox {
+                enabled: !!selectedMonitor
+                checked: selectedMonitor ? !selectedMonitor.disabled : false
+                onCheckedChanged: if (selectedMonitor) selectedMonitor.disabled = !checked
+            }
+        }
+
+        RowLayout {
+            Label { text: "DPMS:"; Layout.minimumWidth: 100 }
+            CheckBox {
+                enabled: !!selectedMonitor
+                checked: selectedMonitor ? selectedMonitor.dpmsStatus : false
+                onCheckedChanged: if (selectedMonitor) selectedMonitor.dpmsStatus = checked
+            }
+        }
+
+        
         // --- Read-only Info ---
         function info(label, value) {
             return Qt.createQmlObject(`

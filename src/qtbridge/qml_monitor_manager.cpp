@@ -2,6 +2,7 @@
 #include "../core/utils/logger.h"
 #include "../core/models/monitor.h"
 #include "../services/monitor_manager.h"
+#include "qml_monitor.h"
 
 QmlMonitorManager::QmlMonitorManager(core::MonitorManager* coreManager, QObject* parent)
     : QObject(parent), m_coreManager(coreManager), m_selectedMonitor(nullptr)
@@ -58,6 +59,18 @@ void QmlMonitorManager::apply() {
     } else {
         log(core::LogLevel::Info, "Monitor configuration applied successfully.");
     }
+}
+
+void QmlMonitorManager::revertAplly() {
+    log(core::LogLevel::Info, "Reverting monitor configuration...");
+
+    if (!m_coreManager->revertMonitorConfiguration()) {
+        log(core::LogLevel::Error, "Failed to revert monitor configuration.");
+    } else {
+        log(core::LogLevel::Info, "Monitor configuration reverted successfully.");
+    }
+
+    rescan();
 }
 
 

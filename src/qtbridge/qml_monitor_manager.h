@@ -2,10 +2,9 @@
 
 #include <QObject>
 #include <QList>
-#include "qml_monitor.h"
 
 namespace core {
-    class MonitorManager;  // Forward declaration to fix the error
+    class MonitorManager;
 }
 
 class QmlMonitorManager : public QObject {
@@ -18,6 +17,7 @@ public:
     explicit QmlMonitorManager(core::MonitorManager* coreManager, QObject* parent = nullptr);
 
     Q_INVOKABLE void apply();
+    Q_INVOKABLE void revertAplly();
     Q_INVOKABLE void rescan();
 
     QList<QObject*> getMonitors() const;
