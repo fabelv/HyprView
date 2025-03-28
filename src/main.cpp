@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
+#include "models/enums/transform.h"
 #include "utils/hypr_monitor_parser.h"
 #include "services/hypr_monitor_manager.h"
 #include "models/monitor.h"
@@ -11,10 +12,17 @@ int main(int argc, char *argv[]) {
 
     QQmlApplicationEngine engine;
 
+
+    // -- Register Enums
+    qmlRegisterUncreatableType<Transform>("HyprView", 1, 0, "Transform", "Enum only");
+
     // --- Get monitors from hyprctl ---
     HyprMonitorParser parser;
     HyprMonitorManager manager(&parser);
     QList<Monitor*> monitors = manager.getMonitors();
+
+    // --- Expose manager to QML ---
+    engine.rootContext()->setContextProperty("monitorManager", &manager);
 
     // --- Expose monitor list to QML ---
     engine.rootContext()->setContextProperty(

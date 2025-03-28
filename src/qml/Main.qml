@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+
 ApplicationWindow {
     visible: true
     width: 1200 
@@ -10,21 +11,43 @@ ApplicationWindow {
 
     menuBar: AppMenuBar { }
 
-
-    RowLayout {
+    ColumnLayout {
         anchors.fill: parent
-        spacing: 10
 
-        MonitorPreview {
-            Layout.preferredWidth: parent.width * 0.6
-            Layout.fillHeight: true
-        }
-
-        MonitorDetails {
+        RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
+            spacing: 10
+
+            MonitorPreview {
+                Layout.preferredWidth: 0.6 * parent.width
+                Layout.fillHeight: true
+            }
+
+            MonitorDetails {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
+        }
+
+        RowLayout {
+            Layout.alignment: Qt.AlignHCenter
+            spacing: 10
+
+            Button {
+                text: "Apply"
+                onClicked: {
+                    console.log("Apply clicked for", selectedMonitor.name)
+                }
+            }
+
+            Button {
+                text: "Rescan"
+                onClicked: {
+                    console.log("Rescan clicked for", selectedMonitor.name)
+                }
+            }
         }
     }
-
 }
 

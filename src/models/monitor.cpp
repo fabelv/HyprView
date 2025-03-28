@@ -1,4 +1,7 @@
 #include "monitor.h"
+#include "enums/transform.h"
+#include <QDebug>
+#include <QRegularExpression>
 
 Monitor::Monitor(QObject* parent)
     : QObject(parent),
@@ -9,7 +12,7 @@ Monitor::Monitor(QObject* parent)
       positionX(0),
       positionY(0),
       scale(1.0),
-      transform(0),
+      transform(Transform::Type::Normal),
       focused(false),
       dpmsStatus(false),
       vrr(false),
@@ -40,7 +43,7 @@ double Monitor::getRefreshRate() const { return refreshRate; }
 int Monitor::getPositionX() const { return positionX; }
 int Monitor::getPositionY() const { return positionY; }
 double Monitor::getScale() const { return scale; }
-int Monitor::getTransform() const { return transform; }
+Transform::Type Monitor::getTransform() const { return transform; }
 bool Monitor::isFocused() const { return focused; }
 bool Monitor::getDpmsStatus() const { return dpmsStatus; }
 bool Monitor::isVrrEnabled() const { return vrr; }
@@ -65,7 +68,7 @@ void Monitor::setRefreshRate(double value) { if (!qFuzzyCompare(refreshRate, val
 void Monitor::setPositionX(int value) { if (positionX != value) { positionX = value; emit changed(); } }
 void Monitor::setPositionY(int value) { if (positionY != value) { positionY = value; emit changed(); } }
 void Monitor::setScale(double value) { if (!qFuzzyCompare(scale, value)) { scale = value; emit changed(); } }
-void Monitor::setTransform(int value) { if (transform != value) { transform = value; emit changed(); } }
+void Monitor::setTransform(Transform::Type value) { if (transform != value) { transform = value; emit changed(); } }
 void Monitor::setFocused(bool value) { if (focused != value) { focused = value; emit changed(); } }
 void Monitor::setDpmsStatus(bool value) { if (dpmsStatus != value) { dpmsStatus = value; emit changed(); } }
 void Monitor::setVrrEnabled(bool value) { if (vrr != value) { vrr = value; emit changed(); } }
@@ -76,3 +79,32 @@ void Monitor::setDisabled(bool value) { if (disabled != value) { disabled = valu
 void Monitor::setCurrentFormat(const QString& value) { if (currentFormat != value) { currentFormat = value; emit changed(); } }
 void Monitor::setMirrorOf(const QString& value) { if (mirrorOf != value) { mirrorOf = value; emit changed(); } }
 void Monitor::setAvailableModes(const QStringList& value) { if (availableModes != value) { availableModes = value; emit changed(); } }
+
+QString Monitor::generateCurrentMode() {
+    QString currentMode = QString("%1x%2@%3Hz")
+        .arg(this->getWidth())
+        .arg(this->getHeight())
+        .arg(this->getRefreshRate());
+
+    qDebug() << currentMode;
+
+    return currentMode;
+}
+
+void Monitor::applyModeString(const QString& mode) {
+    QRegularExpression re(R"((\d+)x(\d+)@([\d.]+)Hz)");
+    QRegularExpressionMatch match = re.match(mode);
+    if (match.hasMatch()) {
+        int w = match.captured(1).toInt();
+        int h = match.captured(2).toInt();
+        double rr = match.captured(3).toDouble();
+
+        setWidth(w);
+        setHeight(h);
+        setRefreshRate(rr);
+
+        qDebug() << "Applied mode:" << mode << "→" << w << "x" << h << "@" << rr;
+    } else {
+        qWarning() << "Invalid mode string format:" << mode;
+    }
+}

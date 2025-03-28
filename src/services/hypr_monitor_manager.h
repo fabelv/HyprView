@@ -9,7 +9,7 @@ private:
 
 public:
     HyprMonitorManager(MonitorParser* parser);
-    QList<Monitor*> getMonitors() const override;
-    bool applyMonitorConfiguration(const QList<Monitor*>& monitors) override;
+    Q_INVOKABLE QList<Monitor*> getMonitors() const override;
+    Q_INVOKABLE bool applyMonitorConfiguration(const QList<QObject*>& monitors) override;
 };
 

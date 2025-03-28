@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include "enums/transform.h"
 
 class Monitor : public QObject {
     Q_OBJECT
@@ -19,7 +20,7 @@ class Monitor : public QObject {
     Q_PROPERTY(int positionX READ getPositionX WRITE setPositionX NOTIFY changed)
     Q_PROPERTY(int positionY READ getPositionY WRITE setPositionY NOTIFY changed)
     Q_PROPERTY(double scale READ getScale WRITE setScale NOTIFY changed)
-    Q_PROPERTY(int transform READ getTransform WRITE setTransform NOTIFY changed)
+    Q_PROPERTY(Transform::Type transform READ getTransform WRITE setTransform NOTIFY changed)
     Q_PROPERTY(bool focused READ isFocused WRITE setFocused NOTIFY changed)
     Q_PROPERTY(bool dpmsStatus READ getDpmsStatus WRITE setDpmsStatus NOTIFY changed)
     Q_PROPERTY(bool vrr READ isVrrEnabled WRITE setVrrEnabled NOTIFY changed)
@@ -49,7 +50,7 @@ public:
     int getPositionX() const;
     int getPositionY() const;
     double getScale() const;
-    int getTransform() const;
+    Transform::Type getTransform() const;
     bool isFocused() const;
     bool getDpmsStatus() const;
     bool isVrrEnabled() const;
@@ -74,7 +75,7 @@ public:
     void setPositionX(int);
     void setPositionY(int);
     void setScale(double);
-    void setTransform(int);
+    void setTransform(Transform::Type);
     void setFocused(bool);
     void setDpmsStatus(bool);
     void setVrrEnabled(bool);
@@ -85,6 +86,9 @@ public:
     void setCurrentFormat(const QString&);
     void setMirrorOf(const QString&);
     void setAvailableModes(const QStringList&);
+
+    Q_INVOKABLE QString generateCurrentMode();
+    Q_INVOKABLE void applyModeString(const QString &mode);
 
 signals:
     void changed();
@@ -102,7 +106,7 @@ private:
     int positionX;
     int positionY;
     double scale;
-    int transform;
+    Transform::Type transform;
     bool focused;
     bool dpmsStatus;
     bool vrr;

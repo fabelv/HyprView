@@ -1,13 +1,29 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import HyprView 1.0
 
 ScrollView {
+    id: scrollView
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
+
+    property var filteredMonitors: []
+
+    function updateFilteredMonitors() {
+        filteredMonitors = [{ name: "None" }]
+        for (let i = 0; i < monitors.length; ++i) {
+            if (monitors[i].name !== selectedMonitor.name) {
+                filteredMonitors.push(monitors[i])
+            }
+        }
+    }
+
+    Component.onCompleted: {
+        updateFilteredMonitors()
+    }
 
     ColumnLayout {
         id: root
-        width: parent.width
         spacing: 6
 
         Label {
@@ -16,9 +32,9 @@ ScrollView {
             Layout.alignment: Qt.AlignHCenter
         }
 
-        // id
+        // ID
         RowLayout {
-            Label { text: "ID:"; Layout.minimumWidth: 100}
+            Label { text: "ID:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
@@ -27,7 +43,7 @@ ScrollView {
             }
         }
 
-        // name
+        // Name
         RowLayout {
             Label { text: "Name:"; Layout.minimumWidth: 100 }
             TextField {
@@ -38,7 +54,7 @@ ScrollView {
             }
         }
 
-        // description
+        // Description
         RowLayout {
             Label { text: "Description:"; Layout.minimumWidth: 100 }
             TextField {
@@ -49,7 +65,7 @@ ScrollView {
             }
         }
 
-        // make
+        // Make
         RowLayout {
             Label { text: "Make:"; Layout.minimumWidth: 100 }
             TextField {
@@ -60,7 +76,7 @@ ScrollView {
             }
         }
 
-        // model
+        // Model
         RowLayout {
             Label { text: "Model:"; Layout.minimumWidth: 100 }
             TextField {
@@ -71,7 +87,7 @@ ScrollView {
             }
         }
 
-        // serial
+        // Serial
         RowLayout {
             Label { text: "Serial:"; Layout.minimumWidth: 100 }
             TextField {
@@ -82,7 +98,7 @@ ScrollView {
             }
         }
 
-        // width x height
+        // Width x Height
         RowLayout {
             Label { text: "Width:"; Layout.minimumWidth: 100 }
             TextField {
@@ -98,10 +114,9 @@ ScrollView {
                 text: selectedMonitor.height
                 onTextChanged: selectedMonitor.height = text
             }
-
         }
 
-        // refreshRate
+        // Refresh Rate
         RowLayout {
             Label { text: "Refresh Rate:"; Layout.minimumWidth: 100 }
             TextField {
@@ -112,32 +127,46 @@ ScrollView {
             }
         }
 
-        // x y position
+        // X / Y Position
         RowLayout {
             Label { text: "X:"; Layout.minimumWidth: 100 }
             TextField {
                 Layout.fillWidth: true
                 text: selectedMonitor.positionX
-                onTextChanged: selectedMonitor.positionX = text
+                onTextChanged: selectedMonitor.positionX = parseInt(text)
             }
             Label { text: "Y:"; Layout.minimumWidth: 100 }
             TextField {
                 Layout.fillWidth: true
                 text: selectedMonitor.positionY
-                onTextChanged: selectedMonitor.positionY = text
+                onTextChanged: selectedMonitor.positionY = parseInt(text)
             }
         }
+
+        // Mode selection
 
         RowLayout {
             Label { text: "Mode:"; Layout.minimumWidth: 100 }
+
             ComboBox {
                 Layout.fillWidth: true
                 model: selectedMonitor.availableModes
-                currentIndex: model.indexOf(selectedMonitor.currentFormat)
-                onCurrentIndexChanged: selectedMonitor.currentFormat = model[currentIndex]
+
+                Component.onCompleted: {
+                    currentIndex = model.indexOf(selectedMonitor.generateCurrentMode())
+                }
+
+                
+                onCurrentIndexChanged: {
+                    if (currentIndex >= 0 && currentIndex < model.length) {
+                        selectedMonitor.applyModeString(model[currentIndex])
+                    }
+                }
             }
         }
 
+
+        // Enabled
         RowLayout {
             Label { text: "Enabled:"; Layout.minimumWidth: 100 }
             CheckBox {
@@ -145,7 +174,8 @@ ScrollView {
                 onCheckedChanged: selectedMonitor.disabled = !checked
             }
         }
-        
+
+        // DPMS
         RowLayout {
             Label { text: "DPMS:"; Layout.minimumWidth: 100 }
             CheckBox {
@@ -154,47 +184,70 @@ ScrollView {
             }
         }
 
+        // Transform
         RowLayout {
-            Label {
-                text: "Transform:"
-                Layout.minimumWidth: 100
-            }
+            Label { text: "Transform:"; Layout.minimumWidth: 100 }
 
+            
             ComboBox {
+                id: transformCombo
                 Layout.fillWidth: true
 
-                model: ListModel {
-                    ListElement { text: "normal (no transforms)"; value: 0 }
-                    ListElement { text: "90 degrees"; value: 1 }
-                    ListElement { text: "180 degrees"; value: 2 }
-                    ListElement { text: "270 degrees"; value: 3 }
-                    ListElement { text: "flipped"; value: 4 }
-                    ListElement { text: "flipped + 90 degrees"; value: 5 }
-                    ListElement { text: "flipped + 180 degrees"; value: 6 }
-                    ListElement { text: "flipped + 270 degrees"; value: 7 }
-                }
+                model: [
+                    { text: "Normal", value: Transform.Normal },
+                    { text: "90°", value: Transform.Rotate90 },
+                    { text: "180°", value: Transform.Rotate180 },
+                    { text: "270°", value: Transform.Rotate270 },
+                    { text: "Flipped", value: Transform.Flipped },
+                    { text: "Flipped + 90°", value: Transform.FlippedRotate90 },
+                    { text: "Flipped + 180°", value: Transform.FlippedRotate180 },
+                    { text: "Flipped + 270°", value: Transform.FlippedRotate270 }
+                ]
 
-                textRole: "text" // what is displayed
-                // set currentIndex based on transform value
+                textRole: "text"
+
                 Component.onCompleted: {
                     currentIndex = findIndexByValue(selectedMonitor.transform)
                 }
 
                 onCurrentIndexChanged: {
-                    selectedMonitor.transform = model.get(currentIndex).value
+                    selectedMonitor.transform = model[currentIndex].value
                 }
 
                 function findIndexByValue(val) {
-                    for (var i = 0; i < model.count; ++i) {
-                        if (model.get(i).value === val)
+                    for (let i = 0; i < model.length; ++i) {
+                        if (model[i].value === val)
                             return i;
                     }
-                    return 0 // fallback
+                    return 0
                 }
             }
         }
 
-        // Read-only fields (use Label)
+        // Mirror Of
+        RowLayout {
+            Label { text: "Mirror of:"; Layout.minimumWidth: 100 }
+
+            ComboBox {
+                id: mirrorCombo
+                Layout.fillWidth: true
+                model: filteredMonitors
+                textRole: "name"
+
+                Component.onCompleted: {
+                    const index = filteredMonitors.findIndex(m => m.name === selectedMonitor.mirrorOf)
+                    mirrorCombo.currentIndex = index >= 0 ? index : 0
+                }
+
+                onCurrentIndexChanged: {
+                    const value = filteredMonitors[mirrorCombo.currentIndex].name
+                    selectedMonitor.mirrorOf = value === "None" ? null : value
+                    console.log("Mirror set to", selectedMonitor.mirrorOf)
+                }
+            }
+        }
+
+        // Additional Info (Read-only)
         function info(label, value) {
             return Qt.createQmlObject(`
                 import QtQuick 2.15; import QtQuick.Layouts 1.15; import QtQuick.Controls 2.15;
@@ -206,22 +259,11 @@ ScrollView {
         }
 
         Component.onCompleted: {
-            info("Transform:", selectedMonitor.transform);
             info("VRR:", selectedMonitor.vrr);
             info("Solitary:", selectedMonitor.solitary);
             info("Tearing:", selectedMonitor.activelyTearing);
             info("Scanout To:", selectedMonitor.directScanoutTo);
-            info("Mirror Of:", selectedMonitor.mirrorOf);
             info("Current Format:", selectedMonitor.currentFormat);
-        }
-
-        Button {
-            text: "Apply"
-            Layout.alignment: Qt.AlignHCenter
-            onClicked: {
-                console.log("Apply clicked for", selectedMonitor.name)
-                // hook into backend if needed
-            }
         }
     }
 }

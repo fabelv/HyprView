@@ -1,4 +1,5 @@
 #include "hypr_monitor_parser.h"
+#include <cmath>
 #include <nlohmann/json.hpp>
 #include <iostream>
 
@@ -23,11 +24,11 @@ QList<Monitor*> HyprMonitorParser::parseMonitorsFromJson(const QString& jsonStri
             monitor->setSerial(QString::fromStdString(obj["serial"].get<std::string>()));
             monitor->setWidth(obj["width"].get<int>());
             monitor->setHeight(obj["height"].get<int>());
-            monitor->setRefreshRate(obj["refreshRate"].get<double>());
+            monitor->setRefreshRate(std::round(obj["refreshRate"].get<double>() * 100.0) / 100.0);
             monitor->setPositionX(obj["x"].get<int>());
             monitor->setPositionY(obj["y"].get<int>());
             monitor->setScale(obj["scale"].get<double>());
-            monitor->setTransform(obj["transform"].get<int>());
+            monitor->setTransform(static_cast<Transform::Type>(obj["transform"].get<int>()));
             monitor->setDpmsStatus(obj["dpmsStatus"].get<bool>());
             monitor->setVrrEnabled(obj["vrr"].get<bool>());
 
