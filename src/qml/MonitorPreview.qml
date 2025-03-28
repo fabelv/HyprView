@@ -2,10 +2,14 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+
 Item {
     id: preview
     width: 600
     height: 500
+
+    property var monitors
+    property var selectedMonitor
 
     // Define virtual bounds
     property int virtualWidth: 3840

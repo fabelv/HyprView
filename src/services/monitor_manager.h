@@ -1,13 +1,17 @@
 #pragma once
 
-#include "../models/monitor.h"
-#include <QList>
+#include "../core/models/monitor.h"
+#include <vector>
+
+namespace core {
 
 class MonitorManager {
 public:
     virtual ~MonitorManager() = default;
 
-    virtual QList<Monitor*> getMonitors() const = 0;
-    virtual bool applyMonitorConfiguration(const QList<QObject*>& monitors) = 0;
+    virtual std::vector<Monitor> getMonitors() const = 0;
+    virtual bool applyMonitorConfiguration(const std::vector<Monitor>& monitors) const = 0;
 };
+
+} // namespace core
 

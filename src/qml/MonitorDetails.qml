@@ -7,9 +7,13 @@ ScrollView {
     id: scrollView
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
 
+    property var selectedMonitor
+    property var monitors
     property var filteredMonitors: []
 
     function updateFilteredMonitors() {
+        if (!selectedMonitor || !monitors) return
+
         filteredMonitors = [{ name: "None" }]
         for (let i = 0; i < monitors.length; ++i) {
             if (monitors[i].name !== selectedMonitor.name) {
@@ -18,9 +22,11 @@ ScrollView {
         }
     }
 
-    Component.onCompleted: {
-        updateFilteredMonitors()
+    function safeText(val) {
+        return (val === undefined || val === null) ? "" : val;
     }
+
+    Component.onCompleted: updateFilteredMonitors()
 
     ColumnLayout {
         id: root
@@ -32,163 +38,169 @@ ScrollView {
             Layout.alignment: Qt.AlignHCenter
         }
 
-        // ID
+        function safeText(prop) {
+            return selectedMonitor ? prop : ""
+        }
+
+        function safeInt(prop) {
+            return selectedMonitor ? parseInt(prop) : 0
+        }
+
+        function safeBool(prop) {
+            return selectedMonitor ? !!prop : false
+        }
+
+        // --- ID ---
         RowLayout {
             Label { text: "ID:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
-                text: selectedMonitor.id
-                onTextChanged: selectedMonitor.id = text
+                text: selectedMonitor ? selectedMonitor.id : ""
             }
         }
 
-        // Name
+        // --- Name ---
         RowLayout {
             Label { text: "Name:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
-                text: selectedMonitor.name
-                onTextChanged: selectedMonitor.name = text
+                text: selectedMonitor ? selectedMonitor.name : ""
             }
         }
 
-        // Description
+        // --- Description ---
         RowLayout {
             Label { text: "Description:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
-                text: selectedMonitor.description
-                onTextChanged: selectedMonitor.description = text
+                text: selectedMonitor ? selectedMonitor.description : ""
             }
         }
 
-        // Make
+        // --- Make ---
         RowLayout {
             Label { text: "Make:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
-                text: selectedMonitor.make
-                onTextChanged: selectedMonitor.make = text
+                text: selectedMonitor ? selectedMonitor.make : ""
             }
         }
 
-        // Model
+        // --- Model ---
         RowLayout {
             Label { text: "Model:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
-                text: selectedMonitor.model
-                onTextChanged: selectedMonitor.model = text
+                text: selectedMonitor ? selectedMonitor.model : ""
             }
         }
 
-        // Serial
+        // --- Serial ---
         RowLayout {
             Label { text: "Serial:"; Layout.minimumWidth: 100 }
             TextField {
                 enabled: false
                 Layout.fillWidth: true
-                text: selectedMonitor.serial
-                onTextChanged: selectedMonitor.serial = text
+                text: selectedMonitor ? selectedMonitor.serial : ""
             }
         }
 
-        // Width x Height
+        // --- Width & Height ---
         RowLayout {
             Label { text: "Width:"; Layout.minimumWidth: 100 }
             TextField {
-                enabled: false
+                enabled: !!selectedMonitor
                 Layout.fillWidth: true
-                text: selectedMonitor.width
-                onTextChanged: selectedMonitor.width = text
+                text: safeText(selectedMonitor?.width)
+                onTextChanged: if (selectedMonitor) selectedMonitor.width = parseInt(text)
             }
+
             Label { text: "Height:"; Layout.minimumWidth: 100 }
             TextField {
-                enabled: false
+                enabled: !!selectedMonitor
                 Layout.fillWidth: true
-                text: selectedMonitor.height
-                onTextChanged: selectedMonitor.height = text
+                text: safeText(selectedMonitor?.height)
+                onTextChanged: if (selectedMonitor) selectedMonitor.height = parseInt(text)
             }
         }
 
-        // Refresh Rate
+        // --- Refresh Rate ---
         RowLayout {
             Label { text: "Refresh Rate:"; Layout.minimumWidth: 100 }
             TextField {
-                enabled: false
+                enabled: !!selectedMonitor
                 Layout.fillWidth: true
-                text: selectedMonitor.refreshRate
-                onTextChanged: selectedMonitor.refreshRate = text
+                text: safeText(selectedMonitor?.refreshRate)
+                onTextChanged: if (selectedMonitor) selectedMonitor.refreshRate = parseFloat(text)
             }
         }
 
-        // X / Y Position
+        // --- Position X / Y ---
         RowLayout {
             Label { text: "X:"; Layout.minimumWidth: 100 }
             TextField {
+                enabled: !!selectedMonitor
                 Layout.fillWidth: true
-                text: selectedMonitor.positionX
-                onTextChanged: selectedMonitor.positionX = parseInt(text)
+                text: safeText(selectedMonitor?.positionX)
+                onTextChanged: if (selectedMonitor) selectedMonitor.positionX = parseInt(text)
             }
+
             Label { text: "Y:"; Layout.minimumWidth: 100 }
             TextField {
+                enabled: !!selectedMonitor
                 Layout.fillWidth: true
-                text: selectedMonitor.positionY
-                onTextChanged: selectedMonitor.positionY = parseInt(text)
+                text: safeText(selectedMonitor?.positionY)
+                onTextChanged: if (selectedMonitor) selectedMonitor.positionY = parseInt(text)
             }
         }
 
-        // Mode selection
-
+        // --- Mode Selection ---
         RowLayout {
             Label { text: "Mode:"; Layout.minimumWidth: 100 }
 
             ComboBox {
                 Layout.fillWidth: true
-                model: selectedMonitor.availableModes
-
+                model: selectedMonitor ? selectedMonitor.availableModes : []
                 Component.onCompleted: {
-                    currentIndex = model.indexOf(selectedMonitor.generateCurrentMode())
+                    if (selectedMonitor)
+                        currentIndex = model.indexOf(selectedMonitor.generateCurrentMode())
                 }
-
-                
                 onCurrentIndexChanged: {
-                    if (currentIndex >= 0 && currentIndex < model.length) {
+                    if (selectedMonitor && currentIndex >= 0 && currentIndex < model.length) {
                         selectedMonitor.applyModeString(model[currentIndex])
                     }
                 }
             }
         }
 
-
-        // Enabled
+        // --- Enabled / DPMS ---
         RowLayout {
             Label { text: "Enabled:"; Layout.minimumWidth: 100 }
             CheckBox {
-                checked: !selectedMonitor.disabled
-                onCheckedChanged: selectedMonitor.disabled = !checked
+                enabled: !!selectedMonitor
+                checked: selectedMonitor ? !selectedMonitor.disabled : false
+                onCheckedChanged: if (selectedMonitor) selectedMonitor.disabled = !checked
             }
         }
 
-        // DPMS
         RowLayout {
             Label { text: "DPMS:"; Layout.minimumWidth: 100 }
             CheckBox {
-                checked: !selectedMonitor.dpmsStatus
-                onCheckedChanged: selectedMonitor.dpmsStatus = !checked
+                enabled: !!selectedMonitor
+                checked: selectedMonitor ? selectedMonitor.dpmsStatus : false
+                onCheckedChanged: if (selectedMonitor) selectedMonitor.dpmsStatus = checked
             }
         }
 
-        // Transform
+        // --- Transform ---
         RowLayout {
             Label { text: "Transform:"; Layout.minimumWidth: 100 }
 
-            
             ComboBox {
                 id: transformCombo
                 Layout.fillWidth: true
@@ -203,31 +215,30 @@ ScrollView {
                     { text: "Flipped + 180°", value: Transform.FlippedRotate180 },
                     { text: "Flipped + 270°", value: Transform.FlippedRotate270 }
                 ]
-
                 textRole: "text"
 
                 Component.onCompleted: {
-                    currentIndex = findIndexByValue(selectedMonitor.transform)
+                    if (selectedMonitor)
+                        currentIndex = findIndexByValue(selectedMonitor.transform)
                 }
 
                 onCurrentIndexChanged: {
-                    selectedMonitor.transform = model[currentIndex].value
+                    if (selectedMonitor)
+                        selectedMonitor.transform = model[currentIndex].value
                 }
 
                 function findIndexByValue(val) {
-                    for (let i = 0; i < model.length; ++i) {
+                    for (let i = 0; i < model.length; ++i)
                         if (model[i].value === val)
-                            return i;
-                    }
+                            return i
                     return 0
                 }
             }
         }
 
-        // Mirror Of
+        // --- Mirror Of ---
         RowLayout {
             Label { text: "Mirror of:"; Layout.minimumWidth: 100 }
-
             ComboBox {
                 id: mirrorCombo
                 Layout.fillWidth: true
@@ -235,35 +246,42 @@ ScrollView {
                 textRole: "name"
 
                 Component.onCompleted: {
-                    const index = filteredMonitors.findIndex(m => m.name === selectedMonitor.mirrorOf)
-                    mirrorCombo.currentIndex = index >= 0 ? index : 0
+                    if (selectedMonitor) {
+                        const index = filteredMonitors.findIndex(m => m.name === selectedMonitor.mirrorOf)
+                        mirrorCombo.currentIndex = index >= 0 ? index : 0
+                    }
                 }
 
                 onCurrentIndexChanged: {
-                    const value = filteredMonitors[mirrorCombo.currentIndex].name
-                    selectedMonitor.mirrorOf = value === "None" ? null : value
-                    console.log("Mirror set to", selectedMonitor.mirrorOf)
+                    if (selectedMonitor) {
+                        const value = filteredMonitors[mirrorCombo.currentIndex].name
+                        selectedMonitor.mirrorOf = value === "None" ? null : value
+                    }
                 }
             }
         }
 
-        // Additional Info (Read-only)
+        // --- Read-only Info ---
         function info(label, value) {
             return Qt.createQmlObject(`
-                import QtQuick 2.15; import QtQuick.Layouts 1.15; import QtQuick.Controls 2.15;
+                import QtQuick 2.15
+                import QtQuick.Layouts 1.15
+                import QtQuick.Controls 2.15
                 RowLayout {
                     Label { text: "${label}"; Layout.minimumWidth: 100 }
                     Label { text: "${value}" }
                 }
-            `, root);
+            `, root)
         }
 
         Component.onCompleted: {
-            info("VRR:", selectedMonitor.vrr);
-            info("Solitary:", selectedMonitor.solitary);
-            info("Tearing:", selectedMonitor.activelyTearing);
-            info("Scanout To:", selectedMonitor.directScanoutTo);
-            info("Current Format:", selectedMonitor.currentFormat);
+            if (selectedMonitor) {
+                info("VRR:", selectedMonitor.vrr)
+                info("Solitary:", selectedMonitor.solitary)
+                info("Tearing:", selectedMonitor.activelyTearing)
+                info("Scanout To:", selectedMonitor.directScanoutTo)
+                info("Current Format:", selectedMonitor.currentFormat)
+            }
         }
     }
 }

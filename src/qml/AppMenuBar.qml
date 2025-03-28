@@ -8,6 +8,7 @@ MenuBar {
     }
     Menu {
         title: qsTr("&Actions")
+        Action { text: qsTr("&Apply") }
         Action { text: qsTr("&Rescan") }
     }
     Menu {

@@ -1,43 +1,67 @@
 #include "hypr_monitor_manager.h"
-#include <QProcess>
-#include <QDebug>
+#include "../core/utils/logger.h"
+#include <cstdlib>
+#include <sstream>
+#include <iomanip>
+
+namespace core {
 
 HyprMonitorManager::HyprMonitorManager(MonitorParser* parser)
     : parser(parser) {}
 
-QList<Monitor*> HyprMonitorManager::getMonitors() const {
-    QProcess process;
-    process.start("hyprctl", QStringList() << "monitors" << "-j");
-    process.waitForFinished();
+std::vector<Monitor> HyprMonitorManager::getMonitors() const {
+    FILE* pipe = popen("hyprctl monitors -j", "r");
+    if (!pipe) {
+        log(LogLevel::Error, "Failed to run hyprctl command.");
+        return {};
+    }
 
-    QString output = QString::fromUtf8(process.readAllStandardOutput());
-    return parser->parseMonitorsFromJson(output);
+    std::ostringstream output;
+    char buffer[128];
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        output << buffer;
+    }
+    pclose(pipe);
+
+    return parser->parseMonitorsFromJson(output.str());
 }
 
-bool HyprMonitorManager::applyMonitorConfiguration(const QList<QObject*>& monitors) {
-    for (const auto& obj : monitors) {
-        auto* monitor = qobject_cast<Monitor*>(obj);
-        if (!monitor)
-            continue;
 
-        QString cmd = QString("hyprctl keyword monitor %1,%2x%3@%4,%5x%6,%7")
-            .arg(monitor->getName())
-            .arg(monitor->getWidth())
-            .arg(monitor->getHeight())
-            .arg(monitor->getRefreshRate(), 0, 'f', 2)
-            .arg(monitor->getPositionX())
-            .arg(monitor->getPositionY())
-            .arg(monitor->getScale(), 0, 'f', 2);
+bool HyprMonitorManager::applyMonitorConfiguration(const std::vector<Monitor>& monitors) const {
+    for (const auto& monitor : monitors) {
+        std::ostringstream cmd;
+        cmd << "hyprctl keyword monitor "
+            << monitor.getName() << ","
+            << monitor.getWidth() << "x" << monitor.getHeight() << "@"
+            << std::fixed << std::setprecision(2) << monitor.getRefreshRate() << ","
+            << monitor.getPositionX() << "x" << monitor.getPositionY() << ","
+            << std::fixed << std::setprecision(2) << monitor.getScale();
 
-        QProcess process;
-        process.start("sh", QStringList() << "-c" << cmd);
-        process.waitForFinished();
+        // Optional args
+        cmd << ", transform, " << static_cast<int>(monitor.getTransform());
 
-        if (process.exitCode() != 0) {
-            qWarning() << "Failed to apply config for monitor:" << monitor->getName();
+        if (!monitor.getMirrorOf().empty()) {
+            cmd << ", mirror, " << monitor.getMirrorOf();
+        }
+
+        cmd << ", vrr, " << (monitor.isVrrEnabled() ? "1" : "0");
+
+        // Later (optional):
+        // cmd << ", bitdepth, 10";
+        // cmd << ", cm, wide";
+
+        log(LogLevel::Info, "Running: " + cmd.str());
+
+        int result = std::system(cmd.str().c_str());
+        if (result != 0) {
+            log(LogLevel::Error, "Failed to apply monitor config: " + cmd.str());
             return false;
         }
     }
+
     return true;
 }
+
+
+} // namespace core
 
