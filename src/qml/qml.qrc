@@ -1,9 +1,20 @@
 <RCC>
   <qresource prefix="/qml">
     <file>Main.qml</file>
-    <file>AppMenuBar.qml</file>
-    <file>MonitorPreview.qml</file>
-    <file>MonitorDetails.qml</file>
+
+    <!-- Components -->
+    <file>components/AppMenuBar.qml</file>
+    <file>components/ButtonBar.qml</file>
+    <file>components/MonitorPreview.qml</file>
+    <file>components/MonitorDetails.qml</file>
+    <file>components/MonitorNumericField.qml</file>
+    <file>components/MonitorCheckbox.qml</file>
+
+    <!-- Dialogs -->
+    <file>dialogs/ConfirmDialog.qml</file>
+
+    <!-- Screens -->
+    <file>screens/MonitorScreen.qml</file>
   </qresource>
 </RCC>
 

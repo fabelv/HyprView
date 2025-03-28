@@ -17,9 +17,7 @@ MenuBar {
         }
         Action {
             text: qsTr("&Rescan")
-            onTriggered: {
-                monitorManager.rescan()
-            }
+            onTriggered: monitorManager.rescan()
         }
     }
     Menu {
