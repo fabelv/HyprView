@@ -53,12 +53,12 @@ ScrollView {
         // --- ID ---
         RowLayout {
             Label { text: "ID:"; Layout.minimumWidth: 100 }
-            Label { text: selectedMonitor ? selectedMonitor.id : "" }
+            Label { text: scrollView.selectedMonitor ? scrollView.selectedMonitor.id : "" }
         }
 
         RowLayout {
             Label { text: "Name:"; Layout.minimumWidth: 100 }
-            Label { text: selectedMonitor ? selectedMonitor.name : "" }
+            Label { text: scrollView.selectedMonitor ? scrollView.selectedMonitor.name : "" }
         }
 
         RowLayout {
@@ -82,26 +82,37 @@ ScrollView {
         }
 
         // --- Editable values (Width, Height, etc.) ---
+
         MonitorNumericField {
             label: "Width"
             fieldValue: selectedMonitor?.width ?? 0
             editable: !!selectedMonitor
-            onValueChanged: if (selectedMonitor) selectedMonitor.width = newValue
+            onValueChanged: function(newValue) {
+                if (selectedMonitor)
+                    selectedMonitor.width = newValue
+            }
         }
 
         MonitorNumericField {
             label: "Height"
             fieldValue: selectedMonitor?.height ?? 0
             editable: !!selectedMonitor
-            onValueChanged: if (selectedMonitor) selectedMonitor.height = newValue
+            onValueChanged: function(newValue) {
+                if (selectedMonitor)
+                    selectedMonitor.height = newValue
+            }
         }
 
         MonitorNumericField {
             label: "Refresh Rate"
             fieldValue: selectedMonitor?.refreshRate ?? 0
             editable: !!selectedMonitor
-            onValueChanged: if (selectedMonitor) selectedMonitor.refreshRate = newValue
+            onValueChanged: function(newValue) {
+                if (selectedMonitor)
+                    selectedMonitor.refreshRate = newValue
+            }
         }
+
 
         MonitorNumericField {
             label: "X"
