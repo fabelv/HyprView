@@ -106,8 +106,10 @@ int QmlMonitor::getPositionX() const {
 }
 
 void QmlMonitor::setPositionX(int value) {
-    m_monitor.setPositionX(value);
-    emit updated();
+    if (m_monitor.getPositionX() != value) {
+        m_monitor.setPositionX(value);
+        emit updated();
+    }
 }
 
 int QmlMonitor::getPositionY() const {
@@ -115,8 +117,10 @@ int QmlMonitor::getPositionY() const {
 }
 
 void QmlMonitor::setPositionY(int value) {
-    m_monitor.setPositionY(value);
-    emit updated();
+    if (m_monitor.getPositionY() != value) {
+        m_monitor.setPositionY(value);
+        emit updated();
+    }
 }
 
 double QmlMonitor::getScale() const {

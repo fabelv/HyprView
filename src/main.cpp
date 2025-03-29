@@ -4,7 +4,7 @@
 
 #include "core/utils/logger.h"
 #include "core/utils/hypr_monitor_parser.h"
-#include "core/models/enums/transform.h"
+#include "qml/qml_transform_helper.h"
 #include "services/hypr_monitor_manager.h"
 #include "qtbridge/qml_monitor.h"
 #include "qtbridge/qml_monitor_manager.h"
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     engine.rootContext()->setContextProperty("monitorManager", qmlManager);
     engine.rootContext()->setContextProperty("monitors", QVariant::fromValue(qmlMonitors));
     engine.rootContext()->setContextProperty("selectedMonitor", selected);
-    qmlRegisterUncreatableType<core::Transform>("HyprView", 1, 0, "Transform", "Enum only");
+    qmlRegisterUncreatableType<TransformHelper>("HyprView", 1, 0, "Transform", "Enum only");
 
     log(core::LogLevel::Info, "Loading QML UI...");
     engine.load(QUrl::fromLocalFile("src/qml/Main.qml"));

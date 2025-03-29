@@ -25,10 +25,16 @@ RowLayout {
 
         text: fieldValue.toString()
 
+        Connections {
+            target: root
+            function onFieldValueChanged() {
+                input.text = root.fieldValue.toString()
+            }
+        }
+
         onEditingFinished: {
             const num = parseFloat(text)
             if (!isNaN(num) && num !== fieldValue) {
-                fieldValue = num
                 valueChanged(num)
             }
         }

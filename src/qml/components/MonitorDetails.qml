@@ -102,19 +102,27 @@ ScrollView {
             editable: !!selectedMonitor
             onValueChanged: if (selectedMonitor) selectedMonitor.refreshRate = newValue
         }
+
         MonitorNumericField {
             label: "X"
             fieldValue: selectedMonitor?.positionX ?? 0
             editable: !!selectedMonitor
-            onValueChanged: if (selectedMonitor) selectedMonitor.positionX = newValue
+            onValueChanged: function(newValue) {
+                if (selectedMonitor)
+                    selectedMonitor.positionX = newValue
+            }
         }
 
         MonitorNumericField {
             label: "Y"
             fieldValue: selectedMonitor?.positionY ?? 0
             editable: !!selectedMonitor
-            onValueChanged: if (selectedMonitor) selectedMonitor.positionY = newValue
+            onValueChanged: function(newValue) {
+                if (selectedMonitor)
+                    selectedMonitor.positionY = newValue
+            }
         }
+
 
         // --- Mode Selection ---
         RowLayout {
@@ -153,10 +161,18 @@ ScrollView {
                     if (selectedMonitor)
                         currentIndex = model.findIndex(v => v.value === selectedMonitor.transform)
                 }
+
                 onCurrentIndexChanged: {
-                    if (selectedMonitor)
-                        selectedMonitor.transform = model[currentIndex].value
+                    if (selectedMonitor && currentIndex >= 0 && currentIndex < model.length) {
+                        const selected = model[currentIndex]
+                        if (selected && selected.value !== undefined) {
+                            selectedMonitor.transform = selected.value
+                        } else {
+                            console.warn("Invalid transform model at index", currentIndex)
+                        }
+                    }
                 }
+
             }
         }
 

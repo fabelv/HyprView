@@ -1,7 +1,7 @@
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
 
 Item {
     id: preview
@@ -11,13 +11,8 @@ Item {
     property var monitors
     property var selectedMonitor
 
-    // Define virtual bounds
-    property int virtualWidth: 3840
-    property int virtualHeight: 2160
-
-    // Scale position to fit layout (but allow big monitors)
-    property real positionScale: 0.05     // Tune this
-    property real sizeScale: 0.05         // Tune this independently
+    property real positionScale: 0.05
+    property real sizeScale: 0.05
 
     Rectangle {
         anchors.fill: parent
@@ -25,13 +20,13 @@ Item {
         radius: 10
         clip: true
 
-        // origin cross (optional)
         Rectangle {
             width: 2
             height: parent.height
             color: "white"
             x: parent.width / 2
         }
+
         Rectangle {
             width: parent.width
             height: 2
@@ -42,45 +37,76 @@ Item {
         Repeater {
             model: monitors
 
-            Rectangle {
+            Item {
+                id: monitorItem
                 property real posScale: preview.positionScale
-                property real sizeScale: preview.sizeScale
+                property bool isDragging: false
 
-                // Convert logical center-based coords to UI coords
-                x: (preview.width / 2) + (modelData.positionX * posScale)
-                y: (preview.height / 2) + (modelData.positionY * posScale)
+                width: modelData.width * preview.sizeScale
+                height: modelData.height * preview.sizeScale
 
-                width: modelData.width * sizeScale
-                height: modelData.height * sizeScale
+                // Live bindings (disabled when dragging)
+                Binding {
+                    id: xBinding
+                    target: monitorItem
+                    property: "x"
+                    when: !monitorItem.isDragging
+                    value: (preview.width / 2) + (modelData.positionX * posScale)
+                }
 
-                color: modelData.focused ? "deepskyblue" : "lightgray"
-                border.color: "white"
-                border.width: 2
-                radius: 6
+                Binding {
+                    id: yBinding
+                    target: monitorItem
+                    property: "y"
+                    when: !monitorItem.isDragging
+                    value: (preview.height / 2) + (modelData.positionY * posScale)
+                }
 
-                Text {
-                    anchors.centerIn: parent
-                    color: "black"
-                    text: modelData.name
+                Rectangle {
+                    anchors.fill: parent
+                    color: modelData.focused ? "deepskyblue" : "lightgray"
+                    border.color: "white"
+                    border.width: 2
+                    radius: 6
+
+                    Text {
+                        anchors.centerIn: parent
+                        color: "black"
+                        text: modelData.name
+                    }
                 }
 
                 MouseArea {
                     anchors.fill: parent
-                    drag.target: parent
+                    drag.target: monitorItem
+
+                    onPressed: {
+                        monitorItem.isDragging = true
+                    }
 
                     onReleased: {
-                        let newX = Math.max(0, Math.min(parent.x, preview.width - parent.width));
-                        let newY = Math.max(0, Math.min(parent.y, preview.height - parent.height));
+                        let newX = Math.max(0, Math.min(monitorItem.x, preview.width - monitorItem.width))
+                        let newY = Math.max(0, Math.min(monitorItem.y, preview.height - monitorItem.height))
 
-                        parent.x = newX
-                        parent.y = newY
+                        monitorItem.x = newX
+                        monitorItem.y = newY
 
-                        // Convert UI position back to centered virtual coordinates
-                        modelData.positionX = (newX - preview.width / 2) / posScale
-                        modelData.positionY = (newY - preview.height / 2) / posScale
+                        const virtX = (newX - preview.width / 2) / posScale
+                        const virtY = (newY - preview.height / 2) / posScale
+
+                        if (modelData) {
+                            modelData.positionX = Math.round(virtX)
+                            modelData.positionY = Math.round(virtY)
+                        }
+
+                        // Reactivate bindings next frame
+                        Qt.callLater(() => {
+                            monitorItem.isDragging = false
+                        })
                     }
                 }
             }
         }
     }
 }
+
