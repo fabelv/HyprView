@@ -27,7 +27,7 @@ class QmlMonitor : public QObject {
     Q_PROPERTY(QString solitary READ getSolitary WRITE setSolitary NOTIFY updated)
     Q_PROPERTY(bool activelyTearing READ getActivelyTearing WRITE setActivelyTearing NOTIFY updated)
     Q_PROPERTY(QString directScanoutTo READ getDirectScanoutTo WRITE setDirectScanoutTo NOTIFY updated)
-    Q_PROPERTY(bool disabled READ getDisabled WRITE setDisabled NOTIFY updated)
+    Q_PROPERTY(bool disabled READ isDisabled WRITE setDisabled NOTIFY updated)
     Q_PROPERTY(QString currentFormat READ getCurrentFormat WRITE setCurrentFormat NOTIFY updated)
     Q_PROPERTY(QString mirrorOf READ getMirrorOf WRITE setMirrorOf NOTIFY updated)
     Q_PROPERTY(QStringList availableModes READ getAvailableModes WRITE setAvailableModes NOTIFY updated)
@@ -59,7 +59,7 @@ public:
     QString getSolitary() const;
     bool getActivelyTearing() const;
     QString getDirectScanoutTo() const;
-    bool getDisabled() const;
+    bool isDisabled() const;
     QString getCurrentFormat() const;
     QString getMirrorOf() const;
     QStringList getAvailableModes() const;

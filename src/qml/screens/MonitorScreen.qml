@@ -2,7 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-import "../components"
+import "../details"
+import "../preview"
 
 RowLayout {
     Layout.fillWidth: true

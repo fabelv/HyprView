@@ -22,6 +22,7 @@ in pkgs.mkShell {
   shellHook = ''
     export QT_QPA_PLATFORM_PLUGIN_PATH=${qt.qtbase}/lib/qt-6/plugins/platforms
     export LLDB_PATH="${pkgs.lldb_20}/bin/lldb-dap"
+    export QML_IMPORT_PATH="${qt.qtdeclarative}/lib/qt-6/qml:$(pwd)/build/HyprView/HyprView"
   '';
 }
 

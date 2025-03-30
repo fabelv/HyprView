@@ -195,7 +195,7 @@ void QmlMonitor::setDirectScanoutTo(const QString& value) {
     emit updated();
 }
 
-bool QmlMonitor::getDisabled() const {
+bool QmlMonitor::isDisabled() const {
     return m_monitor.isDisabled();
 }
 

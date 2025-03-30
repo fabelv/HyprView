@@ -4,10 +4,10 @@
 
 #include "core/utils/logger.h"
 #include "core/utils/hypr_monitor_parser.h"
-#include "qml/qml_transform_helper.h"
+#include "qtbridge/qml_monitor_manager.h"
+#include "qtbridge/qml_transform_helper.h"
 #include "services/hypr_monitor_manager.h"
 #include "qtbridge/qml_monitor.h"
-#include "qtbridge/qml_monitor_manager.h"
 
 int main(int argc, char *argv[]) {
     log(core::LogLevel::Info, "Starting HyprView...");

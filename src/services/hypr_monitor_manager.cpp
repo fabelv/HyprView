@@ -43,12 +43,15 @@ bool HyprMonitorManager::applyMonitorConfiguration(const std::vector<Monitor>& m
 
         // Optional args
         cmd << ", transform, " << static_cast<int>(monitor.getTransform());
+        cmd << ", vrr, " << (monitor.isVrrEnabled() ? "1" : "0");
 
         if (!monitor.getMirrorOf().empty()) {
             cmd << ", mirror, " << monitor.getMirrorOf();
         }
-
-        cmd << ", vrr, " << (monitor.isVrrEnabled() ? "1" : "0");
+        
+        if (!monitor.isDisabled()){
+            cmd << ", disable ";
+        }
 
         log(LogLevel::Info, "Running: " + cmd.str());
 

@@ -5,10 +5,14 @@
     <!-- Components -->
     <file>components/AppMenuBar.qml</file>
     <file>components/ButtonBar.qml</file>
-    <file>components/MonitorPreview.qml</file>
-    <file>components/MonitorDetails.qml</file>
-    <file>components/MonitorNumericField.qml</file>
-    <file>components/MonitorCheckbox.qml</file>
+
+    <!-- Details -->
+    <file>details/MonitorDetails.qml</file>
+    <file>details/MonitorDetailsEditableFields.qml</file>
+    <file>details/MonitorDetailsReadOnlyFields.qml</file>
+
+    <!-- Preview -->
+    <file>preview/MonitorPreview.qml</file>
 
     <!-- Dialogs -->
     <file>dialogs/ConfirmDialog.qml</file>
@@ -17,4 +21,5 @@
     <file>screens/MonitorScreen.qml</file>
   </qresource>
 </RCC>
+
 
