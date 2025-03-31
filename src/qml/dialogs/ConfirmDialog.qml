@@ -6,19 +6,29 @@ Dialog {
     id: confirmDialog
     modal: true
     property int countdown: 0
+    property int timeout: 15
 
-    signal confirmed()
-    signal cancelled()
+    Timer {
+        id: revertTimer
+        interval: 1000
+        running: false
+        repeat: true
+        onTriggered: {
+            confirmDialog.countdown--
+            title = `Keep this configuration? (${confirmDialog.countdown}s)`
+            if (countdown <= 0) {
+                revertTimer.stop()
+                close()
+                monitorManager.revertMonitorConfiguration()
+            }
+        }
+    }
 
-    function start(timeout) {
+    function startTimer() {
         countdown = timeout
         title = `Keep this configuration? (${countdown}s)`
         open()
-    }
-
-    function updateCountdown(value) {
-        countdown = value
-        title = `Keep this configuration? (${countdown}s)`
+        revertTimer.start()
     }
 
     ColumnLayout {
@@ -32,12 +42,28 @@ Dialog {
             spacing: 10
             Button {
                 text: "Yes"
-                onClicked: confirmDialog.confirmed()
+                onClicked: {
+                    revertTimer.stop()
+                    close()
+                    monitorManager.scanMonitors()
+                }
             }
             Button {
                 text: "No"
-                onClicked: confirmDialog.cancelled()
+                onClicked: {
+                    revertTimer.stop()
+                    close()
+                    monitorManager.revertMonitorConfiguration()
+                }
             }
         }
     }
+
+    Connections {
+        target: monitorManager
+        function onMonitorConfigurationApplied() {
+            confirmDialog.startTimer()
+        }
+    }
 }
+

@@ -11,13 +11,13 @@ MenuBar {
         Action {
             text: qsTr("&Apply")
             onTriggered: {
-                monitorManager.apply()
+                monitorManager.applyMonitorConfiguration()
                 window.showConfirmDialog()
             }
         }
         Action {
             text: qsTr("&Rescan")
-            onTriggered: monitorManager.rescan()
+            onTriggered: monitorManager.scanMonitors()
         }
     }
     Menu {

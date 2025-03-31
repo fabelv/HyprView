@@ -1,21 +1,27 @@
 #pragma once
 
-#include "monitor_manager.h"
-#include "../core/utils/monitor_parser.h"
 #include <vector>
+#include "../core/utils/hypr_monitor_parser.h"
 
 namespace core {
 
-class HyprMonitorManager : public MonitorManager {
+class HyprMonitorManager {
 private:
-    MonitorParser* parser;
+    HyprMonitorParser* parser;
+    Monitor selectedMonitor;
+    std::vector<Monitor> monitors;
     std::vector<Monitor> preUserEditMonitors;
 
 public:
-    explicit HyprMonitorManager(MonitorParser* parser);
-    std::vector<Monitor> getMonitors() override;
-    bool applyMonitorConfiguration(const std::vector<Monitor>& monitors) const override;
-    bool revertMonitorConfiguration() const override;
-};
+    explicit HyprMonitorManager(HyprMonitorParser* parser);
+       
+    void scanMonitors();
+    bool applyMonitorConfiguration(const std::vector<Monitor>& monitors) const;
+    bool revertMonitorConfiguration() const;
+ 
+    void setSelectedMonitor(Monitor &monitor);
 
+    std::vector<Monitor> getMonitors();
+    Monitor getSelectedMonitor();
+};
 } // namespace core

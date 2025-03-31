@@ -7,17 +7,15 @@ ScrollView {
     id: scrollView
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
 
-    property var selectedMonitor
-    property var monitors
     property var mirrorCandidates: []
 
     function updateMirrorCandidates() {
-        if (!selectedMonitor || !monitors) return
+        if (!monitorManager.selectedMonitor || !monitorManager.monitors) return
 
         mirrorCandidates = [{ name: "None" }]
-        for (let i = 0; i < monitors.length; ++i) {
-            if (monitors[i].name !== selectedMonitor.name) {
-                mirrorCandidates.push(monitors[i])
+        for (let i = 0; i < monitorManager.monitors.length; ++i) {
+            if (monitorManager.monitors[i].name !== monitorManager.selectedMonitor.name) {
+                mirrorCandidates.push(monitorManager.monitors[i])
             }
         }
     }
@@ -35,11 +33,9 @@ ScrollView {
         }
 
         MonitorDetailsReadOnlyFields {
-            selectedMonitor: scrollView.selectedMonitor
         }
 
         MonitorDetailsEditableFields {
-            selectedMonitor: scrollView.selectedMonitor
             mirrorCandidates : scrollView.mirrorCandidates
         }
     }

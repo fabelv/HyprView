@@ -6,14 +6,13 @@
 
 namespace core {
 
-HyprMonitorManager::HyprMonitorManager(MonitorParser* parser)
+HyprMonitorManager::HyprMonitorManager(HyprMonitorParser* parser)
     : parser(parser) {}
 
-std::vector<Monitor> HyprMonitorManager::getMonitors() {
+void HyprMonitorManager::scanMonitors() {
     FILE* pipe = popen("hyprctl monitors -j", "r");
     if (!pipe) {
         log(LogLevel::Error, "Failed to run hyprctl command.");
-        return {};
     }
 
     std::ostringstream output;
@@ -27,7 +26,7 @@ std::vector<Monitor> HyprMonitorManager::getMonitors() {
 
     preUserEditMonitors = monitors;
 
-    return monitors;
+    this->monitors = monitors;
 }
 
 
@@ -67,6 +66,18 @@ bool HyprMonitorManager::applyMonitorConfiguration(const std::vector<Monitor>& m
 
 bool HyprMonitorManager::revertMonitorConfiguration() const {
     return applyMonitorConfiguration(this->preUserEditMonitors);
+}
+
+Monitor HyprMonitorManager::getSelectedMonitor() {
+    return this->selectedMonitor;
+}
+
+std::vector<Monitor> HyprMonitorManager::getMonitors() {
+    return this->monitors;
+}
+
+void HyprMonitorManager::setSelectedMonitor(Monitor &monitor){
+    selectedMonitor = monitor;
 }
 
 } // namespace core

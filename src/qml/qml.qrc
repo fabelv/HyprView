@@ -5,6 +5,7 @@
     <!-- Components -->
     <file>components/AppMenuBar.qml</file>
     <file>components/ButtonBar.qml</file>
+    <file>components/ConfirmHandler.qml</file>
 
     <!-- Details -->
     <file>details/MonitorDetails.qml</file>
@@ -13,11 +14,13 @@
 
     <!-- Preview -->
     <file>preview/MonitorPreview.qml</file>
+    <file>preview/MonitorRectangle.qml</file>
 
     <!-- Dialogs -->
     <file>dialogs/ConfirmDialog.qml</file>
 
     <!-- Screens -->
+    <file>screens/MainScreen.qml</file>
     <file>screens/MonitorScreen.qml</file>
   </qresource>
 </RCC>

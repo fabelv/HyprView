@@ -1,26 +1,19 @@
 #include "qml_monitor_manager.h"
 #include "../core/utils/logger.h"
 #include "../core/models/monitor.h"
-#include "../services/monitor_manager.h"
+#include "../services/hypr_monitor_manager.h"
 #include "qml_monitor.h"
 
-QmlMonitorManager::QmlMonitorManager(core::MonitorManager* coreManager, QObject* parent)
+QmlMonitorManager::QmlMonitorManager(core::HyprMonitorManager* coreManager, QObject* parent)
     : QObject(parent), m_coreManager(coreManager), m_selectedMonitor(nullptr)
 {
     log(core::LogLevel::Info, "Initializing QmlMonitorManager...");
-    rescan();
+    scanMonitors();
 }
 
-QList<QObject*> QmlMonitorManager::getMonitors() const {
-    return m_monitors;
-}
 
-QObject* QmlMonitorManager::getSelectedMonitor() const {
-    return m_selectedMonitor;
-}
-
-void QmlMonitorManager::rescan() {
-    log(core::LogLevel::Info, "Rescanning monitors...");
+void QmlMonitorManager::scanMonitors() {
+    log(core::LogLevel::Info, "Scanning monitors...");
 
     const auto coreMonitors = m_coreManager->getMonitors();
     m_monitors.clear();
@@ -32,26 +25,20 @@ void QmlMonitorManager::rescan() {
 
     m_selectedMonitor = m_monitors.isEmpty() ? nullptr : m_monitors.first();
 
-    log(core::LogLevel::Debug, "Rescan found " + std::to_string(m_monitors.size()) + " monitor(s).");
-    if (m_selectedMonitor) {
-        auto* mon = qobject_cast<QmlMonitor*>(m_selectedMonitor);
-        if (mon)
-            log(core::LogLevel::Debug, "Selected monitor after rescan: " + mon->getName().toStdString());
-    }
+    log(core::LogLevel::Debug, "Scan found " + std::to_string(m_monitors.size()) + " monitor(s).");
 
     emit monitorsChanged();
     emit selectedMonitorChanged();
 }
 
-void QmlMonitorManager::apply() {
+void QmlMonitorManager::applyMonitorConfiguration() {
     log(core::LogLevel::Info, "Applying monitor configuration...");
 
     std::vector<core::Monitor> coreMonitors;
 
-    for (auto* obj : m_monitors) {
-        auto* qmlMon = qobject_cast<QmlMonitor*>(obj);
-        if (qmlMon)
-            coreMonitors.push_back(qmlMon->internal());  // copies underlying core::Monitor
+    for (auto* monitor: m_monitors) {
+        if (monitor)
+            coreMonitors.push_back(monitor->internal()); 
     }
 
     if (!m_coreManager->applyMonitorConfiguration(coreMonitors)) {
@@ -59,9 +46,11 @@ void QmlMonitorManager::apply() {
     } else {
         log(core::LogLevel::Info, "Monitor configuration applied successfully.");
     }
+
+    emit monitorConfigurationApplied();
 }
 
-void QmlMonitorManager::revertAplly() {
+void QmlMonitorManager::revertMonitorConfiguration() {
     log(core::LogLevel::Info, "Reverting monitor configuration...");
 
     if (!m_coreManager->revertMonitorConfiguration()) {
@@ -70,7 +59,19 @@ void QmlMonitorManager::revertAplly() {
         log(core::LogLevel::Info, "Monitor configuration reverted successfully.");
     }
 
-    rescan();
+    scanMonitors();
 }
 
 
+QList<QmlMonitor*> QmlMonitorManager::getMonitors() const {
+    return m_monitors;
+}
+
+QmlMonitor* QmlMonitorManager::getSelectedMonitor() const {
+    return m_selectedMonitor;
+}
+
+void QmlMonitorManager::setSelectedMonitor(QmlMonitor* monitor) {
+    m_selectedMonitor = monitor;
+    emit selectedMonitorChanged();
+}
