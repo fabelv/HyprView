@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QPoint>
 #include "../services/hypr_monitor_manager.h"
 #include "qml_monitor.h"
 
@@ -17,6 +18,7 @@ public:
     Q_INVOKABLE void applyMonitorConfiguration();
     Q_INVOKABLE void revertMonitorConfiguration();
     Q_INVOKABLE void scanMonitors();
+    Q_INVOKABLE QPoint getSnappedPosition(const QString &monitorName);
 
     QList<QmlMonitor*> getMonitors() const;
     QmlMonitor* getSelectedMonitor() const;

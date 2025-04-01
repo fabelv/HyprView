@@ -1,5 +1,6 @@
 #include "qml_monitor_manager.h"
 #include "../core/utils/logger.h"
+#include "../core/utils/monitor_snap_helper.h"
 #include "../core/models/monitor.h"
 #include "../services/hypr_monitor_manager.h"
 #include "qml_monitor.h"
@@ -31,6 +32,16 @@ void QmlMonitorManager::scanMonitors() {
     emit selectedMonitorChanged();
 }
 
+QPoint QmlMonitorManager::getSnappedPosition(const QString &monitorName) {
+    const auto* dragged = m_coreManager->findMonitorByName(monitorName.toStdString());
+    if (!dragged)
+        return QPoint(0, 0); // fallback
+
+    const auto& allMonitors = m_coreManager->getMonitors();
+    return core::MonitorSnapHelper::getSnappedPosition(*dragged, allMonitors, 0);
+}
+
+
 void QmlMonitorManager::applyMonitorConfiguration() {
     log(core::LogLevel::Info, "Applying monitor configuration...");
 
@@ -61,7 +72,6 @@ void QmlMonitorManager::revertMonitorConfiguration() {
 
     scanMonitors();
 }
-
 
 QList<QmlMonitor*> QmlMonitorManager::getMonitors() const {
     return m_monitors;

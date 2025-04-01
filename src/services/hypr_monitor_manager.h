@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 #include "../core/utils/hypr_monitor_parser.h"
 
@@ -18,6 +19,7 @@ public:
     void scanMonitors();
     bool applyMonitorConfiguration(const std::vector<Monitor>& monitors) const;
     bool revertMonitorConfiguration() const;
+    Monitor* findMonitorByName(const std::string name);
  
     void setSelectedMonitor(Monitor &monitor);
 

@@ -45,29 +45,24 @@ Item {
     MouseArea {
         anchors.fill: parent
         drag.target: monitorItem
+        drag.axis: Drag.XAndYAxis
 
         onPressed: {
-            isDragging = true
             monitorManager.selectedMonitor = monitor
         }
 
-        onReleased: {
-            let newX = Math.max(0, Math.min(monitorItem.x, canvasWidth - monitorItem.width))
-            let newY = Math.max(0, Math.min(monitorItem.y, canvasHeight - monitorItem.height))
+        onPositionChanged: {
+            const snappedPoint = monitorManager.getSnappedPosition(monitor.name)
 
-            monitorItem.x = newX
-            monitorItem.y = newY
+            // Update monitor data
+            monitor.positionX = snappedPoint.x
+            monitor.positionY = snappedPoint.y
 
-            const virtX = (newX - canvasWidth / 2) / positionScale
-            const virtY = (newY - canvasHeight / 2) / positionScale
-
-            if (monitor) {
-                monitor.positionX = Math.round(virtX)
-                monitor.positionY = Math.round(virtY)
-            }
-
-            Qt.callLater(() => isDragging = false)
+            // Force the item to follow the snapped position immediately
+            monitorItem.x = (canvasWidth / 2) + (snappedPoint.x * positionScale)
+            monitorItem.y = (canvasHeight / 2) + (snappedPoint.y * positionScale)
         }
     }
+
 }
 

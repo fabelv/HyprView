@@ -3,11 +3,21 @@
 #include <cstdlib>
 #include <sstream>
 #include <iomanip>
+#include <string>
 
 namespace core {
 
 HyprMonitorManager::HyprMonitorManager(HyprMonitorParser* parser)
     : parser(parser) {}
+
+core::Monitor* HyprMonitorManager::findMonitorByName(const std::string name) {
+    for (auto& monitor : monitors) {
+        if (monitor.getName() == name) {
+            return &monitor;
+        }
+    }
+    return nullptr;
+}
 
 void HyprMonitorManager::scanMonitors() {
     FILE* pipe = popen("hyprctl monitors -j", "r");
