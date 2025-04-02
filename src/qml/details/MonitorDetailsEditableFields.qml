@@ -121,7 +121,7 @@ ColumnLayout {
             textRole: "text"
             Component.onCompleted: {
                 if (monitorManager.selectedMonitor)
-                    currentIndex = model.findIndex(v => v.value === selectedMonitor.transform)
+                    currentIndex = model.findIndex(v => v.value === monitorManager.selectedMonitor.transform)
             }
             onCurrentIndexChanged: {
                 if (monitorManager.selectedMonitor && model[currentIndex])
@@ -139,7 +139,7 @@ ColumnLayout {
             textRole: "name"
             Component.onCompleted: {
                 if (monitorManager.selectedMonitor) {
-                    const index = monitorManager.mirrorCandidates.findIndex(m => m.name === selectedMonitor.mirrorOf)
+                    const index = monitorManager.mirrorCandidates.findIndex(m => m.name === monitorManager.selectedMonitor.mirrorOf)
                     currentIndex = index >= 0 ? index : 0
                 }
             }

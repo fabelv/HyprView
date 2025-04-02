@@ -38,7 +38,7 @@ QPoint QmlMonitorManager::getSnappedPosition(const QString &monitorName) {
         return QPoint(0, 0); // fallback
 
     const auto& allMonitors = m_coreManager->getMonitors();
-    return core::MonitorSnapHelper::getSnappedPosition(*dragged, allMonitors, 0);
+    return core::MonitorSnapHelper::getSnappedPosition(*dragged, allMonitors, 10);
 }
 
 
