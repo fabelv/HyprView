@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 RowLayout {
-    spacing: 10
     Layout.alignment: Qt.AlignHCenter
 
     Button {

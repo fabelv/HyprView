@@ -4,15 +4,12 @@ import QtQuick.Layouts
 import HyprView
 
 ColumnLayout {
-    visible: monitorManager.selectedMonitor !== null
-    property var mirrorCandidates
 
     // Width x Height
     RowLayout {
             Label { text: "Resolution"; Layout.minimumWidth: 100 }
             TextField {
                 Layout.fillWidth: true
-                enabled: !!monitorManager.selectedMonitor
                 text: monitorManager.selectedMonitor?.width ?? 0
                 onEditingFinished: {
                     const val = parseFloat(text)
@@ -22,7 +19,6 @@ ColumnLayout {
             Label { text: " ; " }
             TextField {
                 Layout.fillWidth: true
-                enabled: !!monitorManager.selectedMonitor
                 text: monitorManager.selectedMonitor?.height ?? 0
                 onEditingFinished: {
                     const val = parseFloat(text)
@@ -31,13 +27,11 @@ ColumnLayout {
             }
     }
 
-
     // Position X and Y
     RowLayout {
         Label { text: "Position (x;y)"; Layout.minimumWidth: 100 }
         TextField {
             Layout.fillWidth: true
-            enabled: !!monitorManager.selectedMonitor
             text: monitorManager.selectedMonitor?.positionX ?? 0
             onEditingFinished: {
                 const val = parseFloat(text)
@@ -48,7 +42,6 @@ ColumnLayout {
         Label { text: " ; " }
         TextField {
             Layout.fillWidth: true
-            enabled: !!monitorManager.selectedMonitor
             text: monitorManager.selectedMonitor?.positionY ?? 0
             onEditingFinished: {
                 const val = parseFloat(text)
@@ -62,7 +55,6 @@ ColumnLayout {
         Label { text: "Refresh Rate"; Layout.minimumWidth: 100 }
         TextField {
             Layout.fillWidth: true
-            enabled: !!monitorManager.selectedMonitor
             text: monitorManager.selectedMonitor?.refreshRate ?? 0
             onEditingFinished: {
                 const val = parseFloat(text)
@@ -76,7 +68,6 @@ ColumnLayout {
         Label { text: "Scale"; Layout.minimumWidth: 100 }
         TextField {
             Layout.fillWidth: true
-            enabled: !!monitorManager.selectedMonitor
             text: monitorManager.selectedMonitor?.scale ?? 0
             onEditingFinished: {
                 const val = parseFloat(text)
@@ -84,7 +75,6 @@ ColumnLayout {
             }
         }
     }
-
 
     // --- Mode Selection ---
     RowLayout {
@@ -133,20 +123,27 @@ ColumnLayout {
     // Mirror Of
     RowLayout {
         Label { text: "Mirror of:"; Layout.minimumWidth: 100 }
+
         ComboBox {
+            id: mirrorCombo
             Layout.fillWidth: true
-            model: monitorManager.mirrorCandidates
             textRole: "name"
+
+            model: monitorManager.selectedMonitor
+                ? monitorHelpers.removeMonitorById(monitorManager.monitors, monitorManager.selectedMonitor)
+                : []
+
             Component.onCompleted: {
                 if (monitorManager.selectedMonitor) {
-                    const index = monitorManager.mirrorCandidates.findIndex(m => m.name === monitorManager.selectedMonitor.mirrorOf)
-                    currentIndex = index >= 0 ? index : 0
+                    const index = mirrorCombo.model.findIndex(m => m.name === monitorManager.selectedMonitor.mirrorOf)
+                    mirrorCombo.currentIndex = index >= 0 ? index : 0
                 }
             }
+
             onCurrentIndexChanged: {
                 if (monitorManager.selectedMonitor) {
-                    const value = monitorManager.mirrorCandidates[currentIndex].name
-                    monitorManager.selectedMonitor.mirrorOf = value === "None" ? null : value
+                    const selectedValue = mirrorCombo.model[mirrorCombo.currentIndex]?.name
+                    monitorManager.selectedMonitor.mirrorOf = selectedValue === "None" ? null : selectedValue
                 }
             }
         }
@@ -157,7 +154,6 @@ ColumnLayout {
         Label { text: "Disabled"; Layout.minimumWidth: 100 }
         CheckBox {
             Layout.fillWidth: true
-            enabled: !!monitorManager.selectedMonitor
             checked: monitorManager.selectedMonitor?.disabled ?? false
             onToggled: {
                 if (monitorManager.selectedMonitor)
@@ -170,7 +166,6 @@ ColumnLayout {
         Label { text: "DPMS"; Layout.minimumWidth: 100 }
         CheckBox {
             Layout.fillWidth: true
-            enabled: !!monitorManager.selectedMonitor
             checked: monitorManager.selectedMonitor?.dpmsStatus ?? false
             onToggled: {
                 if (monitorManager.selectedMonitor)

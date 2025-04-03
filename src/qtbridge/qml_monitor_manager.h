@@ -19,6 +19,7 @@ public:
     Q_INVOKABLE void revertMonitorConfiguration();
     Q_INVOKABLE void scanMonitors();
     Q_INVOKABLE QPoint getSnappedPosition(const QString &monitorName);
+    Q_INVOKABLE double calculateScaleFactorPreview(const int areaWidth, const int areaHeight, const float marginPercentage);
 
     QList<QmlMonitor*> getMonitors() const;
     QmlMonitor* getSelectedMonitor() const;

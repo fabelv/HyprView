@@ -6,7 +6,7 @@ ColumnLayout {
 
     RowLayout {
         Label { text: "ID:"; Layout.minimumWidth: 100 }
-        Label { text: monitorManager.getSelectedMonitor?.id ?? "" }
+        Label { text: monitorManager.selectedMonitor?.id ?? "" }
     }
 
     RowLayout {

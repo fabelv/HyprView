@@ -1,9 +1,10 @@
 #include "qml_monitor_manager.h"
 #include "../core/utils/logger.h"
-#include "../core/utils/monitor_snap_helper.h"
+#include "../core/utils/monitor_geometry.h"
 #include "../core/models/monitor.h"
 #include "../services/hypr_monitor_manager.h"
 #include "qml_monitor.h"
+#include <vector>
 
 QmlMonitorManager::QmlMonitorManager(core::HyprMonitorManager* coreManager, QObject* parent)
     : QObject(parent), m_coreManager(coreManager), m_selectedMonitor(nullptr)
@@ -38,7 +39,18 @@ QPoint QmlMonitorManager::getSnappedPosition(const QString &monitorName) {
         return QPoint(0, 0); // fallback
 
     const auto& allMonitors = m_coreManager->getMonitors();
-    return core::MonitorSnapHelper::getSnappedPosition(*dragged, allMonitors, 10);
+    core::Position position = core::MonitorGeometry::getSnappedPosition(*dragged, allMonitors);
+    return QPoint(position.x, position.y);
+}
+
+double QmlMonitorManager::calculateScaleFactorPreview(const int areaWidth, const int areaHeight, const float marginPercentage) {
+    std::vector<core::Monitor> coreMonitors;
+
+    for (auto* monitor: m_monitors) {
+        if (monitor)
+            coreMonitors.push_back(monitor->internal()); 
+    }
+    return core::MonitorGeometry::calculateScaleFactorPreview(areaWidth, areaHeight, marginPercentage, coreMonitors); 
 }
 
 

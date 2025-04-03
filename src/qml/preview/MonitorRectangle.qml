@@ -1,4 +1,3 @@
-
 import QtQuick
 import QtQuick.Controls
 
@@ -6,11 +5,10 @@ Item {
     id: monitorItem
 
     property var monitor
+    property real scaleFactor
 
-    x: monitor.positionX
-    y: monitor.positionY
-    width: monitor.width
-    height: monitor.height
+    width: monitor.width * scaleFactor
+    height: monitor.height * scaleFactor
 
     Rectangle {
         anchors.fill: parent
@@ -23,18 +21,6 @@ Item {
             anchors.centerIn: parent
             text: monitor.name
             color: "black"
-        }
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        drag.target: monitorItem
-
-        onPressed: monitorManager.selectedMonitor = monitor
-
-        onPositionChanged: {
-            monitor.positionX = monitorItem.x
-            monitor.positionY = monitorItem.y
         }
     }
 }
