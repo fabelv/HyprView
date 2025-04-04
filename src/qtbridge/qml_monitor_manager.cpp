@@ -43,6 +43,12 @@ QPoint QmlMonitorManager::getSnappedPosition(const QString &monitorName) {
     return QPoint(position.x, position.y);
 }
 
+QPoint QmlMonitorManager::calculateOffsetToCenter(double scaleFactor, int width, int height) {
+    const auto& allMonitors = m_coreManager->getMonitors();
+    core::Position position = core::MonitorGeometry::calculatePositionToCenterOffset(allMonitors, scaleFactor, width, height);
+    return QPoint(position.x, position.y);
+}
+
 double QmlMonitorManager::calculateScaleFactorPreview(const int areaWidth, const int areaHeight, const float marginPercentage) {
     std::vector<core::Monitor> coreMonitors;
 
