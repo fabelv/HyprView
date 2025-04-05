@@ -33,13 +33,13 @@ class QmlMonitor : public QObject {
     Q_PROPERTY(QStringList availableModes READ getAvailableModes WRITE setAvailableModes NOTIFY updated)
 
 public:
-    explicit QmlMonitor(core::Monitor monitor, QObject* parent = nullptr);
+    explicit QmlMonitor(core::Monitor *monitor, QObject* parent = nullptr);
 
     Q_INVOKABLE QString generateCurrentMode() const;
     Q_INVOKABLE void applyModeString(const QString& mode);
-    const core::Monitor& internal() const;
 
     // Getters
+    const core::Monitor* getMonitor() const;
     int getId() const;
     QString getName() const;
     QString getDescription() const;
@@ -93,5 +93,5 @@ signals:
     void updated();
 
 private:
-    core::Monitor m_monitor;
+    core::Monitor* m_monitor;
 };

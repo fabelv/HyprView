@@ -14,7 +14,7 @@ Item {
 
     function recalculateScaleAndOffset() {
         if (monitorManager) {
-            scaleFactor = monitorManager.calculateScaleFactorPreview(width, height, 0.5)
+            scaleFactor = monitorManager.calculatePreviewScaleFactor(width, height, 0.5)
             const offset = monitorManager.calculateOffsetToCenter(scaleFactor, width, height)
             xOffset = offset.x
             yOffset = offset.y

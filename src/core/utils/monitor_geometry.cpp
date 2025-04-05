@@ -1,5 +1,4 @@
 #include "monitor_geometry.h"
-#include "monitor_helpers.h"
 #include "logger.h"
 #include <algorithm>
 #include <climits>
@@ -9,119 +8,115 @@
 
 namespace core {
 
+Position MonitorGeometry::getSnappedPosition(const Monitor& dragged, const std::vector<Monitor>& allMonitors) {
 
-    Position MonitorGeometry::getSnappedPosition(
-        const Monitor& dragged,
-        const std::vector<Monitor>& allMonitors)
-    {
-        auto monitors = allMonitors;
-        auto others = core::MonitorHelpers::removeMonitorByName(monitors, dragged);
-
-        int draggedX = dragged.getPositionX();
-        int draggedY = dragged.getPositionY();
-        int draggedWidth = dragged.getWidth();
-        int draggedHeight = dragged.getHeight();
-
-        Position bestPosition = { draggedX, draggedY };
-        int minDistance = std::numeric_limits<int>::max();
-
-        for (const auto& other : others) {
-            int otherX = other.getPositionX();
-            int otherY = other.getPositionY();
-            int otherWidth = other.getWidth();
-            int otherHeight = other.getHeight();
-
-            // Snap LEFT of dragged to RIGHT of other
-            {
-                int x = otherX + otherWidth;
-                int y = draggedY;
-                int dist = std::abs((draggedX) - (otherX + otherWidth));
-                if (dist < minDistance) {
-                    minDistance = dist;
-                    bestPosition = { x, y };
-                }
-            }
-
-            // Snap RIGHT of dragged to LEFT of other
-            {
-                int x = otherX - draggedWidth;
-                int y = draggedY;
-                int dist = std::abs((draggedX + draggedWidth) - otherX);
-                if (dist < minDistance) {
-                    minDistance = dist;
-                    bestPosition = { x, y };
-                }
-            }
-
-            // Snap TOP of dragged to BOTTOM of other
-            {
-                int x = draggedX;
-                int y = otherY + otherHeight;
-                int dist = std::abs((draggedY) - (otherY + otherHeight));
-                if (dist < minDistance) {
-                    minDistance = dist;
-                    bestPosition = { x, y };
-                }
-            }
-
-            // Snap BOTTOM of dragged to TOP of other
-            {
-                int x = draggedX;
-                int y = otherY - draggedHeight;
-                int dist = std::abs((draggedY + draggedHeight) - otherY);
-                if (dist < minDistance) {
-                    minDistance = dist;
-                    bestPosition = { x, y };
-                }
-            }
-        }
-
-        return bestPosition;
+    if (allMonitors.empty() || allMonitors.size() == 1) {
+        log(LogLevel::Debug, "No other monitors to snap to.");
+        return Position(0, 0);
     }
 
+    int bestDx = 0, bestDy = 0;
+    int bestDistance = INT_MAX;
 
-    double MonitorGeometry::calculateScaleFactorPreview(const int areaWidth, const int areaHeight, const float marginPercent, const std::vector<Monitor> &allMonitors){
-        int minX = INT_MAX;
-        int minY = INT_MAX;
-        int maxX = INT_MIN;
-        int maxY = INT_MIN;
+    for (const Monitor& other : allMonitors) {
+        if (&other == &dragged) continue;
 
-        for(Monitor m : allMonitors){
-           minX = std::min(m.getPositionX(), minX);
-           minY = std::min(m.getPositionY(), minY);
-           maxX = std::max(m.getPositionX() + m.getWidth(), maxX);
-           maxY = std::max(m.getPositionY() + m.getHeight(), maxY);
+        auto [dx, dy] = findClosestSnap(dragged, other, bestDistance);
+        if (dx != 0 || dy != 0) {
+            bestDx = dx;
+            bestDy = dy;
         }
-
-        int totalWidth = maxX - minX;
-        int totalHeight = maxY - minY;
-
-        double scaleX = (areaWidth * marginPercent) / totalWidth;
-        double scaleY = (areaHeight * marginPercent) / totalHeight;
-
-        return std::min(scaleX, scaleY);
     }
 
-    Position MonitorGeometry::calculatePositionToCenterOffset(const std::vector<Monitor> &allMonitors, double scaleFactor, int width, int height){
-        int minX = INT_MAX;
-        int minY = INT_MAX;
-        int maxX = INT_MIN;
-        int maxY = INT_MIN;
+    int finalX = dragged.getPositionX() + bestDx;
+    int finalY = dragged.getPositionY() + bestDy;
 
-        for(Monitor m : allMonitors){
-           minX = std::min(m.getPositionX(), minX);
-           minY = std::min(m.getPositionY(), minY);
-           maxX = std::max(m.getPositionX() + m.getWidth(), maxX);
-           maxY = std::max(m.getPositionY() + m.getHeight(), maxY);
-        }
-
-        int totalWidth = (maxX - minX) * scaleFactor;
-        int totalHeight = (maxY - minY) * scaleFactor;
-
-        double rightMargin = width - totalWidth;
-        double bottomMargin = height - totalHeight;
-
-        return Position(rightMargin / 2, bottomMargin / 2);
-    }
+    log(LogLevel::Debug, "Snapped to X=" + std::to_string(finalX) + " Y=" + std::to_string(finalY));
+    return Position(finalX, finalY);
 }
 
+std::pair<int, int> MonitorGeometry::findClosestSnap(const Monitor& dragged, const Monitor& other, int& bestDistance) {
+    int dx = 0, dy = 0;
+
+    int dX1 = dragged.getPositionX(), dX2 = dX1 + dragged.getWidth();
+    int dY1 = dragged.getPositionY(), dY2 = dY1 + dragged.getHeight();
+    int oX1 = other.getPositionX(), oX2 = oX1 + other.getWidth();
+    int oY1 = other.getPositionY(), oY2 = oY1 + other.getHeight();
+
+    bool verticalOverlap = dY2 > oY1 && dY1 < oY2;
+    bool horizontalOverlap = dX2 > oX1 && dX1 < oX2;
+
+    if (verticalOverlap) {
+        int distR2L = std::abs(dX2 - oX1);
+        if (distR2L < bestDistance) {
+            bestDistance = distR2L;
+            dx = oX1 - dX2;
+            dy = 0;
+        }
+
+        int distL2R = std::abs(dX1 - oX2);
+        if (distL2R < bestDistance) {
+            bestDistance = distL2R;
+            dx = oX2 - dX1;
+            dy = 0;
+        }
+    }
+
+    if (horizontalOverlap) {
+        int distB2T = std::abs(dY2 - oY1);
+        if (distB2T < bestDistance) {
+            bestDistance = distB2T;
+            dx = 0;
+            dy = oY1 - dY2;
+        }
+
+        int distT2B = std::abs(dY1 - oY2);
+        if (distT2B < bestDistance) {
+            bestDistance = distT2B;
+            dx = 0;
+            dy = oY2 - dY1;
+        }
+    }
+
+    return {dx, dy};
+}
+
+double MonitorGeometry::calculatePreviewScaleFactor(int areaWidth, int areaHeight, float marginPercent, const std::vector<Monitor>& allMonitors) {
+    auto [minX, minY, maxX, maxY] = computeBoundsOffset(allMonitors);
+
+    int totalWidth = maxX - minX;
+    int totalHeight = maxY - minY;
+
+    double scaleX = (areaWidth * marginPercent) / totalWidth;
+    double scaleY = (areaHeight * marginPercent) / totalHeight;
+
+    return std::min(scaleX, scaleY);
+}
+
+Position MonitorGeometry::calculateCenteredOffset(const std::vector<Monitor>& allMonitors, double scaleFactor, int areaWidth, int areaHeight) {
+    auto [minX, minY, maxX, maxY] = computeBoundsOffset(allMonitors);
+
+    int scaledWidth = static_cast<int>((maxX - minX) * scaleFactor);
+    int scaledHeight = static_cast<int>((maxY - minY) * scaleFactor);
+
+    int offsetX = (areaWidth - scaledWidth) / 2;
+    int offsetY = (areaHeight - scaledHeight) / 2;
+
+    return Position(offsetX, offsetY);
+}
+
+Bounds MonitorGeometry::computeBoundsOffset(const std::vector<Monitor>& allMonitors) {
+    int minX = INT_MAX, minY = INT_MAX;
+    int maxX = INT_MIN, maxY = INT_MIN;
+
+    for (const auto& m : allMonitors) {
+        minX = std::min(minX, m.getPositionX());
+        minY = std::min(minY, m.getPositionY());
+        maxX = std::max(maxX, m.getPositionX() + m.getWidth());
+        maxY = std::max(maxY, m.getPositionY() + m.getHeight());
+    }
+
+    return {minX, minY, maxX, maxY};
+}
+
+}

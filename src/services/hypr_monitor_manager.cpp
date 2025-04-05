@@ -1,17 +1,18 @@
 #include "hypr_monitor_manager.h"
 #include "../core/utils/logger.h"
+
 #include <cstdlib>
 #include <sstream>
 #include <iomanip>
-#include <string>
+#include <vector>
 
 namespace core {
 
 HyprMonitorManager::HyprMonitorManager(HyprMonitorParser* parser)
     : parser(parser) {}
 
-core::Monitor* HyprMonitorManager::findMonitorByName(const std::string name) {
-    for (auto& monitor : monitors) {
+Monitor* HyprMonitorManager::findMonitorByName(const std::string& name) {
+    for (auto& monitor : currentMonitors) {
         if (monitor.getName() == name) {
             return &monitor;
         }
@@ -23,71 +24,72 @@ void HyprMonitorManager::scanMonitors() {
     FILE* pipe = popen("hyprctl monitors -j", "r");
     if (!pipe) {
         log(LogLevel::Error, "Failed to run hyprctl command.");
+        return;
     }
 
     std::ostringstream output;
     char buffer[128];
-    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+    while (fgets(buffer, sizeof(buffer), pipe)) {
         output << buffer;
     }
     pclose(pipe);
 
-    std::vector<Monitor> monitors = parser->parseMonitorsFromJson(output.str());
-
-    preUserEditMonitors = monitors;
-
-    this->monitors = monitors;
+    currentMonitors = parser->parseMonitorsFromJson(output.str());
+    backupMonitors = currentMonitors;
 }
 
-
-bool HyprMonitorManager::applyMonitorConfiguration(const std::vector<Monitor>& monitors) const {
-    for (const auto& monitor : monitors) {
+bool HyprMonitorManager::applyMonitorConfiguration(std::vector<Monitor> monitors) const {
+    for (const auto& m : monitors) {
         std::ostringstream cmd;
         cmd << "hyprctl keyword monitor "
-            << monitor.getName() << ","
-            << monitor.getWidth() << "x" << monitor.getHeight() << "@"
-            << std::fixed << std::setprecision(2) << monitor.getRefreshRate() << ","
-            << monitor.getPositionX() << "x" << monitor.getPositionY() << ","
-            << std::fixed << std::setprecision(2) << monitor.getScale();
+            << m.getName() << ","
+            << m.getWidth() << "x" << m.getHeight() << "@"
+            << std::fixed << std::setprecision(2) << m.getRefreshRate() << ","
+            << m.getPositionX() << "x" << m.getPositionY() << ","
+            << std::fixed << std::setprecision(2) << m.getScale();
 
-        // Optional args
-        cmd << ", transform, " << static_cast<int>(monitor.getTransform());
-        cmd << ", vrr, " << (monitor.isVrrEnabled() ? "1" : "0");
+        // Optional fields
+        cmd << ", transform, " << static_cast<int>(m.getTransform());
+        cmd << ", vrr, " << (m.isVrrEnabled() ? "1" : "0");
 
-        if (!monitor.getMirrorOf().empty()) {
-            cmd << ", mirror, " << monitor.getMirrorOf();
+        if (!m.getMirrorOf().empty()) {
+            cmd << ", mirror, " << m.getMirrorOf();
         }
-        
-        if (!monitor.isDisabled()){
+
+        if (!m.isDisabled()) {
             cmd << ", disable ";
         }
 
-        log(LogLevel::Info, "Running: " + cmd.str());
+        std::string cmdStr = cmd.str();
+        log(LogLevel::Info, "Running: " + cmdStr);
 
-        int result = std::system(cmd.str().c_str());
-        if (result != 0) {
-            log(LogLevel::Error, "Failed to apply monitor config: " + cmd.str());
+        if (std::system(cmdStr.c_str()) != 0) {
+            log(LogLevel::Error, "Failed to apply monitor config: " + cmdStr);
             return false;
         }
     }
-
     return true;
 }
 
+bool HyprMonitorManager::applyMonitorConfiguration() const {
+    return applyMonitorConfiguration(currentMonitors);
+}
+
 bool HyprMonitorManager::revertMonitorConfiguration() const {
-    return applyMonitorConfiguration(this->preUserEditMonitors);
+    return applyMonitorConfiguration(backupMonitors);
 }
 
-Monitor HyprMonitorManager::getSelectedMonitor() {
-    return this->selectedMonitor;
-}
-
-std::vector<Monitor> HyprMonitorManager::getMonitors() {
-    return this->monitors;
-}
-
-void HyprMonitorManager::setSelectedMonitor(Monitor &monitor){
+void HyprMonitorManager::setSelectedMonitor(const Monitor& monitor) {
     selectedMonitor = monitor;
+}
+
+std::vector<Monitor>& HyprMonitorManager::getMonitors() {
+    return currentMonitors;
+}
+
+
+Monitor HyprMonitorManager::getSelectedMonitor() const {
+    return selectedMonitor;
 }
 
 } // namespace core

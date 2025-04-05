@@ -130,20 +130,11 @@ ColumnLayout {
             textRole: "name"
 
             model: monitorManager.selectedMonitor
-                ? monitorHelpers.removeMonitorById(monitorManager.monitors, monitorManager.selectedMonitor)
-                : []
 
             Component.onCompleted: {
                 if (monitorManager.selectedMonitor) {
                     const index = mirrorCombo.model.findIndex(m => m.name === monitorManager.selectedMonitor.mirrorOf)
                     mirrorCombo.currentIndex = index >= 0 ? index : 0
-                }
-            }
-
-            onCurrentIndexChanged: {
-                if (monitorManager.selectedMonitor) {
-                    const selectedValue = mirrorCombo.model[mirrorCombo.currentIndex]?.name
-                    monitorManager.selectedMonitor.mirrorOf = selectedValue === "None" ? null : selectedValue
                 }
             }
         }

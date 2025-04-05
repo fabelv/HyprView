@@ -2,93 +2,44 @@
 #include "../core/utils/logger.h"
 #include "../core/utils/monitor_geometry.h"
 #include "../core/models/monitor.h"
-#include "../services/hypr_monitor_manager.h"
 #include "qml_monitor.h"
-#include <vector>
 
 QmlMonitorManager::QmlMonitorManager(core::HyprMonitorManager* coreManager, QObject* parent)
-    : QObject(parent), m_coreManager(coreManager), m_selectedMonitor(nullptr)
-{
+    : QObject(parent), m_coreManager(coreManager), m_selectedMonitor(nullptr) {
     log(core::LogLevel::Info, "Initializing QmlMonitorManager...");
     scanMonitors();
 }
 
+QmlMonitorManager::~QmlMonitorManager() {
+    clearQmlMonitors();
+}
+
+void QmlMonitorManager::clearQmlMonitors() {
+    qDeleteAll(m_monitors);
+    m_monitors.clear();
+}
+
+QList<QmlMonitor*> QmlMonitorManager::wrapCoreMonitors() {
+    QList<QmlMonitor*> list;
+
+    for (core::Monitor& mon : m_coreManager->getMonitors()) {
+        list.append(new QmlMonitor(&mon, this));
+    }
+
+    return list;
+}
 
 void QmlMonitorManager::scanMonitors() {
     log(core::LogLevel::Info, "Scanning monitors...");
+    m_coreManager->scanMonitors();
 
-    const auto coreMonitors = m_coreManager->getMonitors();
-    m_monitors.clear();
-
-    for (const auto& monitor : coreMonitors) {
-        auto* qmlMonitor = new QmlMonitor(monitor);
-        m_monitors.append(qmlMonitor);
-    }
+    clearQmlMonitors();
+    m_monitors = wrapCoreMonitors();
 
     m_selectedMonitor = m_monitors.isEmpty() ? nullptr : m_monitors.first();
 
-    log(core::LogLevel::Debug, "Scan found " + std::to_string(m_monitors.size()) + " monitor(s).");
-
     emit monitorsChanged();
     emit selectedMonitorChanged();
-}
-
-QPoint QmlMonitorManager::getSnappedPosition(const QString &monitorName) {
-    const auto* dragged = m_coreManager->findMonitorByName(monitorName.toStdString());
-    if (!dragged)
-        return QPoint(0, 0); // fallback
-
-    const auto& allMonitors = m_coreManager->getMonitors();
-    core::Position position = core::MonitorGeometry::getSnappedPosition(*dragged, allMonitors);
-    return QPoint(position.x, position.y);
-}
-
-QPoint QmlMonitorManager::calculateOffsetToCenter(double scaleFactor, int width, int height) {
-    const auto& allMonitors = m_coreManager->getMonitors();
-    core::Position position = core::MonitorGeometry::calculatePositionToCenterOffset(allMonitors, scaleFactor, width, height);
-    return QPoint(position.x, position.y);
-}
-
-double QmlMonitorManager::calculateScaleFactorPreview(const int areaWidth, const int areaHeight, const float marginPercentage) {
-    std::vector<core::Monitor> coreMonitors;
-
-    for (auto* monitor: m_monitors) {
-        if (monitor)
-            coreMonitors.push_back(monitor->internal()); 
-    }
-    return core::MonitorGeometry::calculateScaleFactorPreview(areaWidth, areaHeight, marginPercentage, coreMonitors); 
-}
-
-
-void QmlMonitorManager::applyMonitorConfiguration() {
-    log(core::LogLevel::Info, "Applying monitor configuration...");
-
-    std::vector<core::Monitor> coreMonitors;
-
-    for (auto* monitor: m_monitors) {
-        if (monitor)
-            coreMonitors.push_back(monitor->internal()); 
-    }
-
-    if (!m_coreManager->applyMonitorConfiguration(coreMonitors)) {
-        log(core::LogLevel::Error, "Failed to apply monitor configuration.");
-    } else {
-        log(core::LogLevel::Info, "Monitor configuration applied successfully.");
-    }
-
-    emit monitorConfigurationApplied();
-}
-
-void QmlMonitorManager::revertMonitorConfiguration() {
-    log(core::LogLevel::Info, "Reverting monitor configuration...");
-
-    if (!m_coreManager->revertMonitorConfiguration()) {
-        log(core::LogLevel::Error, "Failed to revert monitor configuration.");
-    } else {
-        log(core::LogLevel::Info, "Monitor configuration reverted successfully.");
-    }
-
-    scanMonitors();
 }
 
 QList<QmlMonitor*> QmlMonitorManager::getMonitors() const {
@@ -100,6 +51,37 @@ QmlMonitor* QmlMonitorManager::getSelectedMonitor() const {
 }
 
 void QmlMonitorManager::setSelectedMonitor(QmlMonitor* monitor) {
-    m_selectedMonitor = monitor;
-    emit selectedMonitorChanged();
+    if (m_selectedMonitor != monitor) {
+        m_selectedMonitor = monitor;
+        emit selectedMonitorChanged();
+    }
 }
+
+QPoint QmlMonitorManager::getSnappedPosition(const QString& monitorName) {
+    const auto* dragged = m_coreManager->findMonitorByName(monitorName.toStdString());
+    if (!dragged) return QPoint(0, 0);
+
+    const auto& allMonitors = m_coreManager->getMonitors();
+    const auto pos = core::MonitorGeometry::getSnappedPosition(*dragged, allMonitors);
+    return QPoint(pos.x, pos.y);
+}
+
+double QmlMonitorManager::calculatePreviewScaleFactor(int areaWidth, int areaHeight, float marginPercentage) {
+    return core::MonitorGeometry::calculatePreviewScaleFactor(areaWidth, areaHeight, marginPercentage, m_coreManager->getMonitors());
+}
+
+QPoint QmlMonitorManager::calculateOffsetToCenter(double scaleFactor, int width, int height) {
+    auto pos = core::MonitorGeometry::calculateCenteredOffset(m_coreManager->getMonitors() ,scaleFactor, width, height);
+    return QPoint(pos.x, pos.y);
+}
+
+void QmlMonitorManager::applyMonitorConfiguration() {
+    m_coreManager->applyMonitorConfiguration();
+    emit monitorConfigurationApplied();
+}
+
+void QmlMonitorManager::revertMonitorConfiguration() {
+    m_coreManager->revertMonitorConfiguration();
+    emit monitorsChanged();
+}
+
