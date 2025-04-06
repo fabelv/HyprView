@@ -28,7 +28,7 @@ test: build
 	@./$(BUILD_DIR)/$(TEST_EXECUTABLE)
 
 lint:
-	@clang-tidy $(SRC_FILES) -- $(INCLUDE_DIRS)
+	@clang-tidy $(SRC_FILES) -p $(BUILD_DIR) --extra-arg=-std=c++23 --extra-arg=-Isrc
 
 analyze:
 	@cppcheck $(CPPCHECK_FLAGS) $(INCLUDE_PATHS) $(SRC_FILES)
