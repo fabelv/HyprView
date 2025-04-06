@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include "../core/utils/hypr_monitor_parser.h"
+#include "hyprview_core/utils/hypr_monitor_parser.h"
 
 namespace core {
 

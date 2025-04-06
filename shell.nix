@@ -19,7 +19,7 @@ in pkgs.mkShell {
     qt.full
     pkgs.wayland
     pkgs.nlohmann_json
-    pkgs.gtest
+    pkgs.gtest.dev
   ];
 
   shellHook = ''

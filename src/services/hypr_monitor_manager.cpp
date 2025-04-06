@@ -1,10 +1,9 @@
 #include "hypr_monitor_manager.h"
-#include "../core/utils/logger.h"
-
 #include <cstdlib>
 #include <sstream>
 #include <iomanip>
 #include <vector>
+#include "hyprview_core/utils/logger.h"
 
 namespace core {
 
@@ -38,26 +37,28 @@ void HyprMonitorManager::scanMonitors() {
     backupMonitors = currentMonitors;
 }
 
+
 bool HyprMonitorManager::applyMonitorConfiguration(std::vector<Monitor> monitors) const {
     for (const auto& m : monitors) {
         std::ostringstream cmd;
-        cmd << "hyprctl keyword monitor "
-            << m.getName() << ","
-            << m.getWidth() << "x" << m.getHeight() << "@"
-            << std::fixed << std::setprecision(2) << m.getRefreshRate() << ","
-            << m.getPositionX() << "x" << m.getPositionY() << ","
-            << std::fixed << std::setprecision(2) << m.getScale();
 
-        // Optional fields
-        cmd << ", transform, " << static_cast<int>(m.getTransform());
-        cmd << ", vrr, " << (m.isVrrEnabled() ? "1" : "0");
+        if (m.isDisabled()) {
+            cmd << "hyprctl keyword monitor " << m.getName() << ",disable";
+        } else {
+            cmd << "hyprctl keyword monitor "
+                << m.getName() << ","
+                << m.getWidth() << "x" << m.getHeight() << "@"
+                << std::fixed << std::setprecision(2) << m.getRefreshRate() << ","
+                << m.getPositionX() << "x" << m.getPositionY() << ","
+                << std::fixed << std::setprecision(2) << m.getScale();
 
-        if (!m.getMirrorOf().empty()) {
-            cmd << ", mirror, " << m.getMirrorOf();
-        }
+            // Optional fields
+            cmd << ", transform, " << static_cast<int>(m.getTransform());
+            cmd << ", vrr, " << (m.isVrrEnabled() ? "1" : "0");
 
-        if (!m.isDisabled()) {
-            cmd << ", disable ";
+            if (!m.getMirrorOf().empty()) {
+                cmd << ", mirror, " << m.getMirrorOf();
+            }
         }
 
         std::string cmdStr = cmd.str();
@@ -70,6 +71,7 @@ bool HyprMonitorManager::applyMonitorConfiguration(std::vector<Monitor> monitors
     }
     return true;
 }
+
 
 bool HyprMonitorManager::applyMonitorConfiguration() const {
     return applyMonitorConfiguration(currentMonitors);

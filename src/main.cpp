@@ -1,13 +1,11 @@
+#include "hyprview_core/utils/hypr_monitor_parser.h"
+#include "hyprview_core/utils/logger.h"
+#include "qtbridge/qml_monitor.h"
+#include "qtbridge/qml_monitor_manager.h"
+#include "qtbridge/qml_transform_helper.h"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-
-#include "core/utils/logger.h"
-#include "core/utils/hypr_monitor_parser.h"
-#include "qtbridge/qml_monitor_manager.h"
-#include "qtbridge/qml_transform_helper.h"
-#include "services/hypr_monitor_manager.h"
-#include "qtbridge/qml_monitor.h"
 
 int main(int argc, char *argv[]) {
 

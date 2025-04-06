@@ -2,7 +2,7 @@
 
 #include <utility>
 #include <vector>
-#include "../models/monitor.h"
+#include "hyprview_core/models/monitor.h"
 
 namespace core {
 

@@ -1,10 +1,11 @@
-#include "monitor_geometry.h"
-#include "logger.h"
 #include <algorithm>
 #include <climits>
 #include <cmath>
 #include <string>
 #include <vector>
+#include "hyprview_core/models/monitor.h"
+#include "hyprview_core/utils/monitor_geometry.h"
+#include "hyprview_core/utils/logger.h"
 
 namespace core {
 
@@ -75,6 +76,23 @@ std::pair<int, int> MonitorGeometry::findClosestSnap(const Monitor& dragged, con
             bestDistance = distT2B;
             dx = 0;
             dy = oY2 - dY1;
+        }
+    }
+
+    // NEW: Corner snapping (no overlap)
+    std::vector<std::pair<int, int>> snapCandidates = {
+        {oX1 - dX2, oY1 - dY2}, // bottom-right to top-left
+        {oX2 - dX1, oY1 - dY2}, // bottom-left to top-right
+        {oX1 - dX2, oY2 - dY1}, // top-right to bottom-left
+        {oX2 - dX1, oY2 - dY1}, // top-left to bottom-right
+    };
+
+    for (const auto& [cdx, cdy] : snapCandidates) {
+        int dist = std::abs(cdx) + std::abs(cdy); // Manhattan distance
+        if (dist < bestDistance) {
+            bestDistance = dist;
+            dx = cdx;
+            dy = cdy;
         }
     }
 

@@ -11,46 +11,78 @@ if(CMAKE_EXPORT_COMPILE_COMMANDS)
         ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
 endif()
 
-# Find Qt6 QML & Quick
+# ======================
+# 🔍 Dependencies
+# ======================
+
+# Qt6
 find_package(Qt6 COMPONENTS Qml Quick QuickControls2 REQUIRED)
 
-# include nlohmann_json 
+# JSON
 find_package(nlohmann_json REQUIRED)
 
-# include gtest
-find_package(GTest REQUIRED)
+# GTest and GMock via CMake config mode
+find_package(GTest REQUIRED CONFIG)
 
 # Enable Qt codegen (for Q_OBJECT, resources)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-# Gather C++ source files
-file(GLOB_RECURSE SRC_FILES src/*.cpp)
-file(GLOB_RECURSE TEST_FIELS test/*.cpp)
+# ======================
+# 📦 Core library
+# ======================
 
-# Define executable
-add_executable(hyprview
-    ${SRC_FILES}
+file(GLOB_RECURSE HYPRVIEW_CORE_SOURCES lib/hyprview_core/**/*.cpp)
+
+add_library(hyprview_core ${HYPRVIEW_CORE_SOURCES})
+
+target_include_directories(hyprview_core
+    PUBLIC ${CMAKE_SOURCE_DIR}/include
 )
 
-add_executable(hyprview_tests
-    ${TEST_FIELS}
-)
-
-
-# Add QML resources (must be after add_executable)
-qt6_add_resources(QML_RESOURCES src/qml/qml.qrc)
-target_sources(hyprview PRIVATE ${QML_RESOURCES})
-
-# Link against Qt libraries
-target_link_libraries(hyprview PRIVATE
-    Qt6::Qml
-    Qt6::Quick
-    Qt6::QuickControls2
+target_link_libraries(hyprview_core
     nlohmann_json::nlohmann_json
 )
 
-target_link_libraries(hyprview_tests PRIVATE GTest::gtest GTest::gtest_main)
-add_test(NAME hyprview_tests COMMAND hyprview_tests)
+# ======================
+# 🚀 Main executable
+# ======================
+
+file(GLOB_RECURSE SRC_FILES src/*.cpp)
+
+add_executable(hyprview ${SRC_FILES})
+
+qt6_add_resources(QML_RESOURCES src/qml/qml.qrc)
+target_sources(hyprview PRIVATE ${QML_RESOURCES})
+
+target_link_libraries(hyprview
+    PRIVATE
+    hyprview_core
+    Qt6::Qml
+    Qt6::Quick
+    Qt6::QuickControls2
+)
 
 target_include_directories(hyprview PRIVATE ${CMAKE_BINARY_DIR}/hyprview_autogen/include)
+
+# ======================
+# 🧪 Tests
+# ======================
+
+file(GLOB_RECURSE TEST_FILES test/**/*.cpp)
+file(GLOB_RECURSE SERVICE_SRC_FILES src/services/*.cpp)
+
+add_executable(hyprview_tests ${TEST_FILES} ${SERVICE_SRC_FILES})
+
+target_link_options(hyprview_tests PRIVATE "-Wl,--wrap=system")
+target_link_libraries(hyprview_tests
+    PRIVATE
+    hyprview_core
+    GTest::gtest
+    GTest::gtest_main
+    GTest::gmock
+    GTest::gmock_main
+)
+
+add_test(NAME hyprview_tests COMMAND hyprview_tests)
+

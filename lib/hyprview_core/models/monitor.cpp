@@ -1,8 +1,8 @@
-#include "monitor.h"
-#include "../utils/logger.h"
 #include <regex>
 #include <sstream>
 #include <iostream>
+#include <hyprview_core/models/monitor.h>
+#include <hyprview_core/utils/logger.h>
 
 namespace core {
 

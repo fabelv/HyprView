@@ -1,8 +1,7 @@
 #include "qml_monitor_manager.h"
-#include "../core/utils/logger.h"
-#include "../core/utils/monitor_geometry.h"
-#include "../core/models/monitor.h"
 #include "qml_monitor.h"
+#include "hyprview_core/utils/logger.h"
+#include "hyprview_core/utils/monitor_geometry.h"
 
 QmlMonitorManager::QmlMonitorManager(core::HyprMonitorManager* coreManager, QObject* parent)
     : QObject(parent), m_coreManager(coreManager), m_selectedMonitor(nullptr) {
@@ -33,10 +32,16 @@ void QmlMonitorManager::scanMonitors() {
     log(core::LogLevel::Info, "Scanning monitors...");
     m_coreManager->scanMonitors();
 
+    // Disconnect the selected monitor to avoid use-after-free
+    m_selectedMonitor = nullptr;
+    emit selectedMonitorChanged();
+
     clearQmlMonitors();
     m_monitors = wrapCoreMonitors();
 
-    m_selectedMonitor = m_monitors.isEmpty() ? nullptr : m_monitors.first();
+    if (!m_monitors.isEmpty()) {
+        m_selectedMonitor = m_monitors.first();
+    }
 
     emit monitorsChanged();
     emit selectedMonitorChanged();

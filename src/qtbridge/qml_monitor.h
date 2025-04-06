@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include "../core/models/monitor.h"
+#include "hyprview_core/models/monitor.h"
 
 class QmlMonitor : public QObject {
     Q_OBJECT

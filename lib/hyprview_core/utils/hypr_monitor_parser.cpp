@@ -1,9 +1,9 @@
-#include "hypr_monitor_parser.h"
-#include "logger.h"
-#include "../models/enums/transform.h"
+#include <iostream>
 #include <nlohmann/json.hpp>
 #include <cmath>
-#include <iostream>
+#include "hyprview_core/models/monitor.h"
+#include "hyprview_core/utils/logger.h"
+#include "hyprview_core/utils/hypr_monitor_parser.h"
 
 namespace core {
 

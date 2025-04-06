@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include "enums/transform.h"
+#include "hyprview_core/enums/transform.h"
 
 namespace core {
 
@@ -68,29 +68,29 @@ public:
     void setAvailableModes(const std::vector<std::string>&);
 
 private:
-    int id;
-    std::string name;
-    std::string description;
-    std::string make;
-    std::string model;
-    std::string serial;
-    int width;
-    int height;
-    double refreshRate;
-    int positionX;
-    int positionY;
-    double scale;
-    Transform transform;
-    bool focused;
-    bool dpmsStatus;
-    bool vrr;
-    std::string solitary;
-    bool activelyTearing;
-    std::string directScanoutTo;
-    bool disabled;
-    std::string currentFormat;
-    std::string mirrorOf;
-    std::vector<std::string> availableModes;
+    int id {};
+    std::string name {};
+    std::string description {};
+    std::string make {};
+    std::string model {};
+    std::string serial {};
+    int width {};
+    int height {};
+    double refreshRate {};
+    int positionX {};
+    int positionY {};
+    double scale {};
+    Transform transform {};
+    bool focused {};
+    bool dpmsStatus {};
+    bool vrr {};
+    std::string solitary {};
+    bool activelyTearing {};
+    std::string directScanoutTo {};
+    bool disabled {};
+    std::string currentFormat {};
+    std::string mirrorOf {};
+    std::vector<std::string> availableModes {};
 };
 
 } // namespace core
