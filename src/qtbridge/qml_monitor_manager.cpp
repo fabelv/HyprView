@@ -1,7 +1,9 @@
 #include "qml_monitor_manager.h"
+#include "hyprview_core/models/monitor.h"
 #include "qml_monitor.h"
 #include "hyprview_core/utils/logger.h"
 #include "hyprview_core/utils/monitor_geometry.h"
+#include <vector>
 
 QmlMonitorManager::QmlMonitorManager(core::HyprMonitorManager* coreManager, QObject* parent)
     : QObject(parent), m_coreManager(coreManager), m_selectedMonitor(nullptr) {
@@ -14,34 +16,35 @@ QmlMonitorManager::~QmlMonitorManager() {
 }
 
 void QmlMonitorManager::clearQmlMonitors() {
+    m_selectedMonitor = nullptr;
+    /*emit selectedMonitorChanged();*/
+
     qDeleteAll(m_monitors);
     m_monitors.clear();
+    /*emit monitorsChanged();*/
 }
 
-QList<QmlMonitor*> QmlMonitorManager::wrapCoreMonitors() {
+QList<QmlMonitor*> QmlMonitorManager::wrapCoreMonitors(std::vector<core::Monitor> &monitors) {
     QList<QmlMonitor*> list;
 
-    for (core::Monitor& mon : m_coreManager->getMonitors()) {
-        list.append(new QmlMonitor(&mon, this));
+    for (core::Monitor& mon : monitors) {
+        list.append(wrapCoreMonitor(mon));
     }
 
     return list;
+}
+
+QmlMonitor* QmlMonitorManager::wrapCoreMonitor(core::Monitor &monitor) {
+    return new QmlMonitor(&monitor, this);
 }
 
 void QmlMonitorManager::scanMonitors() {
     log(core::LogLevel::Info, "Scanning monitors...");
     m_coreManager->scanMonitors();
 
-    // Disconnect the selected monitor to avoid use-after-free
-    m_selectedMonitor = nullptr;
-    emit selectedMonitorChanged();
-
     clearQmlMonitors();
-    m_monitors = wrapCoreMonitors();
-
-    if (!m_monitors.isEmpty()) {
-        m_selectedMonitor = m_monitors.first();
-    }
+    m_monitors = wrapCoreMonitors(m_coreManager->getMonitors());
+    m_selectedMonitor = wrapCoreMonitor(m_coreManager->getSelectedMonitor());
 
     emit monitorsChanged();
     emit selectedMonitorChanged();

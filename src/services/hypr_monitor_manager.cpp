@@ -35,6 +35,10 @@ void HyprMonitorManager::scanMonitors() {
 
     currentMonitors = parser->parseMonitorsFromJson(output.str());
     backupMonitors = currentMonitors;
+
+    if (!currentMonitors.empty()){
+        selectedMonitor = currentMonitors.at(0);
+    }
 }
 
 
@@ -89,8 +93,7 @@ std::vector<Monitor>& HyprMonitorManager::getMonitors() {
     return currentMonitors;
 }
 
-
-Monitor HyprMonitorManager::getSelectedMonitor() const {
+Monitor& HyprMonitorManager::getSelectedMonitor() {
     return selectedMonitor;
 }
 

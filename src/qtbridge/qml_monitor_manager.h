@@ -1,11 +1,9 @@
 #pragma once
 
 #include <QObject>
-#pragma once
-
-#include <QObject>
 #include <QList>
 #include <QPoint>
+#include <vector>
 #include "../services/hypr_monitor_manager.h"
 #include "qml_monitor.h"
 
@@ -41,5 +39,6 @@ private:
     QmlMonitor* m_selectedMonitor;
 
     void clearQmlMonitors();
-    QList<QmlMonitor*> wrapCoreMonitors();
+    QList<QmlMonitor*> wrapCoreMonitors(std::vector<core::Monitor> &monitors);
+    QmlMonitor* wrapCoreMonitor(core::Monitor &monitor);
 };

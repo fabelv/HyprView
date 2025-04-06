@@ -25,7 +25,7 @@ public:
     void setSelectedMonitor(const Monitor& monitor);
 
     std::vector<Monitor>& getMonitors();
-    Monitor getSelectedMonitor() const;
+    Monitor& getSelectedMonitor();
 };
 
 } // namespace core

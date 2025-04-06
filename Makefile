@@ -13,7 +13,7 @@ clean:
 	@rm -rf $(BUILD_DIR) compile_commands.json
 
 configure:
-	@cmake -B $(BUILD_DIR) $(CMAKE_FLAGS)
+	@cmake -B $(BUILD_DIR) $(CMAKE_FLAGS) -G Ninja
 
 build:
 	@cmake --build $(BUILD_DIR)
