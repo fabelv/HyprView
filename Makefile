@@ -1,6 +1,11 @@
+
 BUILD_DIR = build
 EXECUTABLE = hyprview
-CMAKE_FLAGS = -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+TEST_EXECUTABLE = hyprview_tests
+CMAKE_FLAGS = -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+
+SRC_FILES := $(shell find src -name '*.cpp')
+INCLUDE_DIRS = -Isrc -I$(BUILD_DIR) -std=c++23
 
 all: clean configure build update_compile_commands
 
@@ -14,10 +19,23 @@ build:
 	@cmake --build $(BUILD_DIR)
 
 update_compile_commands:
-	@mv $(BUILD_DIR)/compile_commands.json . 
+	@cp $(BUILD_DIR)/compile_commands.json .
 
 run: build
 	@./$(BUILD_DIR)/$(EXECUTABLE)
 
+test: build
+	@./$(BUILD_DIR)/$(TEST_EXECUTABLE)
+
+lint:
+	@clang-tidy $(SRC_FILES) -- $(INCLUDE_DIRS)
+
+analyze:
+	@cppcheck --enable=all --inconclusive --suppress=missingIncludeSystem \
+		--include=cppcheck-qt.cfg $(INCLUDE_DIRS) $(SRC_FILES)
+
+deps: clean configure update_compile_commands
+
 # Phony targets
-.PHONY: all clean configure build update_compile_commands run
+.PHONY: all clean configure build update_compile_commands run test lint analyze deps
+

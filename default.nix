@@ -17,10 +17,11 @@ in pkgs.stdenv.mkDerivation {
     qt.full
     pkgs.wayland
     pkgs.nlohmann_json
+    pkgs.gtest
   ];
   
   configurePhase = ''
-    cmake -GNinja $src
+    cmake -GNinja $src -DGTest_DIR=${pkgs.gtest}/lib/cmake/GTest
   '';
 
   buildPhase = ''

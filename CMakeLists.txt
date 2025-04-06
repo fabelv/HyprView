@@ -14,8 +14,11 @@ endif()
 # Find Qt6 QML & Quick
 find_package(Qt6 COMPONENTS Qml Quick QuickControls2 REQUIRED)
 
-# Optional: still include nlohmann_json if you use it in C++
+# include nlohmann_json 
 find_package(nlohmann_json REQUIRED)
+
+# include gtest
+find_package(GTest REQUIRED)
 
 # Enable Qt codegen (for Q_OBJECT, resources)
 set(CMAKE_AUTOMOC ON)
@@ -23,11 +26,17 @@ set(CMAKE_AUTORCC ON)
 
 # Gather C++ source files
 file(GLOB_RECURSE SRC_FILES src/*.cpp)
+file(GLOB_RECURSE TEST_FIELS test/*.cpp)
 
 # Define executable
 add_executable(hyprview
     ${SRC_FILES}
 )
+
+add_executable(hyprview_tests
+    ${TEST_FIELS}
+)
+
 
 # Add QML resources (must be after add_executable)
 qt6_add_resources(QML_RESOURCES src/qml/qml.qrc)
@@ -41,6 +50,7 @@ target_link_libraries(hyprview PRIVATE
     nlohmann_json::nlohmann_json
 )
 
-# (Optional) for better autocompletion
-target_include_directories(hyprview PRIVATE ${CMAKE_BINARY_DIR}/hyprview_autogen/include)
+target_link_libraries(hyprview_tests PRIVATE GTest::gtest GTest::gtest_main)
+add_test(NAME hyprview_tests COMMAND hyprview_tests)
 
+target_include_directories(hyprview PRIVATE ${CMAKE_BINARY_DIR}/hyprview_autogen/include)
