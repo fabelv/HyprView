@@ -30,7 +30,7 @@ run: build
 test: build
 	@./$(BUILD_DIR)/$(TEST_EXECUTABLE)
 
-lint:
+lint: configure
 	@clang-tidy $(SRC_FILES) -p $(BUILD_DIR) --extra-arg=-std=c++23 --extra-arg=-Iinclude --extra-arg=-Isrc
 
 analyze:
