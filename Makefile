@@ -15,7 +15,7 @@ clean:
 configure:
 	@cmake -B $(BUILD_DIR) $(CMAKE_FLAGS) -G Ninja
 
-build:
+build: configure
 	@cmake --build $(BUILD_DIR)
 
 lib: configure
