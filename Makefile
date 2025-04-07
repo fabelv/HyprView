@@ -5,7 +5,7 @@ CMAKE_FLAGS = -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 CPPCHECK_FLAGS = --enable=all --inconclusive --suppress=missingIncludeSystem --include=cppcheck-qt.cfg
 
 SRC_FILES := $(shell find lib src -name '*.cpp')
-INCLUDE_DIRS = -Iinclude -Isrc -I$(BUILD_DIR) -std=c++23
+INCLUDE_DIRS = -Iinclude -Isrc -I$(BUILD_DIR) 
 
 all: clean configure build update_compile_commands
 
