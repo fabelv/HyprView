@@ -9,8 +9,8 @@ Item {
     property int xOffset: 0
     property int yOffset: 0
 
-    width: 800
-    height: 600
+    Layout.preferredWidth: 0.6 * parent.width
+    Layout.fillHeight: true
 
     function recalculateScaleAndOffset() {
         if (monitorManager) {
@@ -18,8 +18,13 @@ Item {
             const offset = monitorManager.calculateOffsetToCenter(scaleFactor, width, height)
             xOffset = offset.x
             yOffset = offset.y
+
+            console.log("offset: " + offset)
         }
     }
+
+    onWidthChanged: recalculateScaleAndOffset()
+    onHeightChanged: recalculateScaleAndOffset()
 
     Component.onCompleted: recalculateScaleAndOffset()
 
@@ -30,15 +35,27 @@ Item {
         }
     }
 
+
     Repeater {
         model: monitorManager.monitors
 
-        MonitorRectangle {
-            monitor: modelData
-            scaleFactor: preview.scaleFactor
-            xOffset: preview.xOffset
-            yOffset: preview.yOffset
+        delegate: Item {
+            MonitorRectangle {
+                id: rect
+                monitor: modelData
+                scaleFactor: preview.scaleFactor
+                xOffset: preview.xOffset
+                yOffset: preview.yOffset
+            }
+
+            Connections {
+                target: modelData
+                function onPositionManuallyUpdated() {
+                    preview.recalculateScaleAndOffset()
+                }
+            }
         }
     }
+
 }
 

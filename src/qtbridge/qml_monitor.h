@@ -91,6 +91,7 @@ public:
 
 signals:
     void updated();
+    void positionManuallyUpdated();
 
 private:
     core::Monitor* m_monitor;

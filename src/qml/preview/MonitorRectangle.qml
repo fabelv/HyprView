@@ -67,6 +67,8 @@ Item {
                 monitor.positionX = Math.round(snappedPos.x)
                 monitor.positionY = Math.round(snappedPos.y)
                 console.log("Snapped to:", monitor.positionX, monitor.positionY)
+
+                monitor.positionManuallyUpdated()
             }
         }
     }

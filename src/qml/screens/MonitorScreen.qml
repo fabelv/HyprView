@@ -5,15 +5,23 @@ import QtQuick.Layouts
 import "../details"
 import "../preview"
 
-RowLayout {
+Item {
+    id: root
+    anchors.fill: parent
 
     MonitorPreview {
-        Layout.preferredWidth: 0.6 * parent.width
-        Layout.fillHeight: true
+        id: preview
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: parent.width * 0.6
     }
 
     MonitorDetails {
-        Layout.fillWidth: true
-        Layout.fillHeight: true
+        anchors.left: preview.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
     }
 }
+
