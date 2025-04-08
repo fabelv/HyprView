@@ -2,6 +2,8 @@
 
 HyprView is a Qt-based C++ application for managing monitor layouts in Hyprland.  
 
+![App](./res/app.png)
+
 ## Setup  
 
 ### Development Shell  
