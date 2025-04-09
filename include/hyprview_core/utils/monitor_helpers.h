@@ -5,7 +5,9 @@ namespace core {
 
 class MonitorHelpers {
 public:
-    static std::vector<std::string> getAvailableMirrorMonitors(const Monitor &selectedMonitor, const std::vector<Monitor> &monitors);
+  static std::vector<std::string>
+  getAvailableMirrorMonitors(const Monitor &selectedMonitor,
+                             const std::vector<Monitor> &monitors);
 };
 
-}
+} // namespace core
