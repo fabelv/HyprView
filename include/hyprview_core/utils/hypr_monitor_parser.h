@@ -6,7 +6,8 @@ namespace core {
 
 class HyprMonitorParser {
 public:
-    virtual std::vector<Monitor> parseMonitorsFromJson(const std::string& jsonString) const;
+  virtual std::vector<Monitor>
+  parseMonitorsFromJson(const std::string &jsonString) const;
 };
 
 } // namespace core
