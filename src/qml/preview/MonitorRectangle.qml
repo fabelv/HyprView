@@ -62,11 +62,9 @@ Item {
             if (monitor) {
                 monitor.positionX = Math.round((monitorItem.x - xOffset) / scaleFactor)
                 monitor.positionY = Math.round((monitorItem.y - yOffset) / scaleFactor)
-                console.log("before snap:", monitor.positionX, monitor.positionY)
                 const snappedPos = monitorManager.getSnappedPosition(monitor.name)
                 monitor.positionX = Math.round(snappedPos.x)
                 monitor.positionY = Math.round(snappedPos.y)
-                console.log("Snapped to:", monitor.positionX, monitor.positionY)
 
                 monitor.positionManuallyUpdated()
             }

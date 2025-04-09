@@ -1,13 +1,10 @@
 import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
 
 import "../details"
 import "../preview"
 
 Item {
     id: root
-    anchors.fill: parent
 
     MonitorPreview {
         id: preview

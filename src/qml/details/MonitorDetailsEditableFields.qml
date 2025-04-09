@@ -129,7 +129,7 @@ ColumnLayout {
             Layout.fillWidth: true
             textRole: "name"
 
-            model: monitorManager.selectedMonitor
+            model: monitorManager.monitors
 
             Component.onCompleted: {
                 if (monitorManager.selectedMonitor) {

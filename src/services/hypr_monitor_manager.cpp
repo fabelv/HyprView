@@ -60,7 +60,7 @@ bool HyprMonitorManager::applyMonitorConfiguration(std::vector<Monitor> monitors
             cmd << ", transform, " << static_cast<int>(m.getTransform());
             cmd << ", vrr, " << (m.isVrrEnabled() ? "1" : "0");
 
-            if (!m.getMirrorOf().empty()) {
+            if (!m.getMirrorOf().empty() || m.getMirrorOf() != "none") {
                 cmd << ", mirror, " << m.getMirrorOf();
             }
         }

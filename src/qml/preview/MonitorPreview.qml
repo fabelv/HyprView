@@ -18,8 +18,6 @@ Item {
             const offset = monitorManager.calculateOffsetToCenter(scaleFactor, width, height)
             xOffset = offset.x
             yOffset = offset.y
-
-            console.log("offset: " + offset)
         }
     }
 
