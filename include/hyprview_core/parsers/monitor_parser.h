@@ -6,9 +6,10 @@
 
 namespace core {
 
-    class MonitorParser {
-        public:
-            virtual auto parseMonitorsFromJson(const std::string &jsonString) -> std::vector<Monitor> = 0;
-    };
+class MonitorParser {
+public:
+  virtual auto parseMonitorsFromJson(const std::string &jsonString)
+      -> std::vector<Monitor> = 0;
+};
 
 } // namespace core

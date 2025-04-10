@@ -1,62 +1,64 @@
 #include "hyprview_core/parsers/hypr_monitor_parser.h"
 #include "hyprview_core/utils/logger.h"
-#include <nlohmann/json.hpp>
 #include <cmath>
+#include <nlohmann/json.hpp>
 
 namespace core {
 
-    auto HyprMonitorParser::parseMonitorsFromJson(const std::string& jsonString) -> std::vector<Monitor> {
-        std::vector<Monitor> monitors;
+auto HyprMonitorParser::parseMonitorsFromJson(const std::string &jsonString)
+    -> std::vector<Monitor> {
+  std::vector<Monitor> monitors;
 
-        try {
-            auto json = nlohmann::json::parse(jsonString);
+  try {
+    auto json = nlohmann::json::parse(jsonString);
 
-            if (!json.is_array()) {
-                log(LogLevel::Error , "JSON is not an array");
-                return monitors;
-            }
-
-            for (const auto& obj : json) {
-                Monitor monitor;
-
-                monitor.setId(obj["id"].get<int>());
-                monitor.setName(obj["name"]);
-                monitor.setDescription(obj["description"]);
-                monitor.setMake(obj["make"]);
-                monitor.setModel(obj["model"]);
-                monitor.setSerial(obj["serial"]);
-                monitor.setWidth(obj["width"].get<int>());
-                monitor.setHeight(obj["height"].get<int>());
-                monitor.setRefreshRate(std::round(obj["refreshRate"].get<double>() * 100.0) / 100.0);
-                monitor.setPositionX(obj["x"].get<int>());
-                monitor.setPositionY(obj["y"].get<int>());
-                monitor.setScale(obj["scale"].get<double>());
-                monitor.setTransform(static_cast<Transform>(obj["transform"].get<int>()));
-                monitor.setDpmsStatus(obj["dpmsStatus"].get<bool>());
-                monitor.setVrrEnabled(obj["vrr"].get<bool>());
-                monitor.setSolitary(obj["solitary"]);
-                monitor.setActivelyTearing(obj["activelyTearing"].get<bool>());
-                monitor.setDirectScanoutTo(obj["directScanoutTo"]);
-                monitor.setDisabled(obj["disabled"].get<bool>());
-                monitor.setCurrentFormat(obj["currentFormat"]);
-                monitor.setMirrorOf(obj["mirrorOf"]);
-
-                std::vector<std::string> modes;
-
-                for (const auto& mode : obj["availableModes"]) {
-                    modes.push_back(mode);
-                }
-                monitor.setAvailableModes(modes);
-
-                monitors.push_back(monitor);
-            }
-
-        } catch (const std::exception& e) {
-            log(LogLevel::Error, std::string("Failed to parse monitor JSON: ") + e.what());
-        }
-
-        return monitors;
+    if (!json.is_array()) {
+      log(LogLevel::Error, "JSON is not an array");
+      return monitors;
     }
 
-} // namespace core
+    for (const auto &obj : json) {
+      Monitor monitor;
 
+      monitor.setId(obj["id"].get<int>());
+      monitor.setName(obj["name"]);
+      monitor.setDescription(obj["description"]);
+      monitor.setMake(obj["make"]);
+      monitor.setModel(obj["model"]);
+      monitor.setSerial(obj["serial"]);
+      monitor.setWidth(obj["width"].get<int>());
+      monitor.setHeight(obj["height"].get<int>());
+      monitor.setRefreshRate(
+          std::round(obj["refreshRate"].get<double>() * 100.0) / 100.0);
+      monitor.setPositionX(obj["x"].get<int>());
+      monitor.setPositionY(obj["y"].get<int>());
+      monitor.setScale(obj["scale"].get<double>());
+      monitor.setTransform(static_cast<Transform>(obj["transform"].get<int>()));
+      monitor.setDpmsStatus(obj["dpmsStatus"].get<bool>());
+      monitor.setVrrEnabled(obj["vrr"].get<bool>());
+      monitor.setSolitary(obj["solitary"]);
+      monitor.setActivelyTearing(obj["activelyTearing"].get<bool>());
+      monitor.setDirectScanoutTo(obj["directScanoutTo"]);
+      monitor.setDisabled(obj["disabled"].get<bool>());
+      monitor.setCurrentFormat(obj["currentFormat"]);
+      monitor.setMirrorOf(obj["mirrorOf"]);
+
+      std::vector<std::string> modes;
+
+      for (const auto &mode : obj["availableModes"]) {
+        modes.push_back(mode);
+      }
+      monitor.setAvailableModes(modes);
+
+      monitors.push_back(monitor);
+    }
+
+  } catch (const std::exception &e) {
+    log(LogLevel::Error,
+        std::string("Failed to parse monitor JSON: ") + e.what());
+  }
+
+  return monitors;
+}
+
+} // namespace core
