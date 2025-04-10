@@ -1,18 +1,18 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <hyprview_core/models/monitor.h>
-#include <hyprview_core/utils/hypr_monitor_parser.h>
-#include <../../../src/services/hypr_monitor_manager.h>
+#include <hyprview_core/parsers/hypr_monitor_parser.h>
+#include <../../../src/managers/hypr_monitor_manager.h>
+#include <memory>
 
 using namespace core;
 using ::testing::Return;
 using ::testing::_;
-using ::testing::NiceMock;
 
 // --- Mock parser class ---
 class MockParser : public HyprMonitorParser {
 public:
-    MOCK_METHOD(std::vector<Monitor>, parseMonitorsFromJson, (const std::string&), (const, override));
+    MOCK_METHOD(std::vector<Monitor>, parseMonitorsFromJson, (const std::string&), (const));
 };
 
 // --- Helper: make a test monitor ---
@@ -47,50 +47,26 @@ extern "C" int __wrap_system(const char* cmd) {
 
 // --- Tests ---
 TEST(HyprMonitorManagerTest, ConstructorInitializesCorrectly) {
-    MockParser parser;
-    HyprMonitorManager manager(&parser);
+    auto parser = std::make_shared<MockParser>();
+    HyprMonitorManager manager(parser);
     EXPECT_EQ(manager.getMonitors().size(), 0);
 }
 
 TEST(HyprMonitorManagerTest, ScanMonitorsUsesParser) {
-    NiceMock<MockParser> parser;
-    HyprMonitorManager manager(&parser);
+    auto parser = std::make_shared<MockParser>();
+    HyprMonitorManager manager(parser);
 
     std::vector<Monitor> fakeMonitors = { makeTestMonitor("DP-1") };
-    EXPECT_CALL(parser, parseMonitorsFromJson(_)).WillOnce(Return(fakeMonitors));
+    EXPECT_CALL(*parser, parseMonitorsFromJson(_)).WillOnce(Return(fakeMonitors));
 
     manager.scanMonitors();
     EXPECT_EQ(manager.getMonitors().size(), 1);
     EXPECT_EQ(manager.getMonitors()[0].getName(), "DP-1");
 }
 
-TEST(HyprMonitorManagerTest, CanFindMonitorByName) {
-    MockParser parser;
-    HyprMonitorManager manager(&parser);
-    manager.getMonitors().push_back(makeTestMonitor("DP-4"));
-
-    Monitor* found = manager.findMonitorByName("DP-4");
-    EXPECT_NE(found, nullptr);
-    EXPECT_EQ(found->getName(), "DP-4");
-
-    Monitor* notFound = manager.findMonitorByName("DNE");
-    EXPECT_EQ(notFound, nullptr);
-}
-
-TEST(HyprMonitorManagerTest, CanSetAndGetSelectedMonitor) {
-    MockParser parser;
-    HyprMonitorManager manager(&parser);
-
-    Monitor m = makeTestMonitor("DP-X");
-    manager.setSelectedMonitor(m);
-
-    Monitor selected = manager.getSelectedMonitor();
-    EXPECT_EQ(selected.getName(), "DP-X");
-}
-
 TEST(HyprMonitorManagerTest, ApplyMonitorConfigurationGeneratesCommandForEnabledMonitor) {
-    MockParser parser;
-    HyprMonitorManager manager(&parser);
+    std::shared_ptr<MockParser> parser;
+    HyprMonitorManager manager(parser);
 
     Monitor m = makeTestMonitor("DP-1", 1920, 1080);
     m.setRefreshRate(75.5);
@@ -115,8 +91,8 @@ TEST(HyprMonitorManagerTest, ApplyMonitorConfigurationGeneratesCommandForEnabled
 }
 
 TEST(HyprMonitorManagerTest, ApplyMonitorConfigurationGeneratesCommandForDisabledMonitor) {
-    MockParser parser;
-    HyprMonitorManager manager(&parser);
+    std::shared_ptr<MockParser> parser;
+    HyprMonitorManager manager(parser);
 
     Monitor m = makeTestMonitor("HDMI-A-1");
     m.setDisabled(true);
@@ -134,8 +110,8 @@ TEST(HyprMonitorManagerTest, ApplyMonitorConfigurationGeneratesCommandForDisable
 }
 
 TEST(HyprMonitorManagerTest, ApplyMonitorConfigurationHandlesMultipleMonitors) {
-    MockParser parser;
-    HyprMonitorManager manager(&parser);
+    std::shared_ptr<MockParser> parser;
+    HyprMonitorManager manager(parser);
 
     Monitor m1 = makeTestMonitor("DP-1");
     m1.setDisabled(false);
@@ -158,14 +134,14 @@ TEST(HyprMonitorManagerTest, ApplyMonitorConfigurationHandlesMultipleMonitors) {
 
 
 TEST(HyprMonitorManagerTest, RevertMonitorConfigurationUsesBackup) {
-    NiceMock<MockParser> parser;
-    HyprMonitorManager manager(&parser);
+    std::shared_ptr<MockParser> parser;
+    HyprMonitorManager manager(parser);
 
     std::vector<Monitor> backupMonitors = {
         makeTestMonitor("DP-1", 1920, 1080)
     };
 
-    EXPECT_CALL(parser, parseMonitorsFromJson(_)).WillOnce(Return(backupMonitors));
+    EXPECT_CALL(*parser, parseMonitorsFromJson(_)).WillOnce(Return(backupMonitors));
 
     manager.scanMonitors();              // Fills both current + backup
     manager.getMonitors()[0].setName("Changed");

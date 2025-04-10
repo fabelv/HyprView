@@ -66,11 +66,10 @@ void QmlMonitorManager::setSelectedMonitor(QmlMonitor* monitor) {
 }
 
 QPoint QmlMonitorManager::getSnappedPosition(const QString& monitorName) {
-    const auto* dragged = m_coreManager->findMonitorByName(monitorName.toStdString());
-    if (!dragged) return QPoint(0, 0);
+    const auto &dragged = m_coreManager->getMonitors().at(0);
 
     const auto& allMonitors = m_coreManager->getMonitors();
-    const auto pos = core::MonitorGeometry::getSnappedPosition(*dragged, allMonitors);
+    const auto pos = core::MonitorGeometry::getSnappedPosition(dragged, allMonitors);
     return QPoint(pos.x, pos.y);
 }
 

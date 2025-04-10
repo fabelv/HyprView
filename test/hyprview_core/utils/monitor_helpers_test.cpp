@@ -1,5 +1,4 @@
 #include "hyprview_core/models/monitor.h"
-#include "hyprview_core/utils/logger.h"
 #include "hyprview_core/utils/monitor_helpers.h"
 #include <gtest/gtest.h>
 #include <string>

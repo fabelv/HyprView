@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <hyprview_core/utils/hypr_monitor_parser.h>
+#include <hyprview_core/parsers/hypr_monitor_parser.h>
 #include <hyprview_core/models/monitor.h>
 
 using namespace core;

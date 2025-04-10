@@ -4,8 +4,8 @@
 #include <QList>
 #include <QPoint>
 #include <vector>
-#include "../services/hypr_monitor_manager.h"
 #include "qml_monitor.h"
+#include "../../managers/hypr_monitor_manager.h"
 
 class QmlMonitorManager : public QObject {
     Q_OBJECT
