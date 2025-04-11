@@ -94,7 +94,7 @@ TEST(MonitorGeometryTest, CalculatesPreviewScaleFactor) {
 
     int previewWidth = 1000;
     int previewHeight = 500;
-    float margin = 0.9f;
+    float margin = 0.9F;
 
     double scale = MonitorGeometry::calculatePreviewScaleFactor(previewWidth, previewHeight, margin, monitors);
 
