@@ -8,21 +8,20 @@
 
 namespace core {
 
-    class HyprMonitorManager : public MonitorManager {
-        public:
-            // constructors
-            explicit HyprMonitorManager(std::shared_ptr<MonitorParser> parser);
-            ~HyprMonitorManager() override = default;
+class HyprMonitorManager : public MonitorManager {
+public:
+  // constructors
+  explicit HyprMonitorManager(std::shared_ptr<MonitorParser> parser);
+  ~HyprMonitorManager() override = default;
 
-            // core methods
-            auto scanMonitors() -> void override;
-            auto applyMonitorConfiguration() -> bool override;
-            auto revertMonitorConfiguration() -> bool override;
+  // core methods
+  auto scanMonitors() -> void override;
+  auto applyMonitorConfiguration() -> bool override;
+  auto revertMonitorConfiguration() -> bool override;
 
-        private:
-            // helper methods
-            auto applyMonitorConfiguration(std::vector<Monitor> &monitors) -> bool;
-    };
+private:
+  // helper methods
+  auto applyMonitorConfiguration(std::vector<Monitor> &monitors) -> bool;
+};
 
 } // namespace core
-
