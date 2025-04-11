@@ -3,238 +3,232 @@
 #include <QString>
 #include <QDebug>
 
-QmlMonitor::QmlMonitor(core::Monitor *monitor, QObject* parent)
-    : QObject(parent), m_monitor(monitor) {}
+namespace qtbridge {
 
-const core::Monitor* QmlMonitor::getMonitor() const {
-    return m_monitor;
-}
+    QmlMonitor::QmlMonitor(core::Monitor *monitor, QObject* parent)
+        : QObject(parent), monitor_(monitor) {}
 
-QString QmlMonitor::generateCurrentMode() const {
-    return QString::fromStdString(m_monitor->generateCurrentMode());
-}
+    auto QmlMonitor::getMonitor() const -> const core::Monitor* {
+        return monitor_;
+    }
 
-void QmlMonitor::applyModeString(const QString& mode) {
-    m_monitor->applyModeString(mode.toStdString());
-    emit updated();
-}
+    QString QmlMonitor::generateCurrentMode() const {
+        return QString::fromStdString(monitor_->generateCurrentMode());
+    }
 
-
-int QmlMonitor::getId() const {
-    return m_monitor->getId();
-}
-
-void QmlMonitor::setId(int value) {
-    m_monitor->setId(value);
-    emit updated();
-}
-
-QString QmlMonitor::getName() const {
-    return QString::fromStdString(m_monitor->getName());
-}
-
-void QmlMonitor::setName(const QString& value) {
-    m_monitor->setName(value.toStdString());
-    emit updated();
-}
-
-QString QmlMonitor::getDescription() const {
-    return QString::fromStdString(m_monitor->getDescription());
-}
-
-void QmlMonitor::setDescription(const QString& value) {
-    m_monitor->setDescription(value.toStdString());
-    emit updated();
-}
-
-QString QmlMonitor::getMake() const {
-    return QString::fromStdString(m_monitor->getMake());
-}
-
-void QmlMonitor::setMake(const QString& value) {
-    m_monitor->setMake(value.toStdString());
-    emit updated();
-}
-
-QString QmlMonitor::getModel() const {
-    return QString::fromStdString(m_monitor->getModel());
-}
-
-void QmlMonitor::setModel(const QString& value) {
-    m_monitor->setModel(value.toStdString());
-    emit updated();
-}
-
-QString QmlMonitor::getSerial() const {
-    return QString::fromStdString(m_monitor->getSerial());
-}
-
-void QmlMonitor::setSerial(const QString& value) {
-    m_monitor->setSerial(value.toStdString());
-    emit updated();
-}
-
-int QmlMonitor::getWidth() const {
-    return m_monitor->getWidth();
-}
-
-void QmlMonitor::setWidth(int value) {
-    m_monitor->setWidth(value);
-    emit updated();
-}
-
-int QmlMonitor::getHeight() const {
-    return m_monitor->getHeight();
-}
-
-void QmlMonitor::setHeight(int value) {
-    m_monitor->setHeight(value);
-    emit updated();
-}
-
-double QmlMonitor::getRefreshRate() const {
-    return m_monitor->getRefreshRate();
-}
-
-void QmlMonitor::setRefreshRate(double value) {
-    m_monitor->setRefreshRate(value);
-    emit updated();
-}
-
-int QmlMonitor::getPositionX() const {
-    return m_monitor->getPositionX();
-}
-
-void QmlMonitor::setPositionX(int value) {
-    if (m_monitor->getPositionX() != value) {
-        m_monitor->setPositionX(value);
+    void QmlMonitor::applyModeString(const QString& mode){
+        monitor_->applyModeString(mode.toStdString());
         emit updated();
     }
-}
 
-int QmlMonitor::getPositionY() const {
-    return m_monitor->getPositionY();
-}
 
-void QmlMonitor::setPositionY(int value) {
-    if (m_monitor->getPositionY() != value) {
-        m_monitor->setPositionY(value);
+    auto QmlMonitor::getId() const -> const int{
+        return monitor_->getId();
+    }
+
+    auto QmlMonitor::setId(int value) -> void {
+        monitor_->setId(value);
         emit updated();
     }
-}
 
-double QmlMonitor::getScale() const {
-    return m_monitor->getScale();
-}
-
-void QmlMonitor::setScale(double value) {
-    m_monitor->setScale(value);
-    emit updated();
-}
-
-int QmlMonitor::getTransform() const {
-    return static_cast<int>(m_monitor->getTransform());
-}
-
-void QmlMonitor::setTransform(int value) {
-    m_monitor->setTransform(static_cast<core::Transform>(value));
-    emit updated();
-}
-
-bool QmlMonitor::getFocused() const {
-    return m_monitor->isFocused();
-}
-
-void QmlMonitor::setFocused(bool value) {
-    m_monitor->setFocused(value);
-    emit updated();
-}
-
-bool QmlMonitor::getDpmsStatus() const {
-    return m_monitor->getDpmsStatus();
-}
-
-void QmlMonitor::setDpmsStatus(bool value) {
-    m_monitor->setDpmsStatus(value);
-    emit updated();
-}
-
-bool QmlMonitor::getVrr() const {
-    return m_monitor->isVrrEnabled();
-}
-
-void QmlMonitor::setVrr(bool value) {
-    m_monitor->setVrrEnabled(value);
-    emit updated();
-}
-
-QString QmlMonitor::getSolitary() const {
-    return QString::fromStdString(m_monitor->getSolitary());
-}
-
-void QmlMonitor::setSolitary(const QString& value) {
-    m_monitor->setSolitary(value.toStdString());
-    emit updated();
-}
-
-bool QmlMonitor::getActivelyTearing() const {
-    return m_monitor->isActivelyTearing();
-}
-
-void QmlMonitor::setActivelyTearing(bool value) {
-    m_monitor->setActivelyTearing(value);
-    emit updated();
-}
-
-QString QmlMonitor::getDirectScanoutTo() const {
-    return QString::fromStdString(m_monitor->getDirectScanoutTo());
-}
-
-void QmlMonitor::setDirectScanoutTo(const QString& value) {
-    m_monitor->setDirectScanoutTo(value.toStdString());
-    emit updated();
-}
-
-bool QmlMonitor::isDisabled() const {
-    return m_monitor->isDisabled();
-}
-
-void QmlMonitor::setDisabled(bool value) {
-    m_monitor->setDisabled(value);
-    emit updated();
-}
-
-QString QmlMonitor::getCurrentFormat() const {
-    return QString::fromStdString(m_monitor->getCurrentFormat());
-}
-
-void QmlMonitor::setCurrentFormat(const QString& value) {
-    m_monitor->setCurrentFormat(value.toStdString());
-    emit updated();
-}
-
-QString QmlMonitor::getMirrorOf() const {
-    return QString::fromStdString(m_monitor->getMirrorOf());
-}
-
-void QmlMonitor::setMirrorOf(const QString& value) {
-    m_monitor->setMirrorOf(value.toStdString());
-    emit updated();
-}
-
-QStringList QmlMonitor::getAvailableModes() const {
-    QStringList list;
-    for (const auto& s : m_monitor->getAvailableModes()) {
-        list.append(QString::fromStdString(s));
+    auto QmlMonitor::getName() const -> const QString {
+        return QString::fromStdString(monitor_->getName());
     }
-    return list;
-}
 
-void QmlMonitor::setAvailableModes(const QStringList& value) {
-    std::vector<std::string> vec;
-    for (const auto& s : value)
-        vec.push_back(s.toStdString());
-    m_monitor->setAvailableModes(vec);
-    emit updated();
-}
+    auto QmlMonitor::setName(const QString& value) -> void {
+        monitor_->setName(value.toStdString());
+        emit updated();
+    }
 
+    auto QmlMonitor::getDescription() const -> const QString {
+        return QString::fromStdString(monitor_->getDescription());
+    }
+
+    auto QmlMonitor::setDescription(const QString& value) -> void {
+        monitor_->setDescription(value.toStdString());
+        emit updated();
+    }
+
+    auto QmlMonitor::getMake() const -> const QString {
+        return QString::fromStdString(monitor_->getMake());
+    }
+
+    auto QmlMonitor::setMake(const QString& value) -> void {
+        monitor_->setMake(value.toStdString());
+        emit updated();
+    }
+
+    auto QmlMonitor::getModel() const -> const QString {
+        return QString::fromStdString(monitor_->getModel());
+    }
+
+    auto QmlMonitor::setModel(const QString& value) -> void {
+        monitor_->setModel(value.toStdString());
+        emit updated();
+    }
+
+    auto QmlMonitor::getSerial() const -> const QString {
+        return QString::fromStdString(monitor_->getSerial());
+    }
+
+    auto QmlMonitor::setSerial(const QString& value) -> void {
+        monitor_->setSerial(value.toStdString());
+        emit updated();
+    }
+
+    auto QmlMonitor::getWidth() const -> const int {
+        return monitor_->getWidth();
+    }
+
+    auto QmlMonitor::setWidth(int value) -> void {
+        monitor_->setWidth(value);
+        emit updated();
+    }
+
+    auto QmlMonitor::getHeight() const -> const int {
+        return monitor_->getHeight();
+    }
+
+    auto QmlMonitor::setHeight(int value) -> void {
+        monitor_->setHeight(value);
+        emit updated();
+    }
+
+    auto QmlMonitor::getRefreshRate() const -> const double {
+        return monitor_->getRefreshRate();
+    }
+
+    auto QmlMonitor::setRefreshRate(double value) -> void {
+        monitor_->setRefreshRate(value);
+        emit updated();
+    }
+
+    auto QmlMonitor::getPositionX() const -> const int {
+        return monitor_->getPositionX();
+    }
+
+    auto QmlMonitor::setPositionX(int value) -> void {
+        if (monitor_->getPositionX() != value) {
+            monitor_->setPositionX(value);
+            emit updated();
+        }
+    }
+
+    auto QmlMonitor::getPositionY() const -> const int {
+        return monitor_->getPositionY();
+    }
+
+    auto QmlMonitor::setPositionY(int value) -> void {
+        if (monitor_->getPositionY() != value) {
+            monitor_->setPositionY(value);
+            emit updated();
+        }
+    }
+
+    auto QmlMonitor::getScale() const -> const double {
+        return monitor_->getScale();
+    }
+
+    auto QmlMonitor::setScale(double value) -> void {
+        monitor_->setScale(value);
+        emit updated();
+    }
+
+    auto QmlMonitor::getTransform() const -> const int {
+        return static_cast<int>(monitor_->getTransform());
+    }
+
+    auto QmlMonitor::setTransform(int value) -> void {
+        monitor_->setTransform(static_cast<core::Transform>(value));
+        emit updated();
+    }
+
+    auto QmlMonitor::getDpmsStatus() const -> const bool {
+        return monitor_->getDpmsStatus();
+    }
+
+    auto QmlMonitor::setDpmsStatus(bool value) -> void {
+        monitor_->setDpmsStatus(value);
+        emit updated();
+    }
+
+    auto QmlMonitor::getVrr() const -> const bool {
+        return monitor_->getVrrEnabled();
+    }
+
+    auto QmlMonitor::setVrr(bool value) -> void {
+        monitor_->setVrrEnabled(value);
+        emit updated();
+    }
+
+    auto QmlMonitor::getSolitary() const -> const QString {
+        return QString::fromStdString(monitor_->getSolitary());
+    }
+
+    auto QmlMonitor::setSolitary(const QString& value) -> void {
+        monitor_->setSolitary(value.toStdString());
+        emit updated();
+    }
+
+    auto QmlMonitor::getActivelyTearing() const -> const bool {
+        return monitor_->getActivelyTearing();
+    }
+
+    auto QmlMonitor::setActivelyTearing(bool value) -> void {
+        monitor_->setActivelyTearing(value);
+        emit updated();
+    }
+
+    auto QmlMonitor::getDirectScanoutTo() const -> const QString {
+        return QString::fromStdString(monitor_->getDirectScanoutTo());
+    }
+
+    auto QmlMonitor::setDirectScanoutTo(const QString& value) -> void {
+        monitor_->setDirectScanoutTo(value.toStdString());
+        emit updated();
+    }
+
+    auto QmlMonitor::getDisabled() const -> const bool {
+        return monitor_->getDisabled();
+    }
+
+    auto QmlMonitor::setDisabled(bool value) -> void {
+        monitor_->setDisabled(value);
+        emit updated();
+    }
+
+    auto QmlMonitor::getCurrentFormat() const -> const QString {
+        return QString::fromStdString(monitor_->getCurrentFormat());
+    }
+
+    auto QmlMonitor::setCurrentFormat(const QString& value) -> void {
+        monitor_->setCurrentFormat(value.toStdString());
+        emit updated();
+    }
+
+    auto QmlMonitor::getMirrorOf() const -> const QString {
+        return QString::fromStdString(monitor_->getMirrorOf());
+    }
+
+    auto QmlMonitor::setMirrorOf(const QString& value) -> void {
+        monitor_->setMirrorOf(value.toStdString());
+        emit updated();
+    }
+
+    auto QmlMonitor::getAvailableModes() const -> const QStringList {
+        QStringList list;
+        for (const auto& s : monitor_->getAvailableModes()) {
+            list.append(QString::fromStdString(s));
+        }
+        return list;
+    }
+
+    auto QmlMonitor::setAvailableModes(const QStringList& value) -> void {
+        std::vector<std::string> vec;
+        for (const auto& s : value)
+            vec.push_back(s.toStdString());
+        monitor_->setAvailableModes(vec);
+        emit updated();
+    }
+
+} // namespace qtbridge

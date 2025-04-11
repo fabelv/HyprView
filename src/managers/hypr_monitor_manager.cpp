@@ -49,7 +49,7 @@ namespace core {
         for (const auto& m : monitors) {
             std::ostringstream cmd;
 
-            if (m.isDisabled()) {
+            if (m.getDisabled()) {
                 cmd << "hyprctl keyword monitor " << m.getName() << ",disable";
             } else {
                 cmd << "hyprctl keyword monitor "
@@ -61,7 +61,7 @@ namespace core {
 
                 // Optional fields
                 cmd << ", transform, " << static_cast<int>(m.getTransform());
-                cmd << ", vrr, " << (m.isVrrEnabled() ? "1" : "0");
+                cmd << ", vrr, " << (m.getVrrEnabled() ? "1" : "0");
 
                 if (!m.getMirrorOf().empty() || m.getMirrorOf() != "none") {
                     cmd << ", mirror, " << m.getMirrorOf();

@@ -28,21 +28,4 @@ namespace core {
         return preUserEditMonitors_;
     }
 
-    auto MonitorManager::getSelectedMonitor() -> Monitor& {
-        if (selectedMonitorIndex_ < currentMonitors_.size()) {
-            return currentMonitors_.at(selectedMonitorIndex_);
-        }
-
-        log(LogLevel::Error, "Out of range: Selected Monitor Index out of range");
-        throw std::out_of_range("Selected Monitor Index out of range");
-    }
-
-    auto MonitorManager::setSelectedMonitorIndex(size_t monitorIndex) -> void {
-        if (monitorIndex >= currentMonitors_.size()) {
-            log(LogLevel::Error, "Invalid Argument: Monitor Index out of range");
-            throw std::invalid_argument("Monitor Index out of range");
-        }
-
-        selectedMonitorIndex_ = monitorIndex;
-    }
-}
+} // namespace core

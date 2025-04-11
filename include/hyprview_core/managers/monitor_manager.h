@@ -11,9 +11,6 @@ namespace core {
         public:
             // accessors
             auto getMonitors() -> std::vector<Monitor>&;
-            auto getSelectedMonitor() -> Monitor&;
-            auto setSelectedMonitorIndex(size_t monitorIndex) -> void;
-
 
         protected:
             // constructors

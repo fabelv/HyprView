@@ -20,6 +20,7 @@ namespace core {
             auto revertMonitorConfiguration() -> bool override;
 
         private:
+            // helper methods
             auto applyMonitorConfiguration(std::vector<Monitor> &monitors) -> bool;
     };
 

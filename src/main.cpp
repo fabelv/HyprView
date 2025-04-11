@@ -23,8 +23,8 @@ int main(int argc, char *argv[]) {
     QQmlApplicationEngine engine;
 
     log(core::LogLevel::Info, "Registering QML types...");
-    qmlRegisterType<QmlMonitor>("HyprView", 1, 0, "QmlMonitor");
-    auto qmlManager = std::make_unique<QmlMonitorManager>(coreManager.get());
+    qmlRegisterType<qtbridge::QmlMonitor>("HyprView", 1, 0, "QmlMonitor");
+    auto qmlManager = std::make_unique<qtbridge::QmlMonitorManager>(coreManager.get());
 
     log(core::LogLevel::Info, "Exposing context properties...");
     engine.rootContext()->setContextProperty("monitorManager", qmlManager.get());

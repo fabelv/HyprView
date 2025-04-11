@@ -3,10 +3,13 @@
 #include "qml_monitor.h"
 #include "hyprview_core/utils/logger.h"
 #include "hyprview_core/utils/monitor_geometry.h"
+
 #include <vector>
 
+namespace qtbridge {
+
 QmlMonitorManager::QmlMonitorManager(core::HyprMonitorManager* coreManager, QObject* parent)
-    : QObject(parent), m_coreManager(coreManager), m_selectedMonitor(nullptr) {
+    : QObject(parent), coreManager_(coreManager), selectedMonitorIndex_(-1) {
     log(core::LogLevel::Info, "Initializing QmlMonitorManager...");
     scanMonitors();
 }
@@ -16,79 +19,85 @@ QmlMonitorManager::~QmlMonitorManager() {
 }
 
 void QmlMonitorManager::clearQmlMonitors() {
-    m_selectedMonitor = nullptr;
-    /*emit selectedMonitorChanged();*/
+    selectedMonitorIndex_ = -1;
+    emit selectedMonitorIndexChanged();
 
-    qDeleteAll(m_monitors);
-    m_monitors.clear();
-    /*emit monitorsChanged();*/
+    qDeleteAll(monitors_);
+    monitors_.clear();
+    emit monitorsChanged();
 }
 
-QList<QmlMonitor*> QmlMonitorManager::wrapCoreMonitors(std::vector<core::Monitor> &monitors) {
+QList<QmlMonitor*> QmlMonitorManager::wrapCoreMonitors(std::vector<core::Monitor>& monitors) {
     QList<QmlMonitor*> list;
-
     for (core::Monitor& mon : monitors) {
         list.append(wrapCoreMonitor(mon));
     }
-
     return list;
 }
 
-QmlMonitor* QmlMonitorManager::wrapCoreMonitor(core::Monitor &monitor) {
+QmlMonitor* QmlMonitorManager::wrapCoreMonitor(core::Monitor& monitor) {
     return new QmlMonitor(&monitor, this);
 }
 
 void QmlMonitorManager::scanMonitors() {
     log(core::LogLevel::Info, "Scanning monitors...");
-    m_coreManager->scanMonitors();
+    coreManager_->scanMonitors();
 
     clearQmlMonitors();
-    m_monitors = wrapCoreMonitors(m_coreManager->getMonitors());
-    m_selectedMonitor = wrapCoreMonitor(m_coreManager->getSelectedMonitor());
+    monitors_ = wrapCoreMonitors(coreManager_->getMonitors());
+    selectedMonitorIndex_ = 0;
 
     emit monitorsChanged();
-    emit selectedMonitorChanged();
+    emit selectedMonitorIndexChanged();
 }
 
 QList<QmlMonitor*> QmlMonitorManager::getMonitors() const {
-    return m_monitors;
+    return monitors_;
 }
 
 QmlMonitor* QmlMonitorManager::getSelectedMonitor() const {
-    return m_selectedMonitor;
+    if (selectedMonitorIndex_ >= 0 && selectedMonitorIndex_ < monitors_.size()) {
+        return monitors_.at(selectedMonitorIndex_);
+    }
+    return nullptr;
 }
 
-void QmlMonitorManager::setSelectedMonitor(QmlMonitor* monitor) {
-    if (m_selectedMonitor != monitor) {
-        m_selectedMonitor = monitor;
-        emit selectedMonitorChanged();
+int QmlMonitorManager::getSelectedMonitorIndex() const {
+    return selectedMonitorIndex_;
+}
+
+void QmlMonitorManager::setSelectedMonitorIndex(int index) {
+    if (index >= 0 && index < monitors_.size() && index != selectedMonitorIndex_) {
+        selectedMonitorIndex_ = index;
+        emit selectedMonitorIndexChanged();
     }
 }
 
 QPoint QmlMonitorManager::getSnappedPosition(const QString& monitorName) {
-    const auto &dragged = m_coreManager->getMonitors().at(0);
-
-    const auto& allMonitors = m_coreManager->getMonitors();
+    const auto& dragged = coreManager_->getMonitors().at(0);  // TODO: adapt if needed
+    const auto& allMonitors = coreManager_->getMonitors();
     const auto pos = core::MonitorGeometry::getSnappedPosition(dragged, allMonitors);
     return QPoint(pos.x, pos.y);
 }
 
 double QmlMonitorManager::calculatePreviewScaleFactor(int areaWidth, int areaHeight, float marginPercentage) {
-    return core::MonitorGeometry::calculatePreviewScaleFactor(areaWidth, areaHeight, marginPercentage, m_coreManager->getMonitors());
+    return core::MonitorGeometry::calculatePreviewScaleFactor(areaWidth, areaHeight, marginPercentage, coreManager_->getMonitors());
 }
 
 QPoint QmlMonitorManager::calculateOffsetToCenter(double scaleFactor, int width, int height) {
-    auto pos = core::MonitorGeometry::calculateCenteredOffset(m_coreManager->getMonitors() ,scaleFactor, width, height);
+    auto pos = core::MonitorGeometry::calculateCenteredOffset(coreManager_->getMonitors(), scaleFactor, width, height);
     return QPoint(pos.x, pos.y);
 }
 
 void QmlMonitorManager::applyMonitorConfiguration() {
-    m_coreManager->applyMonitorConfiguration();
+    coreManager_->applyMonitorConfiguration();
     emit monitorConfigurationApplied();
 }
 
 void QmlMonitorManager::revertMonitorConfiguration() {
-    m_coreManager->revertMonitorConfiguration();
+    coreManager_->revertMonitorConfiguration();
     emit monitorsChanged();
 }
+
+} // namespace qtbridge
 

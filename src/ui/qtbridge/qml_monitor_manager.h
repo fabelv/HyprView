@@ -7,38 +7,49 @@
 #include "qml_monitor.h"
 #include "../../managers/hypr_monitor_manager.h"
 
-class QmlMonitorManager : public QObject {
-    Q_OBJECT
+namespace qtbridge {
 
-    Q_PROPERTY(QList<QmlMonitor*> monitors READ getMonitors NOTIFY monitorsChanged)
-    Q_PROPERTY(QmlMonitor* selectedMonitor READ getSelectedMonitor WRITE setSelectedMonitor NOTIFY selectedMonitorChanged)
+    class QmlMonitorManager : public QObject {
+        Q_OBJECT
 
-public:
-    explicit QmlMonitorManager(core::HyprMonitorManager* coreManager, QObject* parent = nullptr);
-    ~QmlMonitorManager();
+        // qml properties
+        Q_PROPERTY(QList<QmlMonitor*> monitors_ READ getMonitors NOTIFY monitorsChanged)
+        Q_PROPERTY(int selectedMonitorIndex_ READ getSelectedMonitorIndex WRITE setSelectedMonitorIndex NOTIFY selectedMonitorIndexChanged)
 
-    Q_INVOKABLE void applyMonitorConfiguration();
-    Q_INVOKABLE void revertMonitorConfiguration();
-    Q_INVOKABLE void scanMonitors();
-    Q_INVOKABLE QPoint getSnappedPosition(const QString &monitorName);
-    Q_INVOKABLE QPoint calculateOffsetToCenter(double scaleFactor, int width, int height);
-    Q_INVOKABLE double calculatePreviewScaleFactor(int areaWidth, int areaHeight, float marginPercentage);
+    public:
+        explicit QmlMonitorManager(core::HyprMonitorManager* coreManager, QObject* parent = nullptr);
+        ~QmlMonitorManager();
+        
+        // core methods
+        Q_INVOKABLE void scanMonitors();
+        Q_INVOKABLE void applyMonitorConfiguration();
+        Q_INVOKABLE void revertMonitorConfiguration();
+        Q_INVOKABLE QPoint getSnappedPosition(const QString &monitorName);
+        Q_INVOKABLE QPoint calculateOffsetToCenter(double scaleFactor, int width, int height);
+        Q_INVOKABLE double calculatePreviewScaleFactor(int areaWidth, int areaHeight, float marginPercentage);
 
-    QList<QmlMonitor*> getMonitors() const;
-    QmlMonitor* getSelectedMonitor() const;
-    void setSelectedMonitor(QmlMonitor* monitor);
+        // accessors
+        Q_INVOKABLE QmlMonitor* getSelectedMonitor() const;
+        auto getMonitors() const -> QList<QmlMonitor*>;
+        auto getSelectedMonitorIndex() const -> int;
+        auto setSelectedMonitorIndex(int index) -> void;
 
-signals:
-    void monitorConfigurationApplied();
-    void monitorsChanged();
-    void selectedMonitorChanged();
+    signals:
+        void monitorConfigurationApplied();
+        void monitorsChanged();
+        void selectedMonitorIndexChanged();
 
-private:
-    core::HyprMonitorManager* m_coreManager;
-    QList<QmlMonitor*> m_monitors;
-    QmlMonitor* m_selectedMonitor;
+    private:
+        // helper methods
+        void clearQmlMonitors();
+        QList<QmlMonitor*> wrapCoreMonitors(std::vector<core::Monitor> &monitors);
+        QmlMonitor* wrapCoreMonitor(core::Monitor &monitor);
 
-    void clearQmlMonitors();
-    QList<QmlMonitor*> wrapCoreMonitors(std::vector<core::Monitor> &monitors);
-    QmlMonitor* wrapCoreMonitor(core::Monitor &monitor);
-};
+        // attributes
+        core::HyprMonitorManager* coreManager_;
+        QList<QmlMonitor*> monitors_;
+        int selectedMonitorIndex_ = -1;
+    };
+
+} // namespace qtbridge
+

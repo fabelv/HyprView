@@ -6,91 +6,111 @@
 
 namespace core {
 
-class Monitor {
-public:
-    Monitor();
-    Monitor(const Monitor& other) = default;
+    class Monitor {
+        public:
+            // constructors
+            Monitor();
+            Monitor(const Monitor& other) = default;
 
-    Monitor& operator=(const Monitor& other) = default;
+            // operators
+            Monitor& operator=(const Monitor& other) = default;
 
-    std::string toString() const;
-    void applyModeString(const std::string& mode);
-    std::string generateCurrentMode() const;
+            // core methods
+            auto toString() const -> const std::string;
+            auto applyModeString(const std::string& mode) -> void;
+            auto generateCurrentMode() const -> std::string;
 
-    // Getters
-    int getId() const;
-    const std::string& getName() const;
-    const std::string& getDescription() const;
-    const std::string& getMake() const;
-    const std::string& getModel() const;
-    const std::string& getSerial() const;
-    int getWidth() const;
-    int getHeight() const;
-    double getRefreshRate() const;
-    int getPositionX() const;
-    int getPositionY() const;
-    double getScale() const;
-    Transform getTransform() const;
-    bool isFocused() const;
-    bool getDpmsStatus() const;
-    bool isVrrEnabled() const;
-    const std::string& getSolitary() const;
-    bool isActivelyTearing() const;
-    const std::string& getDirectScanoutTo() const;
-    bool isDisabled() const;
-    const std::string& getCurrentFormat() const;
-    const std::string& getMirrorOf() const;
-    const std::vector<std::string>& getAvailableModes() const;
+            // accessors
+            auto getId() const -> const int;
+            auto setId(int) -> void;
 
-    // Setters
-    void setId(int);
-    void setName(const std::string&);
-    void setDescription(const std::string&);
-    void setMake(const std::string&);
-    void setModel(const std::string&);
-    void setSerial(const std::string&);
-    void setWidth(int);
-    void setHeight(int);
-    void setRefreshRate(double);
-    void setPositionX(int);
-    void setPositionY(int);
-    void setScale(double);
-    void setTransform(Transform);
-    void setFocused(bool);
-    void setDpmsStatus(bool);
-    void setVrrEnabled(bool);
-    void setSolitary(const std::string&);
-    void setActivelyTearing(bool);
-    void setDirectScanoutTo(const std::string&);
-    void setDisabled(bool);
-    void setCurrentFormat(const std::string&);
-    void setMirrorOf(const std::string&);
-    void setAvailableModes(const std::vector<std::string>&);
+            auto getName() const -> const std::string&;
+            auto setName(const std::string&) -> void;
 
-private:
-    int id {};
-    std::string name {};
-    std::string description {};
-    std::string make {};
-    std::string model {};
-    std::string serial {};
-    int width {};
-    int height {};
-    double refreshRate {};
-    int positionX {};
-    int positionY {};
-    double scale {};
-    Transform transform {};
-    bool focused {};
-    bool dpmsStatus {};
-    bool vrr {};
-    std::string solitary {};
-    bool activelyTearing {};
-    std::string directScanoutTo {};
-    bool disabled {};
-    std::string currentFormat {};
-    std::string mirrorOf {};
-    std::vector<std::string> availableModes {};
-};
+            auto getDescription() const -> const std::string&;
+            auto setDescription(const std::string&) -> void;
+
+            auto getMake() const -> const std::string&;
+            auto setMake(const std::string&) -> void;
+
+            auto getModel() const -> const std::string&;
+            auto setModel(const std::string&) -> void;
+
+            auto getSerial() const -> const std::string&;
+            auto setSerial(const std::string&) -> void;
+
+            auto getWidth() const -> const int;
+            auto setWidth(int) -> void;
+
+            auto getHeight() const -> const int;
+            auto setHeight(int) -> void;
+
+            auto getRefreshRate() const -> const double;
+            auto setRefreshRate(double) -> void;
+
+            auto getPositionX() const -> const int;
+            auto setPositionX(int) -> void;
+
+            auto getPositionY() const -> const int;
+            auto setPositionY(int) -> void;
+
+            auto getScale() const -> const double;
+            auto setScale(double) -> void;
+
+            auto getTransform() const -> const Transform;
+            auto setTransform(Transform) -> void;
+
+            auto getDpmsStatus() const -> const bool;
+            auto setDpmsStatus(bool) -> void;
+
+            auto getVrrEnabled() const -> const bool;
+            auto setVrrEnabled(bool) -> void;
+
+            auto getSolitary() const -> const std::string&;
+            auto setSolitary(const std::string&) -> void;
+
+            auto getActivelyTearing() const -> const bool;
+            auto setActivelyTearing(bool) -> void;
+
+            auto getDirectScanoutTo() const -> const std::string&;
+            auto setDirectScanoutTo(const std::string&) -> void;
+
+            auto getDisabled() const -> const bool;
+            auto setDisabled(bool) -> void;
+
+            auto getCurrentFormat() const -> const std::string&;
+            auto setCurrentFormat(const std::string&) -> void;
+
+            auto getMirrorOf() const -> const std::string&;
+            auto setMirrorOf(const std::string&) -> void;
+
+            auto getAvailableModes() const -> const std::vector<std::string>&;
+            auto setAvailableModes(const std::vector<std::string>&) -> void;
+
+        private:
+            // attributes
+            int id_ {};
+            std::string name_ {};
+            std::string description_ {};
+            std::string make_ {};
+            std::string model_ {};
+            std::string serial_ {};
+            int width_ {};
+            int height_ {};
+            double refreshRate_ {};
+            int positionX_ {};
+            int positionY_ {};
+            double scale_ {};
+            Transform transform_ {};
+            bool dpmsStatus_ {};
+            bool vrr_ {};
+            std::string solitary_ {};
+            bool activelyTearing_ {};
+            std::string directScanoutTo_ {};
+            bool disabled_ {};
+            std::string currentFormat_ {};
+            std::string mirrorOf_ {};
+            std::vector<std::string> availableModes_ {};    // modes format: <width>x<height>@<refreshRate>Hz
+    };
 
 } // namespace core
