@@ -37,12 +37,17 @@ Position MonitorGeometry::getSnappedPosition(const Monitor& dragged, const std::
 }
 
 std::pair<int, int> MonitorGeometry::findClosestSnap(const Monitor& dragged, const Monitor& other, int& bestDistance) {
-    int dx = 0, dy = 0;
+    int dx = 0;
+    int dy = 0;
 
-    int dX1 = dragged.getPositionX(), dX2 = dX1 + dragged.getWidth();
-    int dY1 = dragged.getPositionY(), dY2 = dY1 + dragged.getHeight();
-    int oX1 = other.getPositionX(), oX2 = oX1 + other.getWidth();
-    int oY1 = other.getPositionY(), oY2 = oY1 + other.getHeight();
+    int dX1 = dragged.getPositionX();
+    int dX2 = dX1 + dragged.getWidth();
+    int dY1 = dragged.getPositionY();
+    int dY2 = dY1 + dragged.getHeight();
+    int oX1 = other.getPositionX();
+    int oX2 = oX1 + other.getWidth();
+    int oY1 = other.getPositionY();
+    int oY2 = oY1 + other.getHeight();
 
     bool verticalOverlap = dY2 > oY1 && dY1 < oY2;
     bool horizontalOverlap = dX2 > oX1 && dX1 < oX2;
@@ -127,8 +132,10 @@ Position MonitorGeometry::calculateCenteredOffset(const std::vector<Monitor>& al
 }
 
 Bounds MonitorGeometry::computeBoundsOffset(const std::vector<Monitor>& allMonitors) {
-    int minX = INT_MAX, minY = INT_MAX;
-    int maxX = INT_MIN, maxY = INT_MIN;
+    int minX = INT_MAX;
+    int minY = INT_MAX;
+    int maxX = INT_MIN;
+    int maxY = INT_MIN;
 
     for (const auto& m : allMonitors) {
         minX = std::min(minX, m.getPositionX());
