@@ -16,7 +16,8 @@ Position MonitorGeometry::getSnappedPosition(const Monitor& dragged, const std::
         return Position(0, 0);
     }
 
-    int bestDx = 0, bestDy = 0;
+    int bestDx = 0;
+    int bestDy = 0;
     int bestDistance = INT_MAX;
 
     for (const Monitor& other : allMonitors) {

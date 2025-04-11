@@ -9,17 +9,17 @@ std::vector<std::string> MonitorHelpers::getAvailableMirrorMonitors(const Monito
     std::vector<std::string> availableMirrorMonitors;
 
     if (selectedMonitor.getMirrorOf() == ""){
-        availableMirrorMonitors.push_back("none");
+        availableMirrorMonitors.emplace_back("none");
     }
 
     for (const Monitor &m : monitors){
         if (m.getName() == selectedMonitor.getName()) continue;
 
-        availableMirrorMonitors.push_back(m.getName());
+        availableMirrorMonitors.emplace_back(m.getName());
     }
 
     if (selectedMonitor.getMirrorOf() != ""){
-        availableMirrorMonitors.push_back("none");
+        availableMirrorMonitors.emplace_back("none");
     }
 
     return availableMirrorMonitors;
