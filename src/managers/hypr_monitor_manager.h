@@ -5,24 +5,28 @@
 #include "hyprview_core/parsers/monitor_parser.h"
 #include <memory>
 #include <vector>
+#include <string>
 
 namespace core {
 
     class HyprMonitorManager : public MonitorManager {
-        public:
-            // constructors
-            explicit HyprMonitorManager(std::shared_ptr<MonitorParser> parser);
-            ~HyprMonitorManager() override = default;
+    public:
+        explicit HyprMonitorManager(std::shared_ptr<MonitorParser> parser);
+        ~HyprMonitorManager() override = default;
 
-            // core methods
-            auto scanMonitors() -> void override;
-            auto applyMonitorConfiguration() -> bool override;
-            auto revertMonitorConfiguration() -> bool override;
+        auto scanMonitors() -> void override;
+        auto applyMonitorConfiguration() -> bool override;
+        auto revertMonitorConfiguration() -> bool override;
 
-        private:
-            // helper methods
-            auto applyMonitorConfiguration(std::vector<Monitor> &monitors) -> bool;
+    protected:
+        // Extracted for testability
+        virtual auto fetchMonitorJson() -> std::string;
+        virtual auto executeCommand(const std::string& cmd) -> bool;
+
+    private:
+        auto applyMonitorConfiguration(std::vector<Monitor>& monitors) -> bool;
     };
 
 } // namespace core
+
 

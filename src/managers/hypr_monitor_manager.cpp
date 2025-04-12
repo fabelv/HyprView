@@ -1,5 +1,4 @@
 #include "hypr_monitor_manager.h"
-#include "hyprview_core/models/monitor.h"
 #include "hyprview_core/utils/logger.h"
 #include <array>
 #include <cstdio>
@@ -13,10 +12,15 @@
 namespace core {
 
     HyprMonitorManager::HyprMonitorManager(std::shared_ptr<MonitorParser> parser)
-        : MonitorManager(parser)
-    {}
+        : MonitorManager(parser) {}
 
     auto HyprMonitorManager::scanMonitors() -> void {
+        std::string jsonString = fetchMonitorJson();
+        auto monitors = parser_->parseMonitorsFromJson(jsonString);
+        setMonitors(monitors);
+    }
+
+    auto HyprMonitorManager::fetchMonitorJson() -> std::string {
         std::array<char, 128> buffer;
         std::string jsonString;
         std::unique_ptr<FILE, decltype(&pclose)> pipe(popen("hyprctl monitors -j", "r"), pclose);
@@ -30,9 +34,7 @@ namespace core {
             jsonString += buffer.data();
         }
 
-        auto monitors = parser_->parseMonitorsFromJson(jsonString);
-
-        setMonitors(monitors);
+        return jsonString;
     }
 
     auto HyprMonitorManager::applyMonitorConfiguration() -> bool {
@@ -44,8 +46,8 @@ namespace core {
         auto preUserEditMonitors = getPreUserEditMonitors();
         return applyMonitorConfiguration(preUserEditMonitors);
     }
-    
-    auto HyprMonitorManager::applyMonitorConfiguration(std::vector<Monitor> &monitors) -> bool {
+
+    auto HyprMonitorManager::applyMonitorConfiguration(std::vector<Monitor>& monitors) -> bool {
         for (const auto& m : monitors) {
             std::ostringstream cmd;
 
@@ -59,11 +61,10 @@ namespace core {
                     << m.getPositionX() << "x" << m.getPositionY() << ","
                     << std::fixed << std::setprecision(2) << m.getScale();
 
-                // Optional fields
                 cmd << ", transform, " << static_cast<int>(m.getTransform());
                 cmd << ", vrr, " << (m.getVrrEnabled() ? "1" : "0");
 
-                if (!m.getMirrorOf().empty() || m.getMirrorOf() != "none") {
+                if (!m.getMirrorOf().empty() && m.getMirrorOf() != "none") {
                     cmd << ", mirror, " << m.getMirrorOf();
                 }
             }
@@ -71,7 +72,7 @@ namespace core {
             std::string cmdStr = cmd.str();
             log(LogLevel::Info, "Running: " + cmdStr);
 
-            if (std::system(cmdStr.c_str()) != 0) {
+            if (!executeCommand(cmdStr)) {
                 log(LogLevel::Error, "Failed to apply monitor config: " + cmdStr);
                 return false;
             }
@@ -79,5 +80,8 @@ namespace core {
         return true;
     }
 
+    auto HyprMonitorManager::executeCommand(const std::string& cmd) -> bool {
+        return std::system(cmd.c_str()) == 0;
+    }
 
 } // namespace core

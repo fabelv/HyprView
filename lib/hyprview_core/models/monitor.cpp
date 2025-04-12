@@ -9,22 +9,6 @@ namespace core {
 
     Monitor::Monitor() {}
 
-    auto Monitor::toString() const -> const std::string {
-        std::ostringstream oss;
-        oss << "Monitor[" 
-            << id_ << "] " 
-            << name_
-            << " (" 
-            << width_ 
-            << "x" 
-            << height_ 
-            << " @ " 
-            << refreshRate_ 
-            << "Hz)";
-
-        return oss.str();
-    }
-
     auto Monitor::generateCurrentMode() const -> std::string {
         std::ostringstream oss;
         oss << width_ << "x" << height_ << "@" << refreshRate_ << "Hz";

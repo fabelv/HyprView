@@ -21,7 +21,6 @@ namespace core {
 
         currentMonitors_ = monitors;
         preUserEditMonitors_ = monitors;
-        selectedMonitorIndex_ = 0;
     }
 
     auto MonitorManager::getPreUserEditMonitors() -> std::vector<Monitor>& {

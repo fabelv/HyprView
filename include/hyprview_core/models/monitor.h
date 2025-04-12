@@ -16,9 +16,9 @@ namespace core {
             Monitor& operator=(const Monitor& other) = default;
 
             // core methods
-            auto toString() const -> const std::string;
-            auto applyModeString(const std::string& mode) -> void;
-            auto generateCurrentMode() const -> std::string;
+            auto applyModeString(const std::string& mode) -> void;                  // use mode format to set width, height and refreshRate
+            auto generateCurrentMode() const -> std::string;                        // modes format: <width>x<height>@<refreshRate>Hz
+
 
             // accessors
             auto getId() const -> const int;
@@ -110,7 +110,7 @@ namespace core {
             bool disabled_ {};
             std::string currentFormat_ {};
             std::string mirrorOf_ {};
-            std::vector<std::string> availableModes_ {};    // modes format: <width>x<height>@<refreshRate>Hz
+            std::vector<std::string> availableModes_ {};                            // modes format: <width>x<height>@<refreshRate>Hz
     };
 
 } // namespace core

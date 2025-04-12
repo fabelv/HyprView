@@ -31,7 +31,6 @@ namespace core {
 
         private:
             // attributes
-            size_t selectedMonitorIndex_;
             std::vector<Monitor> currentMonitors_;
             std::vector<Monitor> preUserEditMonitors_;
     };
