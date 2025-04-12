@@ -3,5 +3,10 @@ version = 1
 [[analyzers]]
 name = "cxx"
 
+[[analyzers]]
+name = "test-coverage"
+language = "cxx"
+
 [[transformers]]
 name = "clang-format"
+
