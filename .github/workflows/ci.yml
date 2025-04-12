@@ -52,7 +52,11 @@ jobs:
 
       - name: Generate coverage report
         run: |
-          nix develop --command gcovr -r . --lcov -o coverage.lcov
+          nix develop --command gcovr -r . \
+            --exclude '.*_autogen/.*' \
+            --exclude 'qrc_.*\.cpp' \
+            --lcov -o coverage.lcov
+
 
       - name: Report results to DeepSource
         run: |
