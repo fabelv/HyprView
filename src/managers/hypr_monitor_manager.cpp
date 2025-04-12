@@ -25,36 +25,6 @@ auto HyprMonitorManager::scanMonitors() -> void {
     setMonitors(monitors);
 }
 
-auto HyprMonitorManager::fetchMonitorJson() -> std::string {
-    int pipefd[2];
-    if (pipe(pipefd) == -1) throw std::runtime_error("pipe failed");
-
-    pid_t pid = fork();
-    if (pid == -1) throw std::runtime_error("fork failed");
-
-    if (pid == 0) {
-        // Child
-        close(pipefd[0]);  // close read end
-        dup2(pipefd[1], STDOUT_FILENO);
-        close(pipefd[1]);
-        execlp("hyprctl", "hyprctl", "monitors", "-j", (char*)nullptr);
-        _exit(127);  // exec failed
-    }
-
-    // Parent
-    close(pipefd[1]);  // close write end
-    std::string output;
-    char buffer[128];
-    ssize_t count;
-    while ((count = read(pipefd[0], buffer, sizeof(buffer))) > 0) {
-        output.append(buffer, count);
-    }
-    close(pipefd[0]);
-    waitpid(pid, nullptr, 0);
-
-    return output;
-}
-
 auto HyprMonitorManager::applyMonitorConfiguration() -> bool {
     auto currentMonitors = getMonitors();
     return applyMonitorConfiguration(currentMonitors);
@@ -96,13 +66,51 @@ auto HyprMonitorManager::applyMonitorConfiguration(std::vector<Monitor>& monitor
     return true;
 }
 
-bool HyprMonitorManager::executeCommand(const std::string& cmd) {
+auto HyprMonitorManager::fetchMonitorJson() -> std::string {
+    std::array<int, 2> pipefd;
+    if (pipe(pipefd.data()) == -1) {
+        throw std::runtime_error("pipe failed");
+    }
+
+    pid_t pid = fork();
+    if (pid == -1) {
+        throw std::runtime_error("fork failed");
+    }
+
+    if (pid == 0) {
+        // Child
+        close(pipefd[0]);  // Close read end
+        dup2(pipefd[1], STDOUT_FILENO);
+        close(pipefd[1]);
+
+        execlp("hyprctl", "hyprctl", "monitors", "-j", static_cast<char*>(nullptr));
+        _exit(127);  // exec failed
+    }
+
+    // Parent
+    close(pipefd[1]);  // Close write end
+
+    std::string output;
+    std::array<char, 128> buffer;
+    ssize_t count;
+
+    while ((count = read(pipefd[0], buffer.data(), buffer.size())) > 0) {
+        output.append(buffer.data(), count);
+    }
+
+    close(pipefd[0]);
+    waitpid(pid, nullptr, 0);
+
+    return output;
+}
+
+auto HyprMonitorManager::executeCommand(const std::string& cmd) -> bool {
     pid_t pid = fork();
 
     if (pid == 0) {
-        // child process
-        execlp("sh", "sh", "-c", cmd.c_str(), (char*)nullptr);
-        _exit(127);  // only if exec fails
+        // Child
+        execlp("sh", "sh", "-c", cmd.c_str(), static_cast<char*>(nullptr));
+        _exit(127);  // exec failed
     } else if (pid < 0) {
         return false;  // fork failed
     }
