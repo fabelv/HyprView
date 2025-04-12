@@ -1,5 +1,9 @@
 # HyprView  
 
+[![DeepSource](https://app.deepsource.com/gh/fabelv/HyprView.svg/?label=code+coverage&show_trend=true&token=fKkgwXDw-xh90oVJeIu92EW7)](https://app.deepsource.com/gh/fabelv/HyprView/)
+[![DeepSource](https://app.deepsource.com/gh/fabelv/HyprView.svg/?label=active+issues&show_trend=true&token=fKkgwXDw-xh90oVJeIu92EW7)](https://app.deepsource.com/gh/fabelv/HyprView/)
+[![DeepSource](https://app.deepsource.com/gh/fabelv/HyprView.svg/?label=resolved+issues&show_trend=true&token=fKkgwXDw-xh90oVJeIu92EW7)](https://app.deepsource.com/gh/fabelv/HyprView/)
+
 HyprView is a Qt-based C++ application for managing monitor layouts in Hyprland.  
 
 ![App](./res/app.png)
