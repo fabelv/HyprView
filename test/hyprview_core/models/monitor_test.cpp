@@ -4,7 +4,6 @@
 
 using namespace core;
 
-
 // constructors
 
 TEST(MonitorTest, DefaultConstructor) {
@@ -90,7 +89,6 @@ TEST(MonitorTest, CopyConstructorDeepCopy) {
     EXPECT_NE(copy.getAvailableModes(), m.getAvailableModes());
 }
 
-
 // operators
 
 TEST(MonitorTest, CopyAssignmentDeepCopy) {
@@ -149,7 +147,6 @@ TEST(MonitorTest, CopyAssignmentDeepCopy) {
     m1.setAvailableModes({"1024x768@60Hz"});
     EXPECT_NE(m2.getAvailableModes(), m1.getAvailableModes());
 }
-
 
 // core methods
 
@@ -262,7 +259,6 @@ TEST(MonitorTest, GenerateCurrentMode) {
     EXPECT_EQ(m.generateCurrentMode(), "2560x1440@165Hz");
 }
 
-
 // accessors
 
 TEST(MonitorTest, FullSetterGetterCoverage) {
@@ -315,8 +311,3 @@ TEST(MonitorTest, FullSetterGetterCoverage) {
     EXPECT_EQ(m.getMirrorOf(), "HDMI-A-1");
     EXPECT_EQ(m.getAvailableModes(), modes);
 }
-
-
-
-
-

@@ -1,38 +1,36 @@
 #include "../../src/managers/hypr_monitor_manager.h"
+
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
+
 #include "hyprview_core/models/monitor.h"
 #include "hyprview_core/parsers/monitor_parser.h"
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
 
 using namespace core;
 using ::testing::Return;
 
 class MockMonitorParser : public MonitorParser {
-public:
+   public:
     MOCK_METHOD(std::vector<Monitor>, parseMonitorsFromJson, (const std::string&), (override));
 };
 
 class TestableHyprMonitorManager : public HyprMonitorManager {
-    public:
-        using HyprMonitorManager::HyprMonitorManager;
+   public:
+    using HyprMonitorManager::HyprMonitorManager;
 
-        std::string testJson;
-        std::vector<std::string> commandsRun;
-        bool commandSuccess = true;
+    std::string testJson;
+    std::vector<std::string> commandsRun;
+    bool commandSuccess = true;
 
-        void testSetMonitors(std::vector<Monitor>& monitors) {
-            setMonitors(monitors);
-        }
+    void testSetMonitors(std::vector<Monitor>& monitors) { setMonitors(monitors); }
 
-    protected:
-        std::string fetchMonitorJson() override {
-            return testJson;
-        }
+   protected:
+    std::string fetchMonitorJson() override { return testJson; }
 
-        bool executeCommand(const std::string& cmd) override {
-            commandsRun.push_back(cmd);
-            return commandSuccess;
-        }
+    bool executeCommand(const std::string& cmd) override {
+        commandsRun.push_back(cmd);
+        return commandSuccess;
+    }
 };
 
 TEST(HyprMonitorManagerTest, ParsesJsonCorrectlyInScanMonitors) {
@@ -45,7 +43,7 @@ TEST(HyprMonitorManagerTest, ParsesJsonCorrectlyInScanMonitors) {
     manager.testJson = R"([{"id":0,"name":"DP-1"}])";
 
     EXPECT_CALL(*parser, parseMonitorsFromJson(manager.testJson))
-        .WillOnce(Return(std::vector<Monitor>{ monitor }));
+        .WillOnce(Return(std::vector<Monitor>{monitor}));
 
     manager.scanMonitors();
 
@@ -70,7 +68,7 @@ TEST(HyprMonitorManagerTest, BuildsCommandCorrectlyForMonitor) {
     m.setVrrEnabled(false);
     m.setMirrorOf("none");
 
-    std::vector<Monitor> monitors = { m };
+    std::vector<Monitor> monitors = {m};
     manager.testSetMonitors(monitors);
 
     bool success = manager.applyMonitorConfiguration();
@@ -95,7 +93,7 @@ TEST(HyprMonitorManagerTest, CommandFailureReturnsFalse) {
     m.setVrrEnabled(true);
     m.setMirrorOf("none");
 
-    std::vector<Monitor> monitors = { m };
+    std::vector<Monitor> monitors = {m};
     manager.testSetMonitors(monitors);
 
     manager.commandSuccess = false;
@@ -104,4 +102,3 @@ TEST(HyprMonitorManagerTest, CommandFailureReturnsFalse) {
     EXPECT_FALSE(success);
     ASSERT_EQ(manager.commandsRun.size(), 1);
 }
-

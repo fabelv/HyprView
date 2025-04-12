@@ -4,7 +4,7 @@
 
 class TransformHelper : public QObject {
     Q_OBJECT
-public:
+   public:
     enum Transform {
         Normal = 0,
         Rotate90 = 1,
@@ -17,4 +17,3 @@ public:
     };
     Q_ENUM(Transform)
 };
-

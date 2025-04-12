@@ -1,13 +1,16 @@
 #include "hyprview_core/managers/monitor_manager.h"
-#include "hyprview_core/models/monitor.h"
+
 #include <gtest/gtest.h>
+
 #include <memory>
 #include <vector>
+
+#include "hyprview_core/models/monitor.h"
 
 using namespace core;
 
 class TestableMonitorManager : public core::MonitorManager {
-public:
+   public:
     explicit TestableMonitorManager(std::shared_ptr<core::MonitorParser> parser)
         : core::MonitorManager(parser) {}
 
@@ -15,16 +18,10 @@ public:
     bool applyMonitorConfiguration() override { return true; }
     bool revertMonitorConfiguration() override { return true; }
 
-    void testSetMonitors(std::vector<core::Monitor>& monitors) {
-        setMonitors(monitors);
-    }
+    void testSetMonitors(std::vector<core::Monitor>& monitors) { setMonitors(monitors); }
 
-    std::vector<core::Monitor>& testGetPreUserEditMonitors() {
-        return getPreUserEditMonitors();
-    }
+    std::vector<core::Monitor>& testGetPreUserEditMonitors() { return getPreUserEditMonitors(); }
 };
-
-
 
 TEST(MonitorManagerTest, ThrowsOnEmptySetMonitors) {
     TestableMonitorManager manager(nullptr);
@@ -42,7 +39,7 @@ TEST(MonitorManagerTest, StoresSingleMonitorCorrectly) {
     m.setWidth(1920);
     m.setHeight(1080);
 
-    std::vector<Monitor> monitors = { m };
+    std::vector<Monitor> monitors = {m};
     manager.testSetMonitors(monitors);
 
     auto& current = manager.getMonitors();
@@ -69,7 +66,7 @@ TEST(MonitorManagerTest, StoresMultipleMonitorsCorrectly) {
     m2.setId(2);
     m2.setName("DP-1");
 
-    std::vector<Monitor> monitors = { m1, m2 };
+    std::vector<Monitor> monitors = {m1, m2};
     manager.testSetMonitors(monitors);
 
     auto& current = manager.getMonitors();
@@ -90,7 +87,7 @@ TEST(MonitorManagerTest, GetMonitorsReturnsReference) {
 
     Monitor m;
     m.setName("DP-2");
-    std::vector<Monitor> monitors = { m };
+    std::vector<Monitor> monitors = {m};
     manager.testSetMonitors(monitors);
 
     auto& ref1 = manager.getMonitors();
@@ -105,7 +102,7 @@ TEST(MonitorManagerTest, GetPreUserEditMonitorsReturnsReference) {
 
     Monitor m;
     m.setName("DP-2");
-    std::vector<Monitor> monitors = { m };
+    std::vector<Monitor> monitors = {m};
     manager.testSetMonitors(monitors);
 
     auto& ref1 = manager.testGetPreUserEditMonitors();
