@@ -1,6 +1,9 @@
 #include "hypr_monitor_manager.h"
 
-#include <array>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
 #include <cstdio>
 #include <iomanip>
 #include <memory>
@@ -13,30 +16,13 @@
 
 namespace core {
 
-HyprMonitorManager::HyprMonitorManager(std::shared_ptr<MonitorParser> parser)
+HyprMonitorManager::HyprMonitorManager(const std::shared_ptr<MonitorParser>& parser)
     : MonitorManager(parser) {}
 
 auto HyprMonitorManager::scanMonitors() -> void {
     std::string jsonString = fetchMonitorJson();
     auto monitors = parser_->parseMonitorsFromJson(jsonString);
     setMonitors(monitors);
-}
-
-auto HyprMonitorManager::fetchMonitorJson() -> std::string {
-    std::array<char, 128> buffer;
-    std::string jsonString;
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen("hyprctl monitors -j", "r"), pclose);
-
-    if (!pipe) {
-        log(LogLevel::Error, "popen() failed");
-        throw std::runtime_error("popen() failed");
-    }
-
-    while (fgets(buffer.data(), static_cast<int>(buffer.size()), pipe.get()) != nullptr) {
-        jsonString += buffer.data();
-    }
-
-    return jsonString;
 }
 
 auto HyprMonitorManager::applyMonitorConfiguration() -> bool {
@@ -80,8 +66,58 @@ auto HyprMonitorManager::applyMonitorConfiguration(std::vector<Monitor>& monitor
     return true;
 }
 
+auto HyprMonitorManager::fetchMonitorJson() -> std::string {
+    std::array<int, 2> pipefd;
+    if (pipe(pipefd.data()) == -1) {
+        throw std::runtime_error("pipe failed");
+    }
+
+    pid_t pid = fork();
+    if (pid == -1) {
+        throw std::runtime_error("fork failed");
+    }
+
+    if (pid == 0) {
+        // Child
+        close(pipefd[0]);  // Close read end
+        dup2(pipefd[1], STDOUT_FILENO);
+        close(pipefd[1]);
+
+        execlp("hyprctl", "hyprctl", "monitors", "-j", static_cast<char*>(nullptr));
+        _exit(127);  // exec failed
+    }
+
+    // Parent
+    close(pipefd[1]);  // Close write end
+
+    std::string output;
+    std::array<char, 128> buffer;
+    ssize_t count;
+
+    while ((count = read(pipefd[0], buffer.data(), buffer.size())) > 0) {
+        output.append(buffer.data(), count);
+    }
+
+    close(pipefd[0]);
+    waitpid(pid, nullptr, 0);
+
+    return output;
+}
+
 auto HyprMonitorManager::executeCommand(const std::string& cmd) -> bool {
-    return std::system(cmd.c_str()) == 0;
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        // Child
+        execlp("sh", "sh", "-c", cmd.c_str(), static_cast<char*>(nullptr));
+        _exit(127);  // exec failed
+    } else if (pid < 0) {
+        return false;  // fork failed
+    }
+
+    int status = 0;
+    waitpid(pid, &status, 0);
+    return WIFEXITED(status) && WEXITSTATUS(status) == 0;
 }
 
 }  // namespace core

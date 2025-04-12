@@ -15,7 +15,7 @@ class MonitorManager {
 
    protected:
     // constructors
-    explicit MonitorManager(std::shared_ptr<MonitorParser> parser);
+    explicit MonitorManager(const std::shared_ptr<MonitorParser> &parser);
     virtual ~MonitorManager() = default;
 
     // core methods

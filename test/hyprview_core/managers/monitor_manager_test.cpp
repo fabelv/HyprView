@@ -11,7 +11,7 @@ using namespace core;
 
 class TestableMonitorManager : public core::MonitorManager {
    public:
-    explicit TestableMonitorManager(std::shared_ptr<core::MonitorParser> parser)
+    explicit TestableMonitorManager(const std::shared_ptr<core::MonitorParser>& parser)
         : core::MonitorManager(parser) {}
 
     void scanMonitors() override {}
