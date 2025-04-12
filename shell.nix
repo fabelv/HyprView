@@ -14,6 +14,7 @@ in pkgs.mkShell {
     pkgs.clang-tools
     pkgs.cppcheck
     pkgs.gcovr
+    pkgs.clang-tools
   ];
 
   buildInputs = [

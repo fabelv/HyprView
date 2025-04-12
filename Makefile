@@ -27,6 +27,12 @@ update_compile_commands:
 run: build
 	@./$(BUILD_DIR)/$(EXECUTABLE)
 
+format:
+	clang-format ./*
+
+fix-format:
+	clang-format -i ./*
+
 test: build
 	@./$(BUILD_DIR)/$(TEST_EXECUTABLE)
 
