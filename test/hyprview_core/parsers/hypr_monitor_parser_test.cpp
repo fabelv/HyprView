@@ -1,16 +1,15 @@
-#include <gtest/gtest.h>
 #include "hyprview_core/parsers/hypr_monitor_parser.h"
+#include <gtest/gtest.h>
 
 using namespace core;
 
-
-auto runParse(const std::string& json) -> std::vector<Monitor> {
-    HyprMonitorParser parser;
-    return parser.parseMonitorsFromJson(json);
+auto runParse(const std::string &json) -> std::vector<Monitor> {
+  HyprMonitorParser parser;
+  return parser.parseMonitorsFromJson(json);
 }
 
 TEST(HyprMonitorParserTest, ParsesSingleMonitorCorrectly) {
-    const std::string json = R"([
+  const std::string json = R"([
         {
             "id": 1,
             "name": "DP-1",
@@ -37,36 +36,36 @@ TEST(HyprMonitorParserTest, ParsesSingleMonitorCorrectly) {
         }
     ])";
 
-    auto monitors = runParse(json);
-    ASSERT_EQ(monitors.size(), 1);
-    const auto& m = monitors[0];
-    EXPECT_EQ(m.getId(), 1);
-    EXPECT_EQ(m.getName(), "DP-1");
-    EXPECT_EQ(m.getDescription(), "Test Monitor");
-    EXPECT_EQ(m.getMake(), "TestMake");
-    EXPECT_EQ(m.getModel(), "TestModel");
-    EXPECT_EQ(m.getSerial(), "123ABC");
-    EXPECT_EQ(m.getWidth(), 1920);
-    EXPECT_EQ(m.getHeight(), 1080);
-    EXPECT_DOUBLE_EQ(m.getRefreshRate(), 60.0);
-    EXPECT_EQ(m.getPositionX(), 0);
-    EXPECT_EQ(m.getPositionY(), 0);
-    EXPECT_DOUBLE_EQ(m.getScale(), 1.0);
-    EXPECT_EQ(m.getTransform(), Transform::Normal);
-    EXPECT_TRUE(m.getDpmsStatus());
-    EXPECT_FALSE(m.getVrrEnabled());
-    EXPECT_EQ(m.getSolitary(), "0");
-    EXPECT_FALSE(m.getActivelyTearing());
-    EXPECT_EQ(m.getDirectScanoutTo(), "0");
-    EXPECT_FALSE(m.getDisabled());
-    EXPECT_EQ(m.getCurrentFormat(), "XRGB8888");
-    EXPECT_EQ(m.getMirrorOf(), "none");
-    ASSERT_EQ(m.getAvailableModes().size(), 1);
-    EXPECT_EQ(m.getAvailableModes()[0], "1920x1080@60.00Hz");
+  auto monitors = runParse(json);
+  ASSERT_EQ(monitors.size(), 1);
+  const auto &m = monitors[0];
+  EXPECT_EQ(m.getId(), 1);
+  EXPECT_EQ(m.getName(), "DP-1");
+  EXPECT_EQ(m.getDescription(), "Test Monitor");
+  EXPECT_EQ(m.getMake(), "TestMake");
+  EXPECT_EQ(m.getModel(), "TestModel");
+  EXPECT_EQ(m.getSerial(), "123ABC");
+  EXPECT_EQ(m.getWidth(), 1920);
+  EXPECT_EQ(m.getHeight(), 1080);
+  EXPECT_DOUBLE_EQ(m.getRefreshRate(), 60.0);
+  EXPECT_EQ(m.getPositionX(), 0);
+  EXPECT_EQ(m.getPositionY(), 0);
+  EXPECT_DOUBLE_EQ(m.getScale(), 1.0);
+  EXPECT_EQ(m.getTransform(), Transform::Normal);
+  EXPECT_TRUE(m.getDpmsStatus());
+  EXPECT_FALSE(m.getVrrEnabled());
+  EXPECT_EQ(m.getSolitary(), "0");
+  EXPECT_FALSE(m.getActivelyTearing());
+  EXPECT_EQ(m.getDirectScanoutTo(), "0");
+  EXPECT_FALSE(m.getDisabled());
+  EXPECT_EQ(m.getCurrentFormat(), "XRGB8888");
+  EXPECT_EQ(m.getMirrorOf(), "none");
+  ASSERT_EQ(m.getAvailableModes().size(), 1);
+  EXPECT_EQ(m.getAvailableModes()[0], "1920x1080@60.00Hz");
 }
 
 TEST(HyprMonitorParserTest, ParsesMultipleMonitorsCorrectly) {
-    const std::string json = R"([
+  const std::string json = R"([
         {
             "id": 0,
             "name": "DP-2",
@@ -117,32 +116,32 @@ TEST(HyprMonitorParserTest, ParsesMultipleMonitorsCorrectly) {
         }
     ])";
 
-    auto monitors = runParse(json);
-    ASSERT_EQ(monitors.size(), 2);
-    EXPECT_EQ(monitors[0].getName(), "DP-2");
-    EXPECT_EQ(monitors[1].getName(), "DP-4");
+  auto monitors = runParse(json);
+  ASSERT_EQ(monitors.size(), 2);
+  EXPECT_EQ(monitors[0].getName(), "DP-2");
+  EXPECT_EQ(monitors[1].getName(), "DP-4");
 }
 
 TEST(HyprMonitorParserTest, FailsWhenJsonIsNotArray) {
-    const std::string json = R"(
+  const std::string json = R"(
         { "id": 0, "name": "DP-1" }
     )";
 
-    auto monitors = runParse(json);
-    EXPECT_TRUE(monitors.empty());
+  auto monitors = runParse(json);
+  EXPECT_TRUE(monitors.empty());
 }
 
 TEST(HyprMonitorParserTest, FailsOnMalformedJson) {
-    const std::string json = R"([
+  const std::string json = R"([
         { "id": 1, "name": "DP-1", }
     ])"; // trailing comma
 
-    auto monitors = runParse(json);
-    EXPECT_TRUE(monitors.empty());
+  auto monitors = runParse(json);
+  EXPECT_TRUE(monitors.empty());
 }
 
 TEST(HyprMonitorParserTest, FailsWhenMonitorMissingRequiredField) {
-    const std::string json = R"([
+  const std::string json = R"([
         {
             "id": 1,
             "width": 1920,
@@ -150,18 +149,18 @@ TEST(HyprMonitorParserTest, FailsWhenMonitorMissingRequiredField) {
         }
     ])";
 
-    auto monitors = runParse(json);
-    EXPECT_TRUE(monitors.empty());
+  auto monitors = runParse(json);
+  EXPECT_TRUE(monitors.empty());
 }
 
 TEST(HyprMonitorParserTest, ParsesEmptyArray) {
-    const std::string json = R"([])";
-    auto monitors = runParse(json);
-    EXPECT_TRUE(monitors.empty());
+  const std::string json = R"([])";
+  auto monitors = runParse(json);
+  EXPECT_TRUE(monitors.empty());
 }
 
 TEST(HyprMonitorParserTest, IgnoresPartialInvalidMonitor) {
-    const std::string json = R"([
+  const std::string json = R"([
         {
             "id": 0,
             "name": "DP-1",
@@ -192,7 +191,6 @@ TEST(HyprMonitorParserTest, IgnoresPartialInvalidMonitor) {
         }
     ])";
 
-    auto monitors = runParse(json);
-    EXPECT_TRUE(monitors.empty());
+  auto monitors = runParse(json);
+  EXPECT_TRUE(monitors.empty());
 }
-
