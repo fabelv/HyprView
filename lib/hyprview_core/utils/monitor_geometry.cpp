@@ -15,7 +15,7 @@ Position MonitorGeometry::getSnappedPosition(const Monitor& dragged,
                                              const std::vector<Monitor>& allMonitors) {
     if (allMonitors.empty() || allMonitors.size() == 1) {
         log(LogLevel::Debug, "No other monitors to snap to.");
-        return Position(0, 0);
+        return {0, 0};
     }
 
     int bestDx = 0;
