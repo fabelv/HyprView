@@ -29,13 +29,16 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 # ======================
-# 🧪 Coverage (only in Debug mode)
+# 🧪 Coverage 
 # ======================
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Enabling Code Coverage flags")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+option(CODE_COVERAGE "Enable code coverage flags" OFF)
+
+if(CODE_COVERAGE)
+    message(STATUS "Code coverage enabled")
+    add_compile_options(--coverage -O0 -g)
+    add_link_options(--coverage)
 endif()
+
 
 # ======================
 # 📦 Core library
