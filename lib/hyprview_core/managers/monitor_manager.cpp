@@ -5,7 +5,7 @@
 namespace core {
 
 // constructors
-MonitorManager::MonitorManager(std::shared_ptr<MonitorParser> parser) : parser_(parser) {}
+MonitorManager::MonitorManager(const std::shared_ptr<MonitorParser>& parser) : parser_(parser) {}
 
 // accessors
 auto MonitorManager::getMonitors() -> std::vector<Monitor>& { return currentMonitors_; }

@@ -36,7 +36,7 @@ Position MonitorGeometry::getSnappedPosition(const Monitor& dragged,
     int finalY = dragged.getPositionY() + bestDy;
 
     log(LogLevel::Debug, "Snapped to X=" + std::to_string(finalX) + " Y=" + std::to_string(finalY));
-    return Position(finalX, finalY);
+    return {finalX, finalY};
 }
 
 std::pair<int, int> MonitorGeometry::findClosestSnap(const Monitor& dragged, const Monitor& other,
@@ -137,7 +137,7 @@ Position MonitorGeometry::calculateCenteredOffset(const std::vector<Monitor>& al
     int offsetX = (areaWidth - scaledWidth) / 2;
     int offsetY = (areaHeight - scaledHeight) / 2;
 
-    return Position(offsetX, offsetY);
+    return {offsetX, offsetY};
 }
 
 Bounds MonitorGeometry::computeBoundsOffset(const std::vector<Monitor>& allMonitors) {

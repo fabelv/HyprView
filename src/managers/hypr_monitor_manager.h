@@ -12,7 +12,7 @@ namespace core {
 
 class HyprMonitorManager : public MonitorManager {
    public:
-    explicit HyprMonitorManager(std::shared_ptr<MonitorParser> parser);
+    explicit HyprMonitorManager(const std::shared_ptr<MonitorParser>& parser);
     ~HyprMonitorManager() override = default;
 
     auto scanMonitors() -> void override;
