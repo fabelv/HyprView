@@ -2,60 +2,60 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 ColumnLayout {
-    visible: monitorManager.selectedMonitor !== null
+    visible: monitorManager.selectedMonitorIndex_ >= 0
 
     RowLayout {
         Label { text: "ID:"; Layout.minimumWidth: 100 }
-        Label { text: monitorManager.selectedMonitor?.id ?? "" }
+        Label { text: monitorManager.monitors_[selectedMonitorIndex_]?.id ?? "" }
     }
 
     RowLayout {
         Label { text: "Name:"; Layout.minimumWidth: 100 }
-        Label { text: monitorManager.selectedMonitor?.name }
+        Label { text: monitorManager.monitors_[selectedMonitorIndex_]?.name }
     }
 
     RowLayout {
         Label { text: "Description:"; Layout.minimumWidth: 100 }
-        Label { text: monitorManager.selectedMonitor?.description }
+        Label { text: monitorManager.monitors_[selectedMonitorIndex_]?.description }
     }
 
     RowLayout {
         Label { text: "Make:"; Layout.minimumWidth: 100 }
-        Label { text: monitorManager.selectedMonitor?.make }
+        Label { text: monitorManager.monitors_[selectedMonitorIndex_]?.make }
     }
 
     RowLayout {
         Label { text: "Model:"; Layout.minimumWidth: 100 }
-        Label { text: monitorManager.selectedMonitor?.model }
+        Label { text: monitorManager.monitors_[selectedMonitorIndex_]?.model }
     }
 
     RowLayout {
         Label { text: "Serial:"; Layout.minimumWidth: 100 }
-        Label { text: monitorManager.selectedMonitor?.serial }
+        Label { text: monitorManager.monitors_[selectedMonitorIndex_]?.serial }
     }
 
     RowLayout {
         Label { text: "VRR:"; Layout.minimumWidth: 100 }
-        Label { text:  monitorManager.selectedMonitor?.vrr }
+        Label { text:  monitorManager.monitors_[selectedMonitorIndex_]?.vrr }
     }
 
     RowLayout {
         Label { text: "Solitary:"; Layout.minimumWidth: 100 }
-        Label { text: monitorManager.selectedMonitor?.solitary }
+        Label { text: monitorManager.monitors_[selectedMonitorIndex_]?.solitary }
     }
 
     RowLayout {
         Label { text: "Tearing:"; Layout.minimumWidth: 100 }
-        Label { text: monitorManager.selectedMonitor?.activelyTearing }
+        Label { text: monitorManager.monitors_[selectedMonitorIndex_]?.activelyTearing }
     }
 
     RowLayout {
         Label { text: "Scanout To:"; Layout.minimumWidth: 100 }
-        Label { text: monitorManager.selectedMonitor?.directScanoutTo }
+        Label { text: monitorManager.monitors_[selectedMonitorIndex_]?.directScanoutTo }
     }
 
     RowLayout {
         Label { text: "Current Format:"; Layout.minimumWidth: 100 }
-        Label { text: monitorManager.selectedMonitor?.currentFormat }
+        Label { text: monitorManager.monitors_[selectedMonitorIndex_]?.currentFormat }
     }
 }

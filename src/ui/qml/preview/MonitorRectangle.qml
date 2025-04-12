@@ -1,11 +1,11 @@
 import QtQuick
-import QtQuick.Controls
 import HyprView
 
 Item {
     id: monitorItem
 
     property var monitor
+    property int index: 0
     property real scaleFactor
     property int xOffset
     property int yOffset
@@ -17,7 +17,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: monitor.id === monitorManager.selectedMonitor.id ? "deepskyblue" : "lightgray"
+        color: index === monitorManager.selectedMonitorIndex_ ? "deepskyblue" : "lightgray"
         border.color: "white"
         border.width: 2
         radius: 6
@@ -66,7 +66,7 @@ Item {
                 monitor.positionX = Math.round(snappedPos.x)
                 monitor.positionY = Math.round(snappedPos.y)
 
-                monitor.positionManuallyUpdated()
+                monitor.positionUpdatedByDragAndDrop()
             }
         }
     }

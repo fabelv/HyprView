@@ -14,8 +14,8 @@ Item {
 
     function recalculateScaleAndOffset() {
         if (monitorManager) {
-            scaleFactor = monitorManager.calculatePreviewScaleFactor(width, height, 0.5)
-            const offset = monitorManager.calculateOffsetToCenter(scaleFactor, width, height)
+            scaleFactor = monitorManager.calculatePreviewScaleFactor(0.5, width, height)
+            const offset = monitorManager.calculateOffsetToCenter(width, height, 0.5)
             xOffset = offset.x
             yOffset = offset.y
         }
@@ -33,14 +33,16 @@ Item {
         }
     }
 
-
     Repeater {
-        model: monitorManager.monitors
+        model: monitorManager.monitors_
 
         delegate: Item {
+            property int monitorIndex: index
+
             MonitorRectangle {
                 id: rect
                 monitor: modelData
+                index: index
                 scaleFactor: preview.scaleFactor
                 xOffset: preview.xOffset
                 yOffset: preview.yOffset
@@ -48,7 +50,7 @@ Item {
 
             Connections {
                 target: modelData
-                function onPositionManuallyUpdated() {
+                function onPositionUpdatedByDragAndDrop() {
                     preview.recalculateScaleAndOffset()
                 }
             }
