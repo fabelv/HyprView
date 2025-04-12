@@ -1,7 +1,7 @@
 BUILD_DIR = build
 EXECUTABLE = hyprview
 TEST_EXECUTABLE = hyprview_tests
-CMAKE_FLAGS = -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+CMAKE_FLAGS = -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 
 CPPCHECK_FLAGS = --enable=all --inconclusive --suppress=missingIncludeSystem --include=cppcheck-qt.cfg
 SRC_FILES := $(shell find lib src -name '*.cpp')
