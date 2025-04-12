@@ -43,5 +43,22 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }} # important for DeepSource
+      
       - uses: cachix/install-nix-action@v22
+
       - run: nix develop --command make test
+
+      - name: Generate coverage report
+        run: |
+          nix develop --command gcovr -r . --json -o coverage.json
+
+      - name: Report results to DeepSource
+        run: |
+          curl https://deepsource.io/cli | sh
+          ./bin/deepsource report --analyzer test-coverage --key cxx --value-file coverage.json
+        env:
+          DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
+
+

@@ -29,6 +29,15 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 # ======================
+# 🧪 Coverage (only in Debug mode)
+# ======================
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "Enabling Code Coverage flags")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+endif()
+
+# ======================
 # 📦 Core library
 # ======================
 
@@ -83,4 +92,10 @@ target_link_libraries(hyprview_tests
     GTest::gmock_main
 )
 
+target_include_directories(hyprview_tests
+    PRIVATE ${CMAKE_SOURCE_DIR}/include
+)
+
+enable_testing()
 add_test(NAME hyprview_tests COMMAND hyprview_tests)
+

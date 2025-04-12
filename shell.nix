@@ -13,6 +13,7 @@ in pkgs.mkShell {
     pkgs.lldb_20
     pkgs.clang-tools
     pkgs.cppcheck
+    pkgs.gcovr
   ];
 
   buildInputs = [
