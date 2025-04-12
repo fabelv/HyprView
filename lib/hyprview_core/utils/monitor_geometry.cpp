@@ -1,16 +1,18 @@
+#include "hyprview_core/utils/monitor_geometry.h"
+
 #include <algorithm>
 #include <climits>
 #include <cmath>
 #include <string>
 #include <vector>
+
 #include "hyprview_core/models/monitor.h"
-#include "hyprview_core/utils/monitor_geometry.h"
 #include "hyprview_core/utils/logger.h"
 
 namespace core {
 
-Position MonitorGeometry::getSnappedPosition(const Monitor& dragged, const std::vector<Monitor>& allMonitors) {
-
+Position MonitorGeometry::getSnappedPosition(const Monitor& dragged,
+                                             const std::vector<Monitor>& allMonitors) {
     if (allMonitors.empty() || allMonitors.size() == 1) {
         log(LogLevel::Debug, "No other monitors to snap to.");
         return Position(0, 0);
@@ -37,7 +39,8 @@ Position MonitorGeometry::getSnappedPosition(const Monitor& dragged, const std::
     return Position(finalX, finalY);
 }
 
-std::pair<int, int> MonitorGeometry::findClosestSnap(const Monitor& dragged, const Monitor& other, int& bestDistance) {
+std::pair<int, int> MonitorGeometry::findClosestSnap(const Monitor& dragged, const Monitor& other,
+                                                     int& bestDistance) {
     int dx = 0;
     int dy = 0;
 
@@ -87,14 +90,14 @@ std::pair<int, int> MonitorGeometry::findClosestSnap(const Monitor& dragged, con
 
     // NEW: Corner snapping (no overlap)
     std::vector<std::pair<int, int>> snapCandidates = {
-        {oX1 - dX2, oY1 - dY2}, // bottom-right to top-left
-        {oX2 - dX1, oY1 - dY2}, // bottom-left to top-right
-        {oX1 - dX2, oY2 - dY1}, // top-right to bottom-left
-        {oX2 - dX1, oY2 - dY1}, // top-left to bottom-right
+        {oX1 - dX2, oY1 - dY2},  // bottom-right to top-left
+        {oX2 - dX1, oY1 - dY2},  // bottom-left to top-right
+        {oX1 - dX2, oY2 - dY1},  // top-right to bottom-left
+        {oX2 - dX1, oY2 - dY1},  // top-left to bottom-right
     };
 
     for (const auto& [cdx, cdy] : snapCandidates) {
-        int dist = std::abs(cdx) + std::abs(cdy); // Manhattan distance
+        int dist = std::abs(cdx) + std::abs(cdy);  // Manhattan distance
         if (dist < bestDistance) {
             bestDistance = dist;
             dx = cdx;
@@ -105,7 +108,9 @@ std::pair<int, int> MonitorGeometry::findClosestSnap(const Monitor& dragged, con
     return {dx, dy};
 }
 
-double MonitorGeometry::calculatePreviewScaleFactor(int areaWidth, int areaHeight, float marginPercent, const std::vector<Monitor>& allMonitors) {
+double MonitorGeometry::calculatePreviewScaleFactor(int areaWidth, int areaHeight,
+                                                    float marginPercent,
+                                                    const std::vector<Monitor>& allMonitors) {
     auto [minX, minY, maxX, maxY] = computeBoundsOffset(allMonitors);
 
     int totalWidth = maxX - minX;
@@ -117,14 +122,17 @@ double MonitorGeometry::calculatePreviewScaleFactor(int areaWidth, int areaHeigh
     return std::min(scaleX, scaleY);
 }
 
-Position MonitorGeometry::calculateCenteredOffset(const std::vector<Monitor>& allMonitors, double scaleFactor, int areaWidth, int areaHeight) {
+Position MonitorGeometry::calculateCenteredOffset(const std::vector<Monitor>& allMonitors,
+                                                  double scaleFactor, int areaWidth,
+                                                  int areaHeight) {
     auto [minX, minY, maxX, maxY] = computeBoundsOffset(allMonitors);
-    log(LogLevel::Debug, "minX"+ std::to_string(minX) + " minY" + std::to_string(minY));
-    log(LogLevel::Debug, "maxX"+ std::to_string(maxX) + " maxY" + std::to_string(maxY));
+    log(LogLevel::Debug, "minX" + std::to_string(minX) + " minY" + std::to_string(minY));
+    log(LogLevel::Debug, "maxX" + std::to_string(maxX) + " maxY" + std::to_string(maxY));
 
     int scaledWidth = static_cast<int>((maxX - minX) * scaleFactor);
     int scaledHeight = static_cast<int>((maxY - minY) * scaleFactor);
-    log(LogLevel::Debug, "scaledWidth"+ std::to_string(scaledWidth) + " scaledHeight" + std::to_string(scaledHeight));
+    log(LogLevel::Debug, "scaledWidth" + std::to_string(scaledWidth) + " scaledHeight" +
+                             std::to_string(scaledHeight));
 
     int offsetX = (areaWidth - scaledWidth) / 2;
     int offsetY = (areaHeight - scaledHeight) / 2;
@@ -148,4 +156,4 @@ Bounds MonitorGeometry::computeBoundsOffset(const std::vector<Monitor>& allMonit
     return {minX, minY, maxX, maxY};
 }
 
-}
+}  // namespace core

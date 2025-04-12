@@ -1,9 +1,9 @@
 BUILD_DIR = build
 EXECUTABLE = hyprview
 TEST_EXECUTABLE = hyprview_tests
-CMAKE_FLAGS = -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1
-CPPCHECK_FLAGS = --enable=all --inconclusive --suppress=missingIncludeSystem --include=cppcheck-qt.cfg
+CMAKE_FLAGS = -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 
+CPPCHECK_FLAGS = --enable=all --inconclusive --suppress=missingIncludeSystem --include=cppcheck-qt.cfg
 SRC_FILES := $(shell find lib src -name '*.cpp')
 INCLUDE_DIRS = -Iinclude -Isrc -I$(BUILD_DIR) 
 
@@ -26,6 +26,12 @@ update_compile_commands:
 
 run: build
 	@./$(BUILD_DIR)/$(EXECUTABLE)
+
+format:
+	@find include lib src test \( -name "*.cpp" -o -name "*.h" \) -exec clang-format --dry-run --Werror {} +
+
+fix-format:
+	@find include lib src test \( -name "*.cpp" -o -name "*.h" \) -exec clang-format -i {} +
 
 test: build
 	@./$(BUILD_DIR)/$(TEST_EXECUTABLE)

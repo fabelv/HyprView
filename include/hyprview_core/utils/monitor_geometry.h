@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <vector>
+
 #include "hyprview_core/models/monitor.h"
 
 namespace core {
@@ -21,15 +22,18 @@ struct Position {
 };
 
 class MonitorGeometry {
-public:
-    static Position getSnappedPosition(const Monitor& dragged, const std::vector<Monitor>& allMonitors); 
-    static Position calculateCenteredOffset(const std::vector<Monitor>& allMonitors, double scaleFactor, int areaWidth, int areaHeight);
-    static double calculatePreviewScaleFactor(int areaWidth, int areaHeight, float marginPercentage, const std::vector<Monitor>& allMonitors);
+   public:
+    static Position getSnappedPosition(const Monitor& dragged,
+                                       const std::vector<Monitor>& allMonitors);
+    static Position calculateCenteredOffset(const std::vector<Monitor>& allMonitors,
+                                            double scaleFactor, int areaWidth, int areaHeight);
+    static double calculatePreviewScaleFactor(int areaWidth, int areaHeight, float marginPercentage,
+                                              const std::vector<Monitor>& allMonitors);
 
-private:
+   private:
     static Bounds computeBoundsOffset(const std::vector<Monitor>& allMonitors);
-    static std::pair<int, int> findClosestSnap(const Monitor& dragged, const Monitor& other, int& bestDistance);
+    static std::pair<int, int> findClosestSnap(const Monitor& dragged, const Monitor& other,
+                                               int& bestDistance);
 };
 
-}
-
+}  // namespace core

@@ -1,8 +1,8 @@
-#include <gtest/gtest.h>
 #include "hyprview_core/parsers/hypr_monitor_parser.h"
 
-using namespace core;
+#include <gtest/gtest.h>
 
+using namespace core;
 
 auto runParse(const std::string& json) -> std::vector<Monitor> {
     HyprMonitorParser parser;
@@ -135,7 +135,7 @@ TEST(HyprMonitorParserTest, FailsWhenJsonIsNotArray) {
 TEST(HyprMonitorParserTest, FailsOnMalformedJson) {
     const std::string json = R"([
         { "id": 1, "name": "DP-1", }
-    ])"; // trailing comma
+    ])";  // trailing comma
 
     auto monitors = runParse(json);
     EXPECT_TRUE(monitors.empty());
@@ -195,4 +195,3 @@ TEST(HyprMonitorParserTest, IgnoresPartialInvalidMonitor) {
     auto monitors = runParse(json);
     EXPECT_TRUE(monitors.empty());
 }
-

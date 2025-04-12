@@ -1,10 +1,11 @@
 #include "qml_monitor_manager.h"
-#include "hyprview_core/models/monitor.h"
-#include "qml_monitor.h"
-#include "hyprview_core/utils/logger.h"
-#include "hyprview_core/utils/monitor_geometry.h"
 
 #include <vector>
+
+#include "hyprview_core/models/monitor.h"
+#include "hyprview_core/utils/logger.h"
+#include "hyprview_core/utils/monitor_geometry.h"
+#include "qml_monitor.h"
 
 namespace qtbridge {
 
@@ -14,9 +15,7 @@ QmlMonitorManager::QmlMonitorManager(core::HyprMonitorManager* coreManager, QObj
     scanMonitors();
 }
 
-QmlMonitorManager::~QmlMonitorManager() {
-    clearQmlMonitors();
-}
+QmlMonitorManager::~QmlMonitorManager() { clearQmlMonitors(); }
 
 void QmlMonitorManager::clearQmlMonitors() {
     selectedMonitorIndex_ = -1;
@@ -51,9 +50,7 @@ void QmlMonitorManager::scanMonitors() {
     emit selectedMonitorIndexChanged();
 }
 
-QList<QmlMonitor*> QmlMonitorManager::getMonitors() const {
-    return monitors_;
-}
+QList<QmlMonitor*> QmlMonitorManager::getMonitors() const { return monitors_; }
 
 QmlMonitor* QmlMonitorManager::getSelectedMonitor() const {
     if (selectedMonitorIndex_ >= 0 && selectedMonitorIndex_ < monitors_.size()) {
@@ -62,9 +59,7 @@ QmlMonitor* QmlMonitorManager::getSelectedMonitor() const {
     return nullptr;
 }
 
-int QmlMonitorManager::getSelectedMonitorIndex() const {
-    return selectedMonitorIndex_;
-}
+int QmlMonitorManager::getSelectedMonitorIndex() const { return selectedMonitorIndex_; }
 
 void QmlMonitorManager::setSelectedMonitorIndex(int index) {
     if (index >= 0 && index < monitors_.size() && index != selectedMonitorIndex_) {
@@ -80,12 +75,15 @@ QPoint QmlMonitorManager::getSnappedPosition(const QString& monitorName) {
     return QPoint(pos.x, pos.y);
 }
 
-double QmlMonitorManager::calculatePreviewScaleFactor(int areaWidth, int areaHeight, float marginPercentage) {
-    return core::MonitorGeometry::calculatePreviewScaleFactor(areaWidth, areaHeight, marginPercentage, coreManager_->getMonitors());
+double QmlMonitorManager::calculatePreviewScaleFactor(int areaWidth, int areaHeight,
+                                                      float marginPercentage) {
+    return core::MonitorGeometry::calculatePreviewScaleFactor(
+        areaWidth, areaHeight, marginPercentage, coreManager_->getMonitors());
 }
 
 QPoint QmlMonitorManager::calculateOffsetToCenter(double scaleFactor, int width, int height) {
-    auto pos = core::MonitorGeometry::calculateCenteredOffset(coreManager_->getMonitors(), scaleFactor, width, height);
+    auto pos = core::MonitorGeometry::calculateCenteredOffset(coreManager_->getMonitors(),
+                                                              scaleFactor, width, height);
     return QPoint(pos.x, pos.y);
 }
 
@@ -99,5 +97,4 @@ void QmlMonitorManager::revertMonitorConfiguration() {
     emit monitorsChanged();
 }
 
-} // namespace qtbridge
-
+}  // namespace qtbridge

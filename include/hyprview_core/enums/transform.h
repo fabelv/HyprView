@@ -31,5 +31,4 @@ inline int degrees(Transform type) {
     }
 }
 
-} // namespace core
-
+}  // namespace core

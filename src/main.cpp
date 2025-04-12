@@ -1,16 +1,16 @@
-#include "hyprview_core/parsers/hypr_monitor_parser.h"
-#include "hyprview_core/utils/logger.h"
-#include "ui/qtbridge/qml_monitor.h"
-#include "ui/qtbridge/qml_monitor_manager.h"
-#include "ui/qtbridge/qml_transform_helper.h"
-#include "managers/hypr_monitor_manager.h"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <memory>
 
-int main(int argc, char *argv[]) {
+#include "hyprview_core/parsers/hypr_monitor_parser.h"
+#include "hyprview_core/utils/logger.h"
+#include "managers/hypr_monitor_manager.h"
+#include "ui/qtbridge/qml_monitor.h"
+#include "ui/qtbridge/qml_monitor_manager.h"
+#include "ui/qtbridge/qml_transform_helper.h"
 
+int main(int argc, char *argv[]) {
     log(core::LogLevel::Info, "Setting up core services...");
     auto parser = std::make_shared<core::HyprMonitorParser>();
     auto coreManager = std::make_unique<core::HyprMonitorManager>(parser);
@@ -36,4 +36,3 @@ int main(int argc, char *argv[]) {
     log(core::LogLevel::Info, "Application running.");
     return app.exec();
 }
-
