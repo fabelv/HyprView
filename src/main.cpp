@@ -7,6 +7,7 @@
 #include "hyprview_core/utils/logger.h"
 #include "managers/hypr_monitor_manager.h"
 #include "ui/qtbridge/qml_monitor.h"
+#include "ui/qtbridge/qml_monitor_helpers.h"
 #include "ui/qtbridge/qml_monitor_manager.h"
 #include "ui/qtbridge/qml_transform_helper.h"
 
@@ -25,9 +26,11 @@ int main(int argc, char *argv[]) {
     log(core::LogLevel::Info, "Registering QML types...");
     qmlRegisterType<qtbridge::QmlMonitor>("HyprView", 1, 0, "QmlMonitor");
     auto qmlManager = std::make_unique<qtbridge::QmlMonitorManager>(coreManager.get());
+    auto qmlMonitorHelpers = std::make_unique<qtbridge::QmlMonitorHelpers>();
 
     log(core::LogLevel::Info, "Exposing context properties...");
     engine.rootContext()->setContextProperty("monitorManager", qmlManager.get());
+    engine.rootContext()->setContextProperty("monitorHelpers", qmlMonitorHelpers.get());
     qmlRegisterUncreatableType<TransformHelper>("HyprView", 1, 0, "Transform", "Enum only");
 
     log(core::LogLevel::Info, "Loading QML UI...");

@@ -4,91 +4,57 @@ import QtQuick.Layouts
 import HyprView
 
 ColumnLayout {
+    property var monitor: monitorManager.getSelectedMonitor()
 
-    // Width x Height
-    RowLayout {
-            Label { text: "Resolution"; Layout.minimumWidth: 100 }
-            TextField {
-                Layout.fillWidth: true
-                text: monitorManager.selectedMonitor?.width ?? 0
-                onEditingFinished: {
-                    const val = parseFloat(text)
-                    if (!isNaN(val) && monitorManager.selectedMonitor) monitorManager.selectedMonitor.width = val
-                }
-            }
-            Label { text: " ; " }
-            TextField {
-                Layout.fillWidth: true
-                text: monitorManager.selectedMonitor?.height ?? 0
-                onEditingFinished: {
-                    const val = parseFloat(text)
-                    if (!isNaN(val) && monitorManager.selectedMonitor) monitorManager.selectedMonitor.height = val
-                }
-            }
+    function updateIfValid(field, value) {
+        const val = parseFloat(value)
+        if (!isNaN(val) && monitor) monitor[field] = val
     }
 
-    // Position X and Y
-    RowLayout {
-        Label { text: "Position (x;y)"; Layout.minimumWidth: 100 }
-        TextField {
-            Layout.fillWidth: true
-            text: monitorManager.selectedMonitor?.positionX ?? 0
-            onEditingFinished: {
-                const val = parseFloat(text)
-                if (!isNaN(val) && monitorManager.selectedMonitor) monitorManager.selectedMonitor.positionX = val
-            }
-        }
-
-        Label { text: " ; " }
-        TextField {
-            Layout.fillWidth: true
-            text: monitorManager.selectedMonitor?.positionY ?? 0
-            onEditingFinished: {
-                const val = parseFloat(text)
-                if (!isNaN(val) && monitorManager.selectedMonitor) monitorManager.selectedMonitor.positionY = val
-            }
-        }
+    function setIfMonitor(field, value) {
+        if (monitor) monitor[field] = value
     }
 
-    // Refresh Rate
-    RowLayout {
-        Label { text: "Refresh Rate"; Layout.minimumWidth: 100 }
-        TextField {
-            Layout.fillWidth: true
-            text: monitorManager.selectedMonitor?.refreshRate ?? 0
-            onEditingFinished: {
-                const val = parseFloat(text)
-                if (!isNaN(val) && monitorManager.selectedMonitor) monitorManager.selectedMonitor.refreshRate = val
-            }
-        }
+    EditableNumericField {
+        label: "Resolution"
+        value1: monitor?.width_ ?? 0
+        value2: monitor?.height_ ?? 0
+        onValue1Edited: v => updateIfValid("width_", v)
+        onValue2Edited: v => updateIfValid("height_", v)
     }
 
-    // Scale
-    RowLayout {
-        Label { text: "Scale"; Layout.minimumWidth: 100 }
-        TextField {
-            Layout.fillWidth: true
-            text: monitorManager.selectedMonitor?.scale ?? 0
-            onEditingFinished: {
-                const val = parseFloat(text)
-                if (!isNaN(val) && monitorManager.selectedMonitor) monitorManager.selectedMonitor.scale = val
-            }
-        }
+    EditableNumericField {
+        label: "Position (x;y)"
+        value1: monitor?.positionX_ ?? 0
+        value2: monitor?.positionY_ ?? 0
+        onValue1Edited: v => updateIfValid("positionX_", v)
+        onValue2Edited: v => updateIfValid("positionY_", v)
     }
 
-    // --- Mode Selection ---
+    EditableSingleField {
+        label: "Refresh Rate"
+        value: monitor?.refreshRate_ ?? 0
+        onEdited: v => updateIfValid("refreshRate_", v)
+    }
+
+    EditableSingleField {
+        label: "Scale"
+        value: monitor?.scale_ ?? 0
+        onEdited: v => updateIfValid("scale_", v)
+    }
+
+    // Mode ComboBox
     RowLayout {
         Label { text: "Mode:"; Layout.minimumWidth: 100 }
         ComboBox {
             Layout.fillWidth: true
-            model: monitorManager.selectedMonitor ? monitorManager.selectedMonitor.availableModes : []
+            model: monitor?.availableModes_ ?? []
             Component.onCompleted: {
-                if (monitorManager.selectedMonitor)
-                    currentIndex = model.indexOf(monitorManager.selectedMonitor.generateCurrentMode())
+                if (monitor) currentIndex = model.indexOf(monitor.generateCurrentMode())
             }
             onCurrentIndexChanged: {
-                if (monitorManager.selectedMonitor && currentIndex >= 0)
-                    monitorManager.selectedMonitor.applyModeString(model[currentIndex])
+                if (monitor && currentIndex >= 0)
+                    monitor.applyModeString(model[currentIndex])
             }
         }
     }
@@ -110,12 +76,12 @@ ColumnLayout {
             ]
             textRole: "text"
             Component.onCompleted: {
-                if (monitorManager.selectedMonitor)
-                    currentIndex = model.findIndex(v => v.value === monitorManager.selectedMonitor.transform)
+                if (monitor)
+                    currentIndex = model.findIndex(v => v.value === monitor.transform_)
             }
             onCurrentIndexChanged: {
-                if (monitorManager.selectedMonitor && model[currentIndex])
-                    monitorManager.selectedMonitor.transform = model[currentIndex].value
+                if (monitor && model[currentIndex])
+                    monitor.transform_ = model[currentIndex].value
             }
         }
     }
@@ -123,45 +89,22 @@ ColumnLayout {
     // Mirror Of
     RowLayout {
         Label { text: "Mirror of:"; Layout.minimumWidth: 100 }
-
         ComboBox {
-            id: mirrorCombo
             Layout.fillWidth: true
-            textRole: "name"
-
-            model: monitorManager.monitors
-
-            Component.onCompleted: {
-                if (monitorManager.selectedMonitor) {
-                    const index = mirrorCombo.model.findIndex(m => m.name === monitorManager.selectedMonitor.mirrorOf)
-                    mirrorCombo.currentIndex = index >= 0 ? index : 0
-                }
-            }
+            model: monitorHelpers.getAvailableMirrorMonitors(monitor, monitorManager.monitors_)
         }
     }
 
-    // Checkboxes
-    RowLayout {
-        Label { text: "Disabled"; Layout.minimumWidth: 100 }
-        CheckBox {
-            Layout.fillWidth: true
-            checked: monitorManager.selectedMonitor?.disabled ?? false
-            onToggled: {
-                if (monitorManager.selectedMonitor)
-                    monitorManager.selectedMonitor.disabled = checked
-            }
-        }
+    EditableCheckbox {
+        label: "Disabled"
+        checked: monitor?.disabled_ ?? false
+        onToggled: c => setIfMonitor("disabled_", c)
     }
 
-    RowLayout {
-        Label { text: "DPMS"; Layout.minimumWidth: 100 }
-        CheckBox {
-            Layout.fillWidth: true
-            checked: monitorManager.selectedMonitor?.dpmsStatus ?? false
-            onToggled: {
-                if (monitorManager.selectedMonitor)
-                    monitorManager.selectedMonitor.dpmsStatus = checked
-            }
-        }
+    EditableCheckbox {
+        label: "DPMS"
+        checked: monitor?.dpmsStatus_ ?? false
+        onToggled: c => setIfMonitor("dpmsStatus_", c)
     }
-} 
+}
+

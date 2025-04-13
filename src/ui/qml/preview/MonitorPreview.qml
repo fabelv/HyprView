@@ -14,17 +14,26 @@ Item {
 
     function recalculateScaleAndOffset() {
         if (monitorManager) {
-            scaleFactor = monitorManager.calculatePreviewScaleFactor(0.5, width, height)
-            const offset = monitorManager.calculateOffsetToCenter(width, height, 0.5)
+            scaleFactor = monitorManager.calculatePreviewScaleFactor(width, height, 0.5)
+            const offset = monitorManager.calculateOffsetToCenter(scaleFactor, width, height)
             xOffset = offset.x
             yOffset = offset.y
+        } else {
+            console.warn("[Preview] monitorManager is undefined")
         }
     }
 
-    onWidthChanged: recalculateScaleAndOffset()
-    onHeightChanged: recalculateScaleAndOffset()
+    onWidthChanged: {
+        recalculateScaleAndOffset()
+    }
 
-    Component.onCompleted: recalculateScaleAndOffset()
+    onHeightChanged: {
+        recalculateScaleAndOffset()
+    }
+
+    Component.onCompleted: {
+        recalculateScaleAndOffset()
+    }
 
     Connections {
         target: monitorManager
@@ -42,7 +51,7 @@ Item {
             MonitorRectangle {
                 id: rect
                 monitor: modelData
-                index: index
+                index: monitorIndex
                 scaleFactor: preview.scaleFactor
                 xOffset: preview.xOffset
                 yOffset: preview.yOffset
@@ -56,6 +65,5 @@ Item {
             }
         }
     }
-
 }
 
