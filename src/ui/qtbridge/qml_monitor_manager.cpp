@@ -53,10 +53,10 @@ void QmlMonitorManager::scanMonitors() {
 }
 
 
-QPoint QmlMonitorManager::getSnappedPosition(const QString& monitorName) {
+QPoint QmlMonitorManager::getSnappedPosition(const QString& monitorName, const int currentX, const int currentY) {
     const auto dragged = selectedMonitor_->getMonitor();
     const auto& allMonitors = coreManager_->getMonitors();
-    const auto pos = core::MonitorGeometry::getSnappedPosition(*dragged, allMonitors);
+    const auto pos = core::MonitorGeometry::getSnappedPosition(*dragged, allMonitors, currentX, currentY);
     return QPoint(pos.x, pos.y);
 }
 

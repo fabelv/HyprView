@@ -25,7 +25,7 @@ class QmlMonitorManager : public QObject {
     Q_INVOKABLE void scanMonitors();
     Q_INVOKABLE void applyMonitorConfiguration();
     Q_INVOKABLE void revertMonitorConfiguration();
-    Q_INVOKABLE QPoint getSnappedPosition(const QString& monitorName);
+    Q_INVOKABLE QPoint getSnappedPosition(const QString& monitorName, const int currentX, const int currentY);
     Q_INVOKABLE QPoint calculateOffsetToCenter(double scaleFactor, int width, int height);
     Q_INVOKABLE double calculatePreviewScaleFactor(int areaWidth, int areaHeight,
                                                    float marginPercentage);

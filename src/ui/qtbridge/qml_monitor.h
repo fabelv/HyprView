@@ -121,6 +121,7 @@ class QmlMonitor : public QObject {
    signals:
     void updated();
     void positionUpdatedByDragAndDrop();
+    void positionUpdatedByDetailsField();
 
    private:
     core::Monitor* monitor_;

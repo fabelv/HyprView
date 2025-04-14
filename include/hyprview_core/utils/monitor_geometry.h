@@ -24,7 +24,7 @@ struct Position {
 class MonitorGeometry {
    public:
     static Position getSnappedPosition(const Monitor& dragged,
-                                       const std::vector<Monitor>& allMonitors);
+                                       const std::vector<Monitor>& allMonitors, const int currentX, const int currentY);
     static Position calculateCenteredOffset(const std::vector<Monitor>& allMonitors,
                                             double scaleFactor, int areaWidth, int areaHeight);
     static double calculatePreviewScaleFactor(int areaWidth, int areaHeight, float marginPercentage,
@@ -32,8 +32,9 @@ class MonitorGeometry {
 
    private:
     static Bounds computeBoundsOffset(const std::vector<Monitor>& allMonitors);
-    static std::pair<int, int> findClosestSnap(const Monitor& dragged, const Monitor& other,
-                                               int& bestDistance);
+    static std::pair<int, int> findClosestSnap(int dX1, int dY1, int dW, int dH,
+    int oX1, int oY1, int oW, int oH,
+    int& bestDistance);
 };
 
 }  // namespace core

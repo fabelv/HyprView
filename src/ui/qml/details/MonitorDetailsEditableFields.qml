@@ -14,7 +14,10 @@ ColumnLayout {
                 text: monitorManager?.selectedMonitor_?.width_ ?? 0
                 onEditingFinished: {
                     const val = parseFloat(text)
-                    if (!isNaN(val) && monitorManager?.selectedMonitor_) monitorManager_.selectedMonitor_.width_ = val
+                    if (!isNaN(val) && monitorManager?.selectedMonitor_) {
+                        monitorManager.selectedMonitor_.width_ = val
+                        monitorManager.selectedMonitor_.positionUpdatedByDetailsField()
+                    }
                 }
             }
             Label { text: " ; " }
@@ -24,7 +27,10 @@ ColumnLayout {
                 text: monitorManager?.selectedMonitor_?.height_ ?? 0
                 onEditingFinished: {
                     const val = parseFloat(text)
-                    if (!isNaN(val) && monitorManager?.selectedMonitor_) monitorManager_.selectedMonitor_.height_ = val
+                    if (!isNaN(val) && monitorManager?.selectedMonitor_) {
+                        monitorManager.selectedMonitor_.height_ = val
+                        monitorManager.selectedMonitor_.positionUpdatedByDetailsField()
+                    }
                 }
             }
     }
@@ -38,7 +44,11 @@ ColumnLayout {
             text: monitorManager?.selectedMonitor_?.positionX_ ?? 0
             onEditingFinished: {
                 const val = parseFloat(text)
-                if (!isNaN(val) && monitorManager?.selectedMonitor_) monitorManager.selectedMonitor_.positionX_ = val
+                if (!isNaN(val) && monitorManager?.selectedMonitor_) {
+                    monitorManager.selectedMonitor_.positionX_ = val
+                
+                        monitorManager.selectedMonitor_.positionUpdatedByDetailsField()
+                }
             }
         }
 
@@ -51,6 +61,8 @@ ColumnLayout {
                 const val = parseFloat(text)
                 if (!isNaN(val) && monitorManager?.selectedMonitor_) {
                     monitorManager.selectedMonitor_.positionY_ = val
+
+                        monitorManager.selectedMonitor_.positionUpdatedByDetailsField()
                 }
             }
         }
@@ -66,7 +78,10 @@ ColumnLayout {
             text: monitorManager?.selectedMonitor_?.refreshRate_ ?? 0
             onEditingFinished: {
                 const val = parseFloat(text)
-                if (!isNaN(val) && monitorManager?.selectedMonitor_) monitorManager.selectedMonitor_.refreshRate_ = val
+                if (!isNaN(val) && monitorManager?.selectedMonitor_) {
+                    monitorManager.selectedMonitor_.refreshRate_ = val
+                    monitorManager.selectedMonitor_.positionUpdatedByDetailsField()
+                }
             }
         }
     }
@@ -81,7 +96,11 @@ ColumnLayout {
             text: monitorManager?.selectedMonitor_?.scale_ ?? 0
             onEditingFinished: {
                 const val = parseFloat(text)
-                if (!isNaN(val) && monitorManager?.selectedMonitor_) monitorManager.selectedMonitor_.scale_ = val
+                if (!isNaN(val) && monitorManager?.selectedMonitor_) {
+                    monitorManager.selectedMonitor_.scale_ = val
+
+                        monitorManager.selectedMonitor_.positionUpdatedByDetailsField()
+                }
             }
         }
     }
@@ -99,6 +118,7 @@ ColumnLayout {
             onActivated: {
                 if (monitorManager?.selectedMonitor_ && currentIndex >= 0)
                     monitorManager?.selectedMonitor_.applyModeString(model[currentIndex])
+                        monitorManager.selectedMonitor_.positionUpdatedByDetailsField()
             }
         }
     }
@@ -137,6 +157,7 @@ ColumnLayout {
             onActivated: {
                 if (monitorManager?.selectedMonitor_ && currentIndex >= 0) {
                     monitorManager.selectedMonitor_.transform_ = model[index].value
+                        monitorManager.selectedMonitor_.positionUpdatedByDetailsField()
                 }
             }
         }
@@ -155,6 +176,7 @@ ColumnLayout {
 
             onActivated: {
                 monitorManager.selectedMonitor_.mirrorOf_ = model[currentIndex]
+                        monitorManager.selectedMonitor_.positionUpdatedByDetailsField()
             }
         }
     }
@@ -169,6 +191,7 @@ ColumnLayout {
             onToggled: {
                 if (monitorManager?.selectedMonitor_)
                     monitorManager.selectedMonitor_.disabled_ = checked
+                        monitorManager.selectedMonitor_.positionUpdatedByDetailsField()
             }
         }
     }
@@ -182,6 +205,7 @@ ColumnLayout {
             onToggled: {
                 if (monitorManager?.selectedMonitor_)
                     monitorManager.selectedMonitor_.dpmsStatus_ = checked
+                        monitorManager.selectedMonitor_.positionUpdatedByDetailsField()
             }
         }
     }
