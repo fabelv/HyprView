@@ -35,4 +35,18 @@ QList<QString> QmlMonitorHelpers::getAvailableMirrorMonitors(QmlMonitor* selecte
     return result;
 }
 
+
+QList<QString> QmlMonitorHelpers::getAvailableModes(const QmlMonitor* monitor) {
+    const auto& modeOptions = core::MonitorHelpers::getAvailableModes(*monitor->getMonitor());
+
+    QList<QString> result;
+    result.reserve(static_cast<int>(modeOptions.size()));
+    for (const auto& mode : modeOptions) {
+        result.append(QString::fromStdString(mode));
+    }
+
+    return result;
+}
+
+
 }  // namespace qtbridge

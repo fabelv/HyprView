@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QString>
 #include <QStringList>
+#include <string>
 
 namespace qtbridge {
 
@@ -20,7 +21,9 @@ void QmlMonitor::applyModeString(const QString& mode) {
     emit updated();
 }
 
-auto QmlMonitor::getId() const -> const int { return monitor_->getId(); }
+auto QmlMonitor::getId() const -> const int { 
+    return monitor_->getId(); 
+}
 
 auto QmlMonitor::setId(int value) -> void {
     monitor_->setId(value);

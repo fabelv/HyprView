@@ -1,5 +1,7 @@
 #include "qml_monitor_manager.h"
+#include <strings.h>
 
+#include <cmath>
 #include <vector>
 
 #include "hyprview_core/models/monitor.h"
@@ -10,7 +12,7 @@
 namespace qtbridge {
 
 QmlMonitorManager::QmlMonitorManager(core::HyprMonitorManager* coreManager, QObject* parent)
-    : QObject(parent), coreManager_(coreManager), selectedMonitorIndex_(-1) {
+    : QObject(parent), coreManager_(coreManager) {
     log(core::LogLevel::Info, "Initializing QmlMonitorManager...");
     scanMonitors();
 }
@@ -18,8 +20,8 @@ QmlMonitorManager::QmlMonitorManager(core::HyprMonitorManager* coreManager, QObj
 QmlMonitorManager::~QmlMonitorManager() { clearQmlMonitors(); }
 
 void QmlMonitorManager::clearQmlMonitors() {
-    selectedMonitorIndex_ = -1;
-    emit selectedMonitorIndexChanged();
+    selectedMonitor_ = nullptr;
+    emit selectedMonitorChanged();
 
     qDeleteAll(monitors_);
     monitors_.clear();
@@ -44,34 +46,17 @@ void QmlMonitorManager::scanMonitors() {
 
     clearQmlMonitors();
     monitors_ = wrapCoreMonitors(coreManager_->getMonitors());
-    selectedMonitorIndex_ = 0;
+    selectedMonitor_ = nullptr;
 
     emit monitorsChanged();
-    emit selectedMonitorIndexChanged();
+    emit selectedMonitorChanged();
 }
 
-QList<QmlMonitor*> QmlMonitorManager::getMonitors() const { return monitors_; }
-
-QmlMonitor* QmlMonitorManager::getSelectedMonitor() const {
-    if (selectedMonitorIndex_ >= 0 && selectedMonitorIndex_ < monitors_.size()) {
-        return monitors_.at(selectedMonitorIndex_);
-    }
-    return nullptr;
-}
-
-int QmlMonitorManager::getSelectedMonitorIndex() const { return selectedMonitorIndex_; }
-
-void QmlMonitorManager::setSelectedMonitorIndex(int index) {
-    if (index >= 0 && index < monitors_.size() && index != selectedMonitorIndex_) {
-        selectedMonitorIndex_ = index;
-        emit selectedMonitorIndexChanged();
-    }
-}
 
 QPoint QmlMonitorManager::getSnappedPosition(const QString& monitorName) {
-    const auto& dragged = coreManager_->getMonitors().at(0);  // TODO: adapt if needed
+    const auto dragged = selectedMonitor_->getMonitor();
     const auto& allMonitors = coreManager_->getMonitors();
-    const auto pos = core::MonitorGeometry::getSnappedPosition(dragged, allMonitors);
+    const auto pos = core::MonitorGeometry::getSnappedPosition(*dragged, allMonitors);
     return QPoint(pos.x, pos.y);
 }
 
@@ -96,5 +81,31 @@ void QmlMonitorManager::revertMonitorConfiguration() {
     coreManager_->revertMonitorConfiguration();
     emit monitorsChanged();
 }
+
+
+QList<QmlMonitor*> QmlMonitorManager::getMonitors() {
+    return monitors_;
+}
+
+QmlMonitor* QmlMonitorManager::getSelectedMonitor() {
+    return selectedMonitor_;
+}
+
+void QmlMonitorManager::setSelectedMonitor(QmlMonitor* monitor) {
+    if (!monitor || selectedMonitor_ == monitor) {
+        core::log(core::LogLevel::Debug, "new selected monitor is already selected");
+        return;
+    }
+
+    if (!monitors_.contains(monitor)) {
+        core::log(core::LogLevel::Debug, "new selected monitor is not part of monitors");
+        return;  // Optionally guard against invalid pointers
+    }
+
+    selectedMonitor_ = monitor;
+    core::log(core::LogLevel::Debug, "new selected monitor: " + selectedMonitor_->getName().toStdString());
+    emit selectedMonitorChanged();
+}
+
 
 }  // namespace qtbridge

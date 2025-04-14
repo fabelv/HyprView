@@ -4,66 +4,113 @@ import QtQuick.Layouts
 import HyprView
 
 ColumnLayout {
-    property var monitor: monitorManager.getSelectedMonitor()
 
-    function updateIfValid(field, value) {
-        const val = parseFloat(value)
-        if (!isNaN(val) && monitor) monitor[field] = val
-    }
-
-    function setIfMonitor(field, value) {
-        if (monitor) monitor[field] = value
-    }
-
-    EditableNumericField {
-        label: "Resolution"
-        value1: monitor?.width_ ?? 0
-        value2: monitor?.height_ ?? 0
-        onValue1Edited: v => updateIfValid("width_", v)
-        onValue2Edited: v => updateIfValid("height_", v)
-    }
-
-    EditableNumericField {
-        label: "Position (x;y)"
-        value1: monitor?.positionX_ ?? 0
-        value2: monitor?.positionY_ ?? 0
-        onValue1Edited: v => updateIfValid("positionX_", v)
-        onValue2Edited: v => updateIfValid("positionY_", v)
-    }
-
-    EditableSingleField {
-        label: "Refresh Rate"
-        value: monitor?.refreshRate_ ?? 0
-        onEdited: v => updateIfValid("refreshRate_", v)
-    }
-
-    EditableSingleField {
-        label: "Scale"
-        value: monitor?.scale_ ?? 0
-        onEdited: v => updateIfValid("scale_", v)
-    }
-
-    // Mode ComboBox
+    // Width x Height
     RowLayout {
-        Label { text: "Mode:"; Layout.minimumWidth: 100 }
-        ComboBox {
-            Layout.fillWidth: true
-            model: monitor?.availableModes_ ?? []
-            Component.onCompleted: {
-                if (monitor) currentIndex = model.indexOf(monitor.generateCurrentMode())
+            Label { text: "Resolution"; Layout.minimumWidth: 100 }
+            TextField {
+                Layout.fillWidth: true
+                enabled: monitorManager?.selectedMonitor_ !== null && monitorManager?.selectedMonitor_ !== undefined
+                text: monitorManager?.selectedMonitor_?.width_ ?? 0
+                onEditingFinished: {
+                    const val = parseFloat(text)
+                    if (!isNaN(val) && monitorManager?.selectedMonitor_) monitorManager_.selectedMonitor_.width_ = val
+                }
             }
-            onCurrentIndexChanged: {
-                if (monitor && currentIndex >= 0)
-                    monitor.applyModeString(model[currentIndex])
+            Label { text: " ; " }
+            TextField {
+                Layout.fillWidth: true
+                enabled: monitorManager?.selectedMonitor_ !== null && monitorManager?.selectedMonitor_ !== undefined
+                text: monitorManager?.selectedMonitor_?.height_ ?? 0
+                onEditingFinished: {
+                    const val = parseFloat(text)
+                    if (!isNaN(val) && monitorManager?.selectedMonitor_) monitorManager_.selectedMonitor_.height_ = val
+                }
+            }
+    }
+
+    // Position X and Y
+    RowLayout {
+        Label { text: "Position (x;y)"; Layout.minimumWidth: 100 }
+        TextField {
+            Layout.fillWidth: true
+            enabled: monitorManager?.selectedMonitor_ !== null && monitorManager?.selectedMonitor_ !== undefined
+            text: monitorManager?.selectedMonitor_?.positionX_ ?? 0
+            onEditingFinished: {
+                const val = parseFloat(text)
+                if (!isNaN(val) && monitorManager?.selectedMonitor_) monitorManager.selectedMonitor_.positionX_ = val
+            }
+        }
+
+        Label { text: " ; " }
+        TextField {
+            Layout.fillWidth: true
+            enabled: monitorManager?.selectedMonitor_ !== null && monitorManager?.selectedMonitor_ !== undefined
+            text: monitorManager?.selectedMonitor_?.positionY_ ?? 0
+            onEditingFinished: {
+                const val = parseFloat(text)
+                if (!isNaN(val) && monitorManager?.selectedMonitor_) {
+                    monitorManager.selectedMonitor_.positionY_ = val
+                }
             }
         }
     }
+
+    // Refresh Rate
+    RowLayout {
+        Label { text: "Refresh Rate"; Layout.minimumWidth: 100 }
+        TextField {
+            Layout.fillWidth: true
+            enabled: monitorManager?.selectedMonitor_ !== null && monitorManager?.selectedMonitor_ !== undefined
+
+            text: monitorManager?.selectedMonitor_?.refreshRate_ ?? 0
+            onEditingFinished: {
+                const val = parseFloat(text)
+                if (!isNaN(val) && monitorManager?.selectedMonitor_) monitorManager.selectedMonitor_.refreshRate_ = val
+            }
+        }
+    }
+
+    // Scale
+    RowLayout {
+        Label { text: "Scale"; Layout.minimumWidth: 100 }
+        TextField {
+            Layout.fillWidth: true
+            enabled: monitorManager?.selectedMonitor_ !== null && monitorManager?.selectedMonitor_ !== undefined
+
+            text: monitorManager?.selectedMonitor_?.scale_ ?? 0
+            onEditingFinished: {
+                const val = parseFloat(text)
+                if (!isNaN(val) && monitorManager?.selectedMonitor_) monitorManager.selectedMonitor_.scale_ = val
+            }
+        }
+    }
+
+    // --- Mode Selection ---
+    RowLayout {
+        Label { text: "Mode:"; Layout.minimumWidth: 100 }
+
+        ComboBox {
+            Layout.fillWidth: true
+            enabled: monitorManager?.selectedMonitor_ !== null && monitorManager?.selectedMonitor_ !== undefined
+
+            model: monitorManager?.selectedMonitor_ ? monitorHelpers?.getAvailableModes(monitorManager?.selectedMonitor_) : []
+
+            onActivated: {
+                if (monitorManager?.selectedMonitor_ && currentIndex >= 0)
+                    monitorManager?.selectedMonitor_.applyModeString(model[currentIndex])
+            }
+        }
+    }
+
 
     // Transform ComboBox
     RowLayout {
         Label { text: "Transform:"; Layout.minimumWidth: 100 }
         ComboBox {
             Layout.fillWidth: true
+            enabled: monitorManager?.selectedMonitor_ !== null && monitorManager?.selectedMonitor_ !== undefined
+
             model: [
                 { text: "Normal", value: Transform.Normal },
                 { text: "90°", value: Transform.Rotate90 },
@@ -75,13 +122,22 @@ ColumnLayout {
                 { text: "Flipped + 270°", value: Transform.FlippedRotate270 }
             ]
             textRole: "text"
-            Component.onCompleted: {
-                if (monitor)
-                    currentIndex = model.findIndex(v => v.value === monitor.transform_)
+
+            // Set the initial selection to match the selected monitor's transform
+            currentIndex: {
+                if (!monitorManager?.selectedMonitor_) return -1;
+                for (var i = 0; i < model.length; ++i) {
+                    if (model[i].value === monitorManager?.selectedMonitor_.transform_) {
+                        return i;
+                    }
+                }
+                return -1;
             }
-            onCurrentIndexChanged: {
-                if (monitor && model[currentIndex])
-                    monitor.transform_ = model[currentIndex].value
+
+            onActivated: {
+                if (monitorManager?.selectedMonitor_ && currentIndex >= 0) {
+                    monitorManager.selectedMonitor_.transform_ = model[index].value
+                }
             }
         }
     }
@@ -89,22 +145,44 @@ ColumnLayout {
     // Mirror Of
     RowLayout {
         Label { text: "Mirror of:"; Layout.minimumWidth: 100 }
+
         ComboBox {
+            id: mirrorCombo
             Layout.fillWidth: true
-            model: monitorHelpers.getAvailableMirrorMonitors(monitor, monitorManager.monitors_)
+            enabled: monitorManager?.selectedMonitor_ !== null && monitorManager?.selectedMonitor_ !== undefined
+
+            model: monitorHelpers?.getAvailableMirrorMonitors(monitorManager?.selectedMonitor_, monitorManager?.monitors_)
+
+            onActivated: {
+                monitorManager.selectedMonitor_.mirrorOf_ = model[currentIndex]
+            }
         }
     }
 
-    EditableCheckbox {
-        label: "Disabled"
-        checked: monitor?.disabled_ ?? false
-        onToggled: c => setIfMonitor("disabled_", c)
+    // Checkboxes
+    RowLayout {
+        Label { text: "Disabled"; Layout.minimumWidth: 100 }
+        CheckBox {
+            Layout.fillWidth: true
+            enabled: monitorManager?.selectedMonitor_ !== null && monitorManager?.selectedMonitor_ !== undefined
+            checked: monitorManager?.selectedMonitor_?.disabled_ ?? false
+            onToggled: {
+                if (monitorManager?.selectedMonitor_)
+                    monitorManager.selectedMonitor_.disabled_ = checked
+            }
+        }
     }
 
-    EditableCheckbox {
-        label: "DPMS"
-        checked: monitor?.dpmsStatus_ ?? false
-        onToggled: c => setIfMonitor("dpmsStatus_", c)
+    RowLayout {
+        Label { text: "DPMS"; Layout.minimumWidth: 100 }
+        CheckBox {
+            Layout.fillWidth: true
+            enabled: monitorManager?.selectedMonitor_ !== null && monitorManager?.selectedMonitor_ !== undefined
+            checked: monitorManager?.selectedMonitor_?.dpmsStatus_ ?? false
+            onToggled: {
+                if (monitorManager?.selectedMonitor_)
+                    monitorManager.selectedMonitor_.dpmsStatus_ = checked
+            }
+        }
     }
-}
-
+} 

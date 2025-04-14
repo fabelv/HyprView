@@ -10,6 +10,8 @@ class QmlMonitorHelpers : public QObject {
    public:
     Q_INVOKABLE static QList<QString> getAvailableMirrorMonitors(
         QmlMonitor* selectedQmlMonitor, const QList<QObject*>& qmlMonitors);
+
+    Q_INVOKABLE static QList<QString> getAvailableModes(const QmlMonitor* monitor);
 };
 
 }  // namespace qtbridge

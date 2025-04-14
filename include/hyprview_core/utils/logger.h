@@ -4,7 +4,7 @@
 
 namespace core {
 
-enum class LogLevel { Info, Warning, Error, Debug };
+enum class LogLevel { Info, Warning, Error, Debug, Ui};
 
 inline void log(LogLevel level, const std::string& message) {
     switch (level) {
@@ -20,6 +20,9 @@ inline void log(LogLevel level, const std::string& message) {
             return;
         case LogLevel::Debug:
             std::cout << "[DEBUG] ";
+            break;
+        case LogLevel::Ui:
+            std::cout << "[UI] ";
             break;
         default:
             std::cout << "[INFO] ";

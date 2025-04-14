@@ -126,13 +126,9 @@ Position MonitorGeometry::calculateCenteredOffset(const std::vector<Monitor>& al
                                                   double scaleFactor, int areaWidth,
                                                   int areaHeight) {
     auto [minX, minY, maxX, maxY] = computeBoundsOffset(allMonitors);
-    log(LogLevel::Debug, "minX" + std::to_string(minX) + " minY" + std::to_string(minY));
-    log(LogLevel::Debug, "maxX" + std::to_string(maxX) + " maxY" + std::to_string(maxY));
 
     int scaledWidth = static_cast<int>((maxX - minX) * scaleFactor);
     int scaledHeight = static_cast<int>((maxY - minY) * scaleFactor);
-    log(LogLevel::Debug, "scaledWidth" + std::to_string(scaledWidth) + " scaledHeight" +
-                             std::to_string(scaledHeight));
 
     int offsetX = (areaWidth - scaledWidth) / 2;
     int offsetY = (areaHeight - scaledHeight) / 2;

@@ -5,7 +5,6 @@ Item {
     id: monitorItem
 
     property var monitor
-    property int index
     property real scaleFactor
     property int xOffset
     property int yOffset
@@ -17,8 +16,8 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: index === monitorManager.selectedMonitorIndex_ ? "deepskyblue" : "lightgray"
-        border.color: "white"
+        color: monitor?.id_ === monitorManager?.selectedMonitor_?.id_ ? "deepskyblue" : "lightgray"
+        border.color: "grey"
         border.width: 2
         radius: 6
 
@@ -53,26 +52,26 @@ Item {
 
         onPressed: {
             cursorShape = Qt.ClosedHandCursor
-            monitorManager.selectedMonitorIndex_ = index
+            monitorManager.setSelectedMonitor(monitor)
         }
 
-        //onReleased: {
-        //    cursorShape = Qt.OpenHandCursor
-        //
-        //    if (monitor) {
-        //        const newX = (x - xOffset) / scaleFactor
-        //        const newY = (y - yOffset) / scaleFactor
-        //
-        //        monitor.positionX_ = Math.round(newX)
-        //        monitor.positionY_ = Math.round(newY)
-        //
-        //        const snappedPos = monitorManager.getSnappedPosition(monitor.name_)
-        //        monitor.positionX_ = Math.round(snappedPos.x)
-        //        monitor.positionY_ = Math.round(snappedPos.y)
-        //
-        //        monitor.positionUpdatedByDragAndDrop()
-        //    }
-        //}
+        onReleased: {
+            cursorShape = Qt.OpenHandCursor
+
+            if (monitor) {
+            //    const newX = (x - xOffset) / scaleFactor
+            //    const newY = (y - yOffset) / scaleFactor
+            //
+            //    monitor.positionX_ = Math.round(newX)
+            //    monitor.positionY_ = Math.round(newY)
+            //
+            //    const snappedPos = monitorManager.getSnappedPosition(monitor.name_)
+            //    monitor.positionX_ = Math.round(snappedPos.x)
+            //    monitor.positionY_ = Math.round(snappedPos.y)
+            //
+                monitor.positionUpdatedByDragAndDrop()
+            }
+        }
     }
 }
 

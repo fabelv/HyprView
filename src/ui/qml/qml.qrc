@@ -11,9 +11,6 @@
     <file>details/MonitorDetails.qml</file>
     <file>details/MonitorDetailsEditableFields.qml</file>
     <file>details/MonitorDetailsReadOnlyFields.qml</file>
-    <file>details/EditableNumericField.qml</file>
-    <file>details/EditableSingleField.qml</file>
-    <file>details/EditableCheckbox.qml</file>
 
     <!-- Preview -->
     <file>preview/MonitorPreview.qml</file>

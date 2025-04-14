@@ -12,16 +12,31 @@ Item {
     Layout.preferredWidth: 0.6 * parent.width
     Layout.fillHeight: true
 
+
     function recalculateScaleAndOffset() {
-        if (monitorManager) {
-            scaleFactor = monitorManager.calculatePreviewScaleFactor(width, height, 0.5)
-            const offset = monitorManager.calculateOffsetToCenter(scaleFactor, width, height)
-            xOffset = offset.x
-            yOffset = offset.y
-        } else {
+        if (!monitorManager) {
             console.warn("[Preview] monitorManager is undefined")
+            return
         }
+
+        const prevScale = scaleFactor
+        const prevXOffset = xOffset
+        const prevYOffset = yOffset
+
+        const newScale = monitorManager.calculatePreviewScaleFactor(width, height, 0.9)
+        const newOffset = monitorManager.calculateOffsetToCenter(newScale, width, height)
+
+        // Update properties
+        scaleFactor = newScale
+        xOffset = newOffset.x
+        yOffset = newOffset.y
+
+        console.log(`[Preview] recalculateScaleAndOffset()`)
+        console.log(`  scaleFactor: ${prevScale} → ${scaleFactor}`)
+        console.log(`  xOffset:     ${prevXOffset} → ${xOffset}`)
+        console.log(`  yOffset:     ${prevYOffset} → ${yOffset}`)
     }
+
 
     onWidthChanged: {
         recalculateScaleAndOffset()
@@ -43,15 +58,13 @@ Item {
     }
 
     Repeater {
-        model: monitorManager.monitors_
+        model: monitorManager?.monitors_
 
         delegate: Item {
-            property int monitorIndex: index
 
             MonitorRectangle {
                 id: rect
                 monitor: modelData
-                index: monitorIndex
                 scaleFactor: preview.scaleFactor
                 xOffset: preview.xOffset
                 yOffset: preview.yOffset
