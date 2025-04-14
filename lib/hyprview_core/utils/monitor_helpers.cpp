@@ -10,8 +10,9 @@
 
 namespace core {
 
-auto MonitorHelpers::getAvailableMirrorMonitors(
-    const Monitor &selectedMonitor, const std::vector<Monitor> &monitors) -> std::vector<std::string>{
+auto MonitorHelpers::getAvailableMirrorMonitors(const Monitor &selectedMonitor,
+                                                const std::vector<Monitor> &monitors)
+    -> std::vector<std::string> {
     if (monitors.empty()) {
         log(LogLevel::Error, "monitors must not be empty");
         throw std::invalid_argument("monitors must not be empty");
@@ -52,9 +53,8 @@ auto MonitorHelpers::getAvailableModes(const Monitor &monitor) -> std::vector<st
     return modeOptions;
 }
 
-auto MonitorHelpers::applyTransformation(Monitor& monitor, const Transform& transform) -> void {
+auto MonitorHelpers::applyTransformation(Monitor &monitor, const Transform &transform) -> void {
     if (monitor.getTransform() == transform) return;
-
 
     auto oldHeight = monitor.getHeight();
     auto oldWidth = monitor.getWidth();
@@ -72,10 +72,7 @@ auto MonitorHelpers::applyTransformation(Monitor& monitor, const Transform& tran
         case Transform::FlippedRotate270:
             monitor.setHeight(oldWidth);
             monitor.setWidth(oldHeight);
-            
     }
 }
-
-
 
 }  // namespace core

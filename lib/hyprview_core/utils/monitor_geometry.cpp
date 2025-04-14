@@ -26,25 +26,27 @@ Position MonitorGeometry::getSnappedPosition(const Monitor& dragged,
     const int draggedW = dragged.getWidth();
     const int draggedH = dragged.getHeight();
 
-    log(LogLevel::Debug, "[SNAP] Dragged monitor: " + dragged.getName() +
-                         " @ (" + std::to_string(currentX) + ", " + std::to_string(currentY) + 
-                         "), size: " + std::to_string(draggedW) + "x" + std::to_string(draggedH) + ")");
+    log(LogLevel::Debug, "[SNAP] Dragged monitor: " + dragged.getName() + " @ (" +
+                             std::to_string(currentX) + ", " + std::to_string(currentY) +
+                             "), size: " + std::to_string(draggedW) + "x" +
+                             std::to_string(draggedH) + ")");
 
     for (const Monitor& other : allMonitors) {
         if (&other == &dragged) continue;
 
-        log(LogLevel::Debug, "  → Checking against monitor: " + other.getName() +
-                             " @ (" + std::to_string(other.getPositionX()) + ", " + std::to_string(other.getPositionY()) + 
-                             "), size: " + std::to_string(other.getWidth()) + "x" + std::to_string(other.getHeight()) + ")");
+        log(LogLevel::Debug, "  → Checking against monitor: " + other.getName() + " @ (" +
+                                 std::to_string(other.getPositionX()) + ", " +
+                                 std::to_string(other.getPositionY()) +
+                                 "), size: " + std::to_string(other.getWidth()) + "x" +
+                                 std::to_string(other.getHeight()) + ")");
 
-        auto [dx, dy] = findClosestSnap(
-            currentX, currentY, draggedW, draggedH,
-            other.getPositionX(), other.getPositionY(), other.getWidth(), other.getHeight(),
-            bestDistance
-        );
+        auto [dx, dy] = findClosestSnap(currentX, currentY, draggedW, draggedH,
+                                        other.getPositionX(), other.getPositionY(),
+                                        other.getWidth(), other.getHeight(), bestDistance);
 
         if (dx != 0 || dy != 0) {
-            log(LogLevel::Debug, "    → Snap delta from " + other.getName() + ": dx=" + std::to_string(dx) + ", dy=" + std::to_string(dy));
+            log(LogLevel::Debug, "    → Snap delta from " + other.getName() +
+                                     ": dx=" + std::to_string(dx) + ", dy=" + std::to_string(dy));
             bestDx = dx;
             bestDy = dy;
         }
@@ -53,16 +55,13 @@ Position MonitorGeometry::getSnappedPosition(const Monitor& dragged,
     int finalX = currentX + bestDx;
     int finalY = currentY + bestDy;
 
-    log(LogLevel::Debug, "[SNAP] Final snapped position: X=" + std::to_string(finalX) + ", Y=" + std::to_string(finalY));
+    log(LogLevel::Debug, "[SNAP] Final snapped position: X=" + std::to_string(finalX) +
+                             ", Y=" + std::to_string(finalY));
     return {finalX, finalY};
 }
 
-
-std::pair<int, int> MonitorGeometry::findClosestSnap(
-    int dX1, int dY1, int dW, int dH,
-    int oX1, int oY1, int oW, int oH,
-    int& bestDistance
-) {
+std::pair<int, int> MonitorGeometry::findClosestSnap(int dX1, int dY1, int dW, int dH, int oX1,
+                                                     int oY1, int oW, int oH, int& bestDistance) {
     int dx = 0;
     int dy = 0;
 
@@ -82,7 +81,8 @@ std::pair<int, int> MonitorGeometry::findClosestSnap(
 
         int distR2L = std::abs(dX2 - oX1);
         if (distR2L < bestDistance) {
-            log(LogLevel::Debug, "      → Right-to-Left edge snap, dist = " + std::to_string(distR2L));
+            log(LogLevel::Debug,
+                "      → Right-to-Left edge snap, dist = " + std::to_string(distR2L));
             bestDistance = distR2L;
             dx = oX1 - dX2;
             dy = 0;
@@ -90,7 +90,8 @@ std::pair<int, int> MonitorGeometry::findClosestSnap(
 
         int distL2R = std::abs(dX1 - oX2);
         if (distL2R < bestDistance) {
-            log(LogLevel::Debug, "      → Left-to-Right edge snap, dist = " + std::to_string(distL2R));
+            log(LogLevel::Debug,
+                "      → Left-to-Right edge snap, dist = " + std::to_string(distL2R));
             bestDistance = distL2R;
             dx = oX2 - dX1;
             dy = 0;
@@ -103,7 +104,8 @@ std::pair<int, int> MonitorGeometry::findClosestSnap(
 
         int distB2T = std::abs(dY2 - oY1);
         if (distB2T < bestDistance) {
-            log(LogLevel::Debug, "      → Bottom-to-Top edge snap, dist = " + std::to_string(distB2T));
+            log(LogLevel::Debug,
+                "      → Bottom-to-Top edge snap, dist = " + std::to_string(distB2T));
             bestDistance = distB2T;
             dx = 0;
             dy = oY1 - dY2;
@@ -111,7 +113,8 @@ std::pair<int, int> MonitorGeometry::findClosestSnap(
 
         int distT2B = std::abs(dY1 - oY2);
         if (distT2B < bestDistance) {
-            log(LogLevel::Debug, "      → Top-to-Bottom edge snap, dist = " + std::to_string(distT2B));
+            log(LogLevel::Debug,
+                "      → Top-to-Bottom edge snap, dist = " + std::to_string(distT2B));
             bestDistance = distT2B;
             dx = 0;
             dy = oY2 - dY1;
@@ -130,7 +133,8 @@ std::pair<int, int> MonitorGeometry::findClosestSnap(
         for (const auto& [cdx, cdy] : snapCandidates) {
             int dist = std::abs(cdx) + std::abs(cdy);
             log(LogLevel::Debug, "      → Corner snap candidate: dx=" + std::to_string(cdx) +
-                                 ", dy=" + std::to_string(cdy) + ", dist=" + std::to_string(dist));
+                                     ", dy=" + std::to_string(cdy) +
+                                     ", dist=" + std::to_string(dist));
             if (dist < bestDistance) {
                 bestDistance = dist;
                 dx = cdx;
@@ -142,7 +146,6 @@ std::pair<int, int> MonitorGeometry::findClosestSnap(
 
     return {dx, dy};
 }
-
 
 double MonitorGeometry::calculatePreviewScaleFactor(int areaWidth, int areaHeight,
                                                     float marginPercent,
@@ -171,7 +174,6 @@ Position MonitorGeometry::calculateCenteredOffset(const std::vector<Monitor>& al
 
     return {offsetX, offsetY};
 }
-
 
 Bounds MonitorGeometry::computeBoundsOffset(const std::vector<Monitor>& allMonitors) {
     int minX = INT_MAX;

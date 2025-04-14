@@ -35,7 +35,6 @@ QList<QString> QmlMonitorHelpers::getAvailableMirrorMonitors(QmlMonitor* selecte
     return result;
 }
 
-
 QList<QString> QmlMonitorHelpers::getAvailableModes(const QmlMonitor* monitor) {
     const auto& modeOptions = core::MonitorHelpers::getAvailableModes(*monitor->getMonitor());
 
@@ -47,6 +46,5 @@ QList<QString> QmlMonitorHelpers::getAvailableModes(const QmlMonitor* monitor) {
 
     return result;
 }
-
 
 }  // namespace qtbridge

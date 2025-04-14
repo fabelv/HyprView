@@ -15,7 +15,8 @@ class QmlMonitorManager : public QObject {
 
     // qml properties
     Q_PROPERTY(QList<QmlMonitor*> monitors_ READ getMonitors NOTIFY monitorsChanged)
-    Q_PROPERTY(QmlMonitor* selectedMonitor_ READ getSelectedMonitor WRITE setSelectedMonitor NOTIFY selectedMonitorChanged)
+    Q_PROPERTY(QmlMonitor* selectedMonitor_ READ getSelectedMonitor WRITE setSelectedMonitor NOTIFY
+                   selectedMonitorChanged)
 
    public:
     explicit QmlMonitorManager(core::HyprMonitorManager* coreManager, QObject* parent = nullptr);
@@ -25,7 +26,8 @@ class QmlMonitorManager : public QObject {
     Q_INVOKABLE void scanMonitors();
     Q_INVOKABLE void applyMonitorConfiguration();
     Q_INVOKABLE void revertMonitorConfiguration();
-    Q_INVOKABLE QPoint getSnappedPosition(const QString& monitorName, const int currentX, const int currentY);
+    Q_INVOKABLE QPoint getSnappedPosition(const QString& monitorName, const int currentX,
+                                          const int currentY);
     Q_INVOKABLE QPoint calculateOffsetToCenter(double scaleFactor, int width, int height);
     Q_INVOKABLE double calculatePreviewScaleFactor(int areaWidth, int areaHeight,
                                                    float marginPercentage);

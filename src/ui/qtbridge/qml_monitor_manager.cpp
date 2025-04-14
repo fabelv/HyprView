@@ -1,4 +1,5 @@
 #include "qml_monitor_manager.h"
+
 #include <strings.h>
 
 #include <cmath>
@@ -52,11 +53,12 @@ void QmlMonitorManager::scanMonitors() {
     emit selectedMonitorChanged();
 }
 
-
-QPoint QmlMonitorManager::getSnappedPosition(const QString& monitorName, const int currentX, const int currentY) {
+QPoint QmlMonitorManager::getSnappedPosition(const QString& monitorName, const int currentX,
+                                             const int currentY) {
     const auto dragged = selectedMonitor_->getMonitor();
     const auto& allMonitors = coreManager_->getMonitors();
-    const auto pos = core::MonitorGeometry::getSnappedPosition(*dragged, allMonitors, currentX, currentY);
+    const auto pos =
+        core::MonitorGeometry::getSnappedPosition(*dragged, allMonitors, currentX, currentY);
     return QPoint(pos.x, pos.y);
 }
 
@@ -82,14 +84,9 @@ void QmlMonitorManager::revertMonitorConfiguration() {
     emit monitorsChanged();
 }
 
+QList<QmlMonitor*> QmlMonitorManager::getMonitors() { return monitors_; }
 
-QList<QmlMonitor*> QmlMonitorManager::getMonitors() {
-    return monitors_;
-}
-
-QmlMonitor* QmlMonitorManager::getSelectedMonitor() {
-    return selectedMonitor_;
-}
+QmlMonitor* QmlMonitorManager::getSelectedMonitor() { return selectedMonitor_; }
 
 void QmlMonitorManager::setSelectedMonitor(QmlMonitor* monitor) {
     if (!monitor || selectedMonitor_ == monitor) {
@@ -103,9 +100,9 @@ void QmlMonitorManager::setSelectedMonitor(QmlMonitor* monitor) {
     }
 
     selectedMonitor_ = monitor;
-    core::log(core::LogLevel::Debug, "new selected monitor: " + selectedMonitor_->getName().toStdString());
+    core::log(core::LogLevel::Debug,
+              "new selected monitor: " + selectedMonitor_->getName().toStdString());
     emit selectedMonitorChanged();
 }
-
 
 }  // namespace qtbridge

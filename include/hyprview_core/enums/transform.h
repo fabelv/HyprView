@@ -16,21 +16,28 @@ enum class Transform {
 
 inline std::string toString(Transform type) {
     switch (type) {
-        case Transform::Normal: return "Normal";
-        case Transform::Rotate90: return "Rotate90";
-        case Transform::Rotate180: return "Rotate180";
-        case Transform::Rotate270: return "Rotate270";
-        case Transform::Flipped: return "Flipped";
-        case Transform::FlippedRotate90: return "FlippedRotate90";
-        case Transform::FlippedRotate180: return "FlippedRotate180";
-        case Transform::FlippedRotate270: return "FlippedRotate270";
-        default: return "Unknown";
+        case Transform::Normal:
+            return "Normal";
+        case Transform::Rotate90:
+            return "Rotate90";
+        case Transform::Rotate180:
+            return "Rotate180";
+        case Transform::Rotate270:
+            return "Rotate270";
+        case Transform::Flipped:
+            return "Flipped";
+        case Transform::FlippedRotate90:
+            return "FlippedRotate90";
+        case Transform::FlippedRotate180:
+            return "FlippedRotate180";
+        case Transform::FlippedRotate270:
+            return "FlippedRotate270";
+        default:
+            return "Unknown";
     }
 }
 
-inline std::ostream& operator<<(std::ostream& os, Transform type) {
-    return os << toString(type);
-}
+inline std::ostream& operator<<(std::ostream& os, Transform type) { return os << toString(type); }
 
 inline int degrees(Transform type) {
     switch (type) {
