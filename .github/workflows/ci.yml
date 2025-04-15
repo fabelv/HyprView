@@ -36,7 +36,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v22
-      - run: nix develop --command make build
+      - run: |
+          nix develop --command build-wrapper-linux-x86-64 \
+            --out-dir bw-output \
+            make build
 
   test:
     runs-on: ubuntu-latest
@@ -44,25 +47,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }} # important for DeepSource
-      
+          ref: ${{ github.event.pull_request.head.sha }}
+
       - uses: cachix/install-nix-action@v22
 
-      - run: nix develop --command make test
+      - name: Run tests
+        run: nix develop --command make test
 
-      - name: Generate coverage report
+      - name: Generate SonarQube coverage report
         run: |
           nix develop --command gcovr -r . \
             --exclude '.*_autogen/.*' \
             --exclude 'qrc_.*\.cpp' \
-            --lcov -o coverage.lcov
-
+            --sonarqube coverage.xml
 
       - name: Report results to DeepSource
         run: |
           curl https://deepsource.io/cli | sh
-          ./bin/deepsource report --analyzer test-coverage --key cxx --value-file coverage.lcov
+          ./bin/deepsource report --analyzer test-coverage --key cxx --value-file coverage.xml
         env:
           DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
 
+      - name: Run SonarScanner
+        run: |
+          nix develop --command sonar-scanner \
+            -Dsonar.projectKey=hyprview \
+            -Dsonar.sources=src,include \
+            -Dsonar.tests=test \
+            -Dsonar.cfamily.build-wrapper-output=bw-output \
+            -Dsonar.coverageReportPaths=coverage.xml \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 

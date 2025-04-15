@@ -15,6 +15,7 @@ in pkgs.mkShell {
     pkgs.cppcheck
     pkgs.gcovr
     pkgs.clang-tools
+    pkgs.sonar-scanner-cli
   ];
 
   buildInputs = [
