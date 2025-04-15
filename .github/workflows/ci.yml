@@ -36,10 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v22
-      - run: |
-          nix develop --command build-wrapper-linux-x86-64 \
-            --out-dir bw-output \
-            make build
+      - run: nix develop --command make build
 
   test:
     runs-on: ubuntu-latest
@@ -54,7 +51,7 @@ jobs:
       - name: Run tests
         run: nix develop --command make test
 
-      - name: Generate SonarQube coverage report
+      - name: Generate SonarCloud coverage report
         run: |
           nix develop --command gcovr -r . \
             --exclude '.*_autogen/.*' \
@@ -68,14 +65,9 @@ jobs:
         env:
           DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
 
-      - name: Run SonarScanner
-        run: |
-          nix develop --command sonar-scanner \
-            -Dsonar.projectKey=hyprview \
-            -Dsonar.sources=src,include \
-            -Dsonar.tests=test \
-            -Dsonar.cfamily.build-wrapper-output=bw-output \
-            -Dsonar.coverageReportPaths=coverage.xml \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: .
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
