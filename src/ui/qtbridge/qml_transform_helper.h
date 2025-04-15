@@ -1,11 +1,12 @@
 #pragma once
 #include <QObject>
 #include <QVariant>
+
 #include "hyprview_core/enums/transform.h"
 
 class TransformHelper : public QObject {
     Q_OBJECT
-public:
+   public:
     enum Transform {
 #define X(name) name,
         TRANSFORM_ENUM_LIST
@@ -15,7 +16,10 @@ public:
 
     Q_INVOKABLE static QVariantList transformModel() {
         QVariantList list;
-#define X(name) list.append(QVariantMap{{"text", QStringLiteral(#name)}, {"value", QVariant::fromValue(TransformHelper::name)}});
+#define X(name)                                                                                  \
+    list.append(QVariantMap {                                                                    \
+        {"text", QStringLiteral(#name)}, { "value", QVariant::fromValue(TransformHelper::name) } \
+    });
         TRANSFORM_ENUM_LIST
 #undef X
         return list;
@@ -23,10 +27,13 @@ public:
 
     static QString toString(Transform t) {
         switch (t) {
-#define X(name) case name: return QStringLiteral(#name);
+#define X(name) \
+    case name:  \
+        return QStringLiteral(#name);
             TRANSFORM_ENUM_LIST
 #undef X
-            default: return QStringLiteral("Unknown");
+            default:
+                return QStringLiteral("Unknown");
         }
     }
 };
