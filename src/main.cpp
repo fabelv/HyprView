@@ -23,8 +23,9 @@ int main(int argc, char *argv[]) {
 
     engine.rootContext()->setContextProperty("monitorManager", qmlManager.get());
     engine.rootContext()->setContextProperty("monitorHelpers", qmlMonitorHelpers.get());
-    qmlRegisterUncreatableType<TransformHelper>("HyprView", 1, 0, "Transform", "Enum only");
-
+    qmlRegisterSingletonType<TransformHelper>("Core", 1, 0, "TransformHelper", [](QQmlEngine*, QJSEngine*) {
+        return new TransformHelper;
+    });
     engine.load(QUrl::fromLocalFile("src/ui/qml/Main.qml"));
 
     return app.exec();

@@ -4,65 +4,83 @@ import QtQuick.Layouts
 
 Dialog {
     id: confirmDialog
+    objectName: "confirmDialog"
     modal: true
+
     property int countdown: 0
-    property int timeout: 15
+    property int timeout: 10
+
+    // Center the dialog in the parent window
+    x: (parent.width - width) / 2
+    y: (parent.height - height) / 2
+
+    title: qsTr("Keep this configuration?")
+
+    function startTimer() {
+        countdown = timeout
+        title = qsTr("Keep this configuration? (%1s)").arg(countdown)
+        open()
+        revertTimer.start()
+    }
+
+    // Triggered when monitor configuration is applied
+    Connections {
+        target: monitorManager
+        function onMonitorConfigurationApplied() {
+            confirmDialog.startTimer()
+        }
+    }
 
     Timer {
         id: revertTimer
         interval: 1000
         running: false
         repeat: true
+
         onTriggered: {
             confirmDialog.countdown--
-            title = `Keep this configuration? (${confirmDialog.countdown}s)`
-            if (countdown <= 0) {
+            title = qsTr("Keep this configuration? (%1s)").arg(confirmDialog.countdown)
+
+            if (confirmDialog.countdown <= 0) {
                 revertTimer.stop()
                 close()
+                // Revert monitor configuration when time runs out
                 monitorManager.revertMonitorConfiguration()
             }
         }
     }
 
-    function startTimer() {
-        countdown = timeout
-        title = `Keep this configuration? (${countdown}s)`
-        open()
-        revertTimer.start()
-    }
-
     ColumnLayout {
         spacing: 10
+
         Label {
-            text: "Click 'Yes' to keep this configuration. If you do nothing, it will be reverted in 15 seconds."
+            // Informational text about the countdown
+            text: qsTr("Click 'Yes' to keep this configuration. If you do nothing, it will be reverted in %1 seconds.").arg(confirmDialog.timeout)
             wrapMode: Text.Wrap
         }
 
         RowLayout {
             spacing: 10
+
             Button {
-                text: "Yes"
+                text: qsTr("Yes")
+                // Accept the configuration and trigger a rescan
                 onClicked: {
                     revertTimer.stop()
                     close()
                     monitorManager.scanMonitors()
                 }
             }
+
             Button {
-                text: "No"
+                text: qsTr("No")
+                // Revert the configuration manually
                 onClicked: {
                     revertTimer.stop()
                     close()
                     monitorManager.revertMonitorConfiguration()
                 }
             }
-        }
-    }
-
-    Connections {
-        target: monitorManager
-        function onMonitorConfigurationApplied() {
-            confirmDialog.startTimer()
         }
     }
 }

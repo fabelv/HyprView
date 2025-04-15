@@ -1,3 +1,4 @@
+import Core 1.0
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -131,28 +132,8 @@ ColumnLayout {
             Layout.fillWidth: true
             enabled: monitorManager?.selectedMonitor_ !== null && monitorManager?.selectedMonitor_ !== undefined
 
-            model: [
-                { text: "Normal", value: Transform.Normal },
-                { text: "90°", value: Transform.Rotate90 },
-                { text: "180°", value: Transform.Rotate180 },
-                { text: "270°", value: Transform.Rotate270 },
-                { text: "Flipped", value: Transform.Flipped },
-                { text: "Flipped + 90°", value: Transform.FlippedRotate90 },
-                { text: "Flipped + 180°", value: Transform.FlippedRotate180 },
-                { text: "Flipped + 270°", value: Transform.FlippedRotate270 }
-            ]
+            model: TransformHelper.transformModel()
             textRole: "text"
-
-            // Set the initial selection to match the selected monitor's transform
-            currentIndex: {
-                if (!monitorManager?.selectedMonitor_) return -1;
-                for (var i = 0; i < model.length; ++i) {
-                    if (model[i].value === monitorManager?.selectedMonitor_.transform_) {
-                        return i;
-                    }
-                }
-                return -1;
-            }
 
             onActivated: {
                 if (monitorManager?.selectedMonitor_ && currentIndex >= 0) {

@@ -70,84 +70,72 @@ auto Monitor::getId() const -> const int { return id_; }
 
 auto Monitor::setId(int value) -> void {
     id_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getName() const -> const std::string& { return name_; }
 
 auto Monitor::setName(const std::string& value) -> void {
     name_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getDescription() const -> const std::string& { return description_; }
 
 auto Monitor::setDescription(const std::string& value) -> void {
     description_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getMake() const -> const std::string& { return make_; }
 
 auto Monitor::setMake(const std::string& value) -> void {
     make_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getModel() const -> const std::string& { return model_; }
 
 auto Monitor::setModel(const std::string& value) -> void {
     model_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getSerial() const -> const std::string& { return serial_; }
 
 auto Monitor::setSerial(const std::string& value) -> void {
     serial_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getWidth() const -> const int { return width_; }
 
 auto Monitor::setWidth(int value) -> void {
     width_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getHeight() const -> const int { return height_; }
 
 auto Monitor::setHeight(int value) -> void {
     height_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getRefreshRate() const -> const double { return refreshRate_; }
 
 auto Monitor::setRefreshRate(double value) -> void {
     refreshRate_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getPositionX() const -> const int { return positionX_; }
 
 auto Monitor::setPositionX(int value) -> void {
     positionX_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getPositionY() const -> const int { return positionY_; }
 
 auto Monitor::setPositionY(int value) -> void {
     positionY_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getScale() const -> const double { return scale_; }
 
 auto Monitor::setScale(double value) -> void {
     scale_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getTransform() const -> const Transform { return transform_; }
@@ -157,63 +145,54 @@ auto Monitor::setTransform(Transform value) -> void {
 
     transform_ = value;
 
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getDpmsStatus() const -> const bool { return dpmsStatus_; }
 
 auto Monitor::setDpmsStatus(bool value) -> void {
     dpmsStatus_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getVrrEnabled() const -> const bool { return vrr_; }
 
 auto Monitor::setVrrEnabled(bool value) -> void {
     vrr_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getSolitary() const -> const std::string& { return solitary_; }
 
 auto Monitor::setSolitary(const std::string& value) -> void {
     solitary_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getActivelyTearing() const -> const bool { return activelyTearing_; }
 
 auto Monitor::setActivelyTearing(bool value) -> void {
     activelyTearing_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getDirectScanoutTo() const -> const std::string& { return directScanoutTo_; }
 
 auto Monitor::setDirectScanoutTo(const std::string& value) -> void {
     directScanoutTo_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getDisabled() const -> const bool { return disabled_; }
 
 auto Monitor::setDisabled(bool value) -> void {
     disabled_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getCurrentFormat() const -> const std::string& { return currentFormat_; }
 
 auto Monitor::setCurrentFormat(const std::string& value) -> void {
     currentFormat_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getMirrorOf() const -> const std::string& { return mirrorOf_; }
 
 auto Monitor::setMirrorOf(const std::string& value) -> void {
     mirrorOf_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 auto Monitor::getAvailableModes() const -> const std::vector<std::string>& {
@@ -222,7 +201,6 @@ auto Monitor::getAvailableModes() const -> const std::vector<std::string>& {
 
 auto Monitor::setAvailableModes(const std::vector<std::string>& value) -> void {
     availableModes_ = value;
-    log(LogLevel::Debug, toString());
 }
 
 }  // namespace core

@@ -38,6 +38,7 @@ class QmlMonitorManager : public QObject {
     Q_INVOKABLE void setSelectedMonitor(QmlMonitor* monitor);
 
    signals:
+    // used to trigger the confirm dialog
     void monitorConfigurationApplied();
     void monitorsChanged();
     void selectedMonitorChanged();

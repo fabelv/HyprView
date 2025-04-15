@@ -15,6 +15,7 @@ Item {
     }
 
     MonitorDetails {
+        id: details
         anchors.left: preview.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom

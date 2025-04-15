@@ -29,34 +29,27 @@ Item {
         scaleFactor = newScale
         xOffset = newOffset.x
         yOffset = newOffset.y
-
-        console.log(`[Preview] recalculateScaleAndOffset()`)
-        console.log(`  scaleFactor: ${prevScale} → ${scaleFactor}`)
-        console.log(`  xOffset:     ${prevXOffset} → ${xOffset}`)
-        console.log(`  yOffset:     ${prevYOffset} → ${yOffset}`)
     }
 
+    function connectMonitorSignals() {
+        if (!monitorManager?.monitors_)
+            return;
 
-function connectMonitorSignals() {
-    if (!monitorManager?.monitors_)
-        return;
+        for (let i = 0; i < monitorManager.monitors_.length; ++i) {
+            const m = monitorManager.monitors_[i];
 
-    for (let i = 0; i < monitorManager.monitors_.length; ++i) {
-        const m = monitorManager.monitors_[i];
+            try {
+                m.positionUpdatedByDetailsField.disconnect(recalculateScaleAndOffset);
+            } catch (e) {}
 
-        try {
-            m.positionUpdatedByDetailsField.disconnect(recalculateScaleAndOffset);
-        } catch (e) {}
+            try {
+                m.positionUpdatedByDragAndDrop.disconnect(recalculateScaleAndOffset);
+            } catch (e) {}
 
-        try {
-            m.positionUpdatedByDragAndDrop.disconnect(recalculateScaleAndOffset);
-        } catch (e) {}
-
-        m.positionUpdatedByDetailsField.connect(recalculateScaleAndOffset);
-        m.positionUpdatedByDragAndDrop.connect(recalculateScaleAndOffset);
+            m.positionUpdatedByDetailsField.connect(recalculateScaleAndOffset);
+            m.positionUpdatedByDragAndDrop.connect(recalculateScaleAndOffset);
+        }
     }
-}
-
 
     onWidthChanged: recalculateScaleAndOffset()
     onHeightChanged: recalculateScaleAndOffset()
