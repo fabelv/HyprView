@@ -10,8 +10,8 @@
 
 // transform.hpp
 #pragma once
-#include <string>
 #include <ostream>
+#include <string>
 
 namespace core {
 
@@ -23,15 +23,16 @@ enum class Transform {
 
 inline std::string toString(Transform type) {
     switch (type) {
-#define X(name) case Transform::name: return #name;
+#define X(name)           \
+    case Transform::name: \
+        return #name;
         TRANSFORM_ENUM_LIST
 #undef X
-        default: return "Unknown";
+        default:
+            return "Unknown";
     }
 }
 
-inline std::ostream& operator<<(std::ostream& os, Transform type) {
-    return os << toString(type);
-}
+inline std::ostream& operator<<(std::ostream& os, Transform type) { return os << toString(type); }
 
 }  // namespace core
