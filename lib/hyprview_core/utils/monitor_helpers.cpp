@@ -72,8 +72,6 @@ auto MonitorHelpers::applyTransformation(Monitor &monitor, const Transform &tran
         monitor.setHeight(oldWidth);
         monitor.setWidth(oldHeight);
     }
-
-    monitor.setTransform(transform);
 }
 
 }  // namespace core
