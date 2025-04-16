@@ -3,6 +3,7 @@ import QtQuick
 import "../details"
 import "../preview"
 
+
 Item {
     id: root
 
@@ -11,12 +12,15 @@ Item {
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        width: parent.width * 0.6
+        anchors.right: details.left  // ⬅️ link to details
+
+        // Optional: avoid overlap or ensure no 0-width issue
+        anchors.rightMargin: 0
     }
 
     MonitorDetails {
         id: details
-        anchors.left: preview.right
+        width: 400  // ⬅️ fixed width
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.right: parent.right

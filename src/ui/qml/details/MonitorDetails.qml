@@ -9,11 +9,7 @@ ScrollView {
     ColumnLayout {
         id: root
 
-        Label {
-            text: "Monitor Details"
-            font.pixelSize: 20
-            Layout.alignment: Qt.AlignHCenter
-        }
+        Item { height: 12 }
 
         MonitorDetailsReadOnlyFields {}
 

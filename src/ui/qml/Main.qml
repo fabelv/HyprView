@@ -1,4 +1,4 @@
-import QtQuick.Controls
+import QtQuick.Controls.Material 2.15
 
 import "screens"
 import "components"
@@ -8,9 +8,12 @@ ApplicationWindow {
     id: window
     objectName: "applicationWindow"
 
+    Material.theme: Material.Dark
+    Material.accent: Material.Teal
+
     visible: true
-    width: 1200
-    height: 600
+    width: 1280
+    height: 800
     title: "HyprView"
 
     menuBar: AppMenuBar { }
