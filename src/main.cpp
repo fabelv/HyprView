@@ -1,8 +1,8 @@
+#include <QDir>
+#include <QFile>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include <QFile>
-#include <QDir>
 #include <memory>
 
 #include "hyprview_core/parsers/hypr_monitor_parser.h"
@@ -29,8 +29,10 @@ int main(int argc, char *argv[]) {
         "Core", 1, 0, "TransformHelper",
         [](QQmlEngine *, QJSEngine *) { return new TransformHelper; });
 
-    QString devQmlPath = QDir::cleanPath(QCoreApplication::applicationDirPath() + "/../src/ui/qml/Main.qml");
-    QString installQmlPath = QDir::cleanPath(QCoreApplication::applicationDirPath() + "/../share/hyprview/qml/Main.qml");
+    QString devQmlPath =
+        QDir::cleanPath(QCoreApplication::applicationDirPath() + "/../src/ui/qml/Main.qml");
+    QString installQmlPath =
+        QDir::cleanPath(QCoreApplication::applicationDirPath() + "/../share/hyprview/qml/Main.qml");
 
     QString qmlPath;
     if (QFile::exists(devQmlPath)) {
