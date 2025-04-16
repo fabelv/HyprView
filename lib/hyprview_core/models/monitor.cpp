@@ -4,8 +4,10 @@
 #include <iostream>
 #include <regex>
 #include <sstream>
+#include <string>
 
 #include "hyprview_core/enums/transform.h"
+#include "hyprview_core/utils/monitor_helpers.h"
 
 namespace core {
 
@@ -19,7 +21,7 @@ auto Monitor::generateCurrentMode() const -> std::string {
     return mode;
 }
 
-void Monitor::applyModeString(const std::string& mode) {
+auto Monitor::applyModeString(const std::string& mode) -> void {
     std::regex re(R"((\d+)x(\d+)@([\d.]+)Hz)");
     std::smatch match;
     if (std::regex_match(mode, match, re)) {
@@ -30,6 +32,38 @@ void Monitor::applyModeString(const std::string& mode) {
     } else {
         log(LogLevel::Error, "Invalid mode string: " + mode);
     }
+
+    log(LogLevel::Debug, toString());
+}
+
+auto Monitor::toString() const -> std::string {
+    std::ostringstream oss;
+
+    oss << "Monitor {\n"
+        << "  ID: " << id_ << ", " << "  Name: " << name_ << "\n"
+        << "  Description: " << description_ << "\n"
+        << "  Make: " << make_ << ", " << "  Model: " << model_ << "\n"
+        << "  Serial: " << serial_ << "\n"
+        << "  Width: " << width_ << ", " << "  Height: " << height_ << ", "
+        << "  Refresh Rate: " << refreshRate_ << "\n"
+        << "  Position X: " << positionX_ << ", " << "  Position Y: " << positionY_ << ", "
+        << "  Scale: " << scale_ << "\n"
+        << "  Transform: " << transform_ << "\n"
+        << "  DPMS Status: " << dpmsStatus_ << ", " << "  VRR: " << vrr_ << ", "
+        << "  Solitary: " << solitary_ << ", " << "  Actively Tearing: " << activelyTearing_ << "\n"
+        << "  Direct Scanout To: " << directScanoutTo_ << ", " << "  Disabled: " << disabled_
+        << "\n"
+        << "  Current Format: " << currentFormat_ << ", " << "  Mirror Of: " << mirrorOf_ << "\n"
+        << "  Available Modes: [";
+
+    for (size_t i = 0; i < availableModes_.size(); ++i) {
+        oss << availableModes_[i];
+        if (i != availableModes_.size() - 1) oss << ", ";
+    }
+
+    oss << "]\n}";
+
+    return oss.str();
 }
 
 auto Monitor::getId() const -> const int { return id_; }
@@ -82,7 +116,11 @@ auto Monitor::setScale(double value) -> void { scale_ = value; }
 
 auto Monitor::getTransform() const -> const Transform { return transform_; }
 
-auto Monitor::setTransform(Transform value) -> void { transform_ = value; }
+auto Monitor::setTransform(Transform value) -> void {
+    MonitorHelpers::applyTransformation(*this, value);
+
+    transform_ = value;
+}
 
 auto Monitor::getDpmsStatus() const -> const bool { return dpmsStatus_; }
 

@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QString>
 #include <QStringList>
+#include <string>
 
 namespace qtbridge {
 

@@ -4,6 +4,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <array>
 #include <cstdio>
 #include <iomanip>
 #include <memory>

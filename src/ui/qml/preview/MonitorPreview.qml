@@ -1,3 +1,4 @@
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -13,18 +14,50 @@ Item {
     Layout.fillHeight: true
 
     function recalculateScaleAndOffset() {
-        if (monitorManager) {
-            scaleFactor = monitorManager.calculatePreviewScaleFactor(width, height, 0.5)
-            const offset = monitorManager.calculateOffsetToCenter(scaleFactor, width, height)
-            xOffset = offset.x
-            yOffset = offset.y
+        if (!monitorManager) {
+            console.warn("[Preview] monitorManager is undefined")
+            return
+        }
+
+        const prevScale = scaleFactor
+        const prevXOffset = xOffset
+        const prevYOffset = yOffset
+
+        const newScale = monitorManager.calculatePreviewScaleFactor(width, height, 0.9)
+        const newOffset = monitorManager.calculateOffsetToCenter(newScale, width, height)
+
+        scaleFactor = newScale
+        xOffset = newOffset.x
+        yOffset = newOffset.y
+    }
+
+    function connectMonitorSignals() {
+        if (!monitorManager?.monitors_)
+            return;
+
+        for (let i = 0; i < monitorManager.monitors_.length; ++i) {
+            const m = monitorManager.monitors_[i];
+
+            try {
+                m.positionUpdatedByDetailsField.disconnect(recalculateScaleAndOffset);
+            } catch (e) {}
+
+            try {
+                m.positionUpdatedByDragAndDrop.disconnect(recalculateScaleAndOffset);
+            } catch (e) {}
+
+            m.positionUpdatedByDetailsField.connect(recalculateScaleAndOffset);
+            m.positionUpdatedByDragAndDrop.connect(recalculateScaleAndOffset);
         }
     }
 
     onWidthChanged: recalculateScaleAndOffset()
     onHeightChanged: recalculateScaleAndOffset()
 
-    Component.onCompleted: recalculateScaleAndOffset()
+    Component.onCompleted: {
+        connectMonitorSignals()
+        recalculateScaleAndOffset()
+    }
 
     Connections {
         target: monitorManager
@@ -33,9 +66,8 @@ Item {
         }
     }
 
-
     Repeater {
-        model: monitorManager.monitors
+        model: monitorManager?.monitors_
 
         delegate: Item {
             MonitorRectangle {
@@ -45,15 +77,7 @@ Item {
                 xOffset: preview.xOffset
                 yOffset: preview.yOffset
             }
-
-            Connections {
-                target: modelData
-                function onPositionManuallyUpdated() {
-                    preview.recalculateScaleAndOffset()
-                }
-            }
         }
     }
-
 }
 

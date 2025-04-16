@@ -17,7 +17,8 @@ TEST(MonitorGeometryTest, SnapReturnsOriginalIfAlone) {
     Monitor m = makeMonitor(0, 0, 1920, 1080);
     std::vector<Monitor> all = {m};
 
-    Position result = MonitorGeometry::getSnappedPosition(m, all);
+    Position result =
+        MonitorGeometry::getSnappedPosition(m, all, m.getPositionX(), m.getPositionY());
 
     EXPECT_EQ(result.x, 0);
     EXPECT_EQ(result.y, 0);
@@ -31,7 +32,8 @@ TEST(MonitorGeometryTest, SnapsToRightSide) {
     // Move right monitor slightly left so it "snaps" to the left's right edge
     right.setPositionX(1920 - 5);
 
-    Position snapped = MonitorGeometry::getSnappedPosition(right, monitors);
+    Position snapped = MonitorGeometry::getSnappedPosition(right, monitors, right.getPositionX(),
+                                                           right.getPositionY());
 
     // Expect right's left edge to be aligned with left's right edge (1920)
     EXPECT_EQ(snapped.x, 1920);
@@ -44,7 +46,8 @@ TEST(MonitorGeometryCornerSnapTest, SnapsToTopLeftCorner) {
 
     std::vector<Monitor> monitors = {target, dragged};
 
-    Position result = MonitorGeometry::getSnappedPosition(dragged, monitors);
+    Position result = MonitorGeometry::getSnappedPosition(dragged, monitors, dragged.getPositionX(),
+                                                          dragged.getPositionY());
 
     EXPECT_EQ(result.x, 100);  // snapped to right of target
     EXPECT_EQ(result.y, 100);  // snapped to bottom of target
@@ -56,7 +59,8 @@ TEST(MonitorGeometryCornerSnapTest, SnapsToBottomRightCorner) {
 
     std::vector<Monitor> monitors = {target, dragged};
 
-    Position result = MonitorGeometry::getSnappedPosition(dragged, monitors);
+    Position result = MonitorGeometry::getSnappedPosition(dragged, monitors, dragged.getPositionX(),
+                                                          dragged.getPositionY());
 
     EXPECT_EQ(result.x, -90);
     EXPECT_EQ(result.y, -90);
@@ -68,7 +72,8 @@ TEST(MonitorGeometryCornerSnapTest, SnapsToTopRightCorner) {
 
     std::vector<Monitor> monitors = {target, dragged};
 
-    Position result = MonitorGeometry::getSnappedPosition(dragged, monitors);
+    Position result = MonitorGeometry::getSnappedPosition(dragged, monitors, dragged.getPositionX(),
+                                                          dragged.getPositionY());
 
     EXPECT_EQ(result.x, -90);
     EXPECT_EQ(result.y, 90);
@@ -81,7 +86,8 @@ TEST(MonitorGeometryTest, SnapsToBottomSide) {
 
     std::vector<Monitor> monitors = {top, bottom};
 
-    Position snapped = MonitorGeometry::getSnappedPosition(bottom, monitors);
+    Position snapped = MonitorGeometry::getSnappedPosition(bottom, monitors, bottom.getPositionX(),
+                                                           bottom.getPositionY());
 
     EXPECT_EQ(snapped.x, 0);
     EXPECT_EQ(snapped.y, 1080);  // aligned below top

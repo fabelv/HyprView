@@ -15,8 +15,8 @@ class QmlMonitorManager : public QObject {
 
     // qml properties
     Q_PROPERTY(QList<QmlMonitor*> monitors_ READ getMonitors NOTIFY monitorsChanged)
-    Q_PROPERTY(int selectedMonitorIndex_ READ getSelectedMonitorIndex WRITE setSelectedMonitorIndex
-                   NOTIFY selectedMonitorIndexChanged)
+    Q_PROPERTY(QmlMonitor* selectedMonitor_ READ getSelectedMonitor WRITE setSelectedMonitor NOTIFY
+                   selectedMonitorChanged)
 
    public:
     explicit QmlMonitorManager(core::HyprMonitorManager* coreManager, QObject* parent = nullptr);
@@ -26,21 +26,22 @@ class QmlMonitorManager : public QObject {
     Q_INVOKABLE void scanMonitors();
     Q_INVOKABLE void applyMonitorConfiguration();
     Q_INVOKABLE void revertMonitorConfiguration();
-    Q_INVOKABLE QPoint getSnappedPosition(const QString& monitorName);
+    Q_INVOKABLE QPoint getSnappedPosition(const QString& monitorName, const int currentX,
+                                          const int currentY);
     Q_INVOKABLE QPoint calculateOffsetToCenter(double scaleFactor, int width, int height);
     Q_INVOKABLE double calculatePreviewScaleFactor(int areaWidth, int areaHeight,
                                                    float marginPercentage);
 
     // accessors
-    Q_INVOKABLE QmlMonitor* getSelectedMonitor() const;
-    auto getMonitors() const -> QList<QmlMonitor*>;
-    auto getSelectedMonitorIndex() const -> int;
-    auto setSelectedMonitorIndex(int index) -> void;
+    Q_INVOKABLE QList<QmlMonitor*> getMonitors();
+    Q_INVOKABLE QmlMonitor* getSelectedMonitor();
+    Q_INVOKABLE void setSelectedMonitor(QmlMonitor* monitor);
 
    signals:
+    // used to trigger the confirm dialog
     void monitorConfigurationApplied();
     void monitorsChanged();
-    void selectedMonitorIndexChanged();
+    void selectedMonitorChanged();
 
    private:
     // helper methods
@@ -51,7 +52,7 @@ class QmlMonitorManager : public QObject {
     // attributes
     core::HyprMonitorManager* coreManager_;
     QList<QmlMonitor*> monitors_;
-    int selectedMonitorIndex_ = -1;
+    QmlMonitor* selectedMonitor_;
 };
 
 }  // namespace qtbridge

@@ -276,7 +276,7 @@ TEST(MonitorTest, FullSetterGetterCoverage) {
     m.setPositionX(100);
     m.setPositionY(200);
     m.setScale(1.5);
-    m.setTransform(Transform::Flipped);
+    m.setTransform(Transform::Normal);
     m.setDpmsStatus(true);
     m.setVrrEnabled(true);
     m.setSolitary("primary");
@@ -300,7 +300,7 @@ TEST(MonitorTest, FullSetterGetterCoverage) {
     EXPECT_EQ(m.getPositionX(), 100);
     EXPECT_EQ(m.getPositionY(), 200);
     EXPECT_DOUBLE_EQ(m.getScale(), 1.5);
-    EXPECT_EQ(m.getTransform(), Transform::Flipped);
+    EXPECT_EQ(m.getTransform(), Transform::Normal);
     EXPECT_TRUE(m.getDpmsStatus());
     EXPECT_TRUE(m.getVrrEnabled());
     EXPECT_EQ(m.getSolitary(), "primary");

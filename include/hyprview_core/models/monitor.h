@@ -21,6 +21,7 @@ class Monitor {
         -> void;  // use mode format to set width, height and refreshRate
     auto generateCurrentMode() const
         -> std::string;  // modes format: <width>x<height>@<refreshRate>Hz
+    auto toString() const -> std::string;
 
     // accessors
     auto getId() const -> const int;

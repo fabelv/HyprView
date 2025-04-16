@@ -9,8 +9,13 @@ namespace core {
 
 class MonitorHelpers {
    public:
-    static std::vector<std::string> getAvailableMirrorMonitors(
-        const Monitor &selectedMonitor, const std::vector<Monitor> &monitors);
+    static auto getAvailableMirrorMonitors(const Monitor &selectedMonitor,
+                                           const std::vector<Monitor> &monitors)
+        -> std::vector<std::string>;
+
+    static auto getAvailableModes(const Monitor &monitor) -> std::vector<std::string>;
+
+    static auto applyTransformation(Monitor &monitor, const Transform &transform) -> void;
 };
 
 }  // namespace core
