@@ -76,5 +76,4 @@ auto MonitorHelpers::applyTransformation(Monitor &monitor, const Transform &tran
     monitor.setTransform(transform);
 }
 
-
 }  // namespace core
