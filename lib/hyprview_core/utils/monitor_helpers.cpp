@@ -59,20 +59,22 @@ auto MonitorHelpers::applyTransformation(Monitor &monitor, const Transform &tran
     auto oldHeight = monitor.getHeight();
     auto oldWidth = monitor.getWidth();
 
-    switch (transform) {
-        case Transform::Normal:
-        case Transform::Rotate180:
-        case Transform::Flipped:
-        case Transform::FlippedRotate180:
-            monitor.setHeight(oldWidth);
-            monitor.setWidth(oldWidth);
-        case Transform::Rotate90:
-        case Transform::Rotate270:
-        case Transform::FlippedRotate90:
-        case Transform::FlippedRotate270:
-            monitor.setHeight(oldWidth);
-            monitor.setWidth(oldHeight);
+    auto isShapeSwapped = [](const Transform &t) {
+        return t == Transform::Rotate90 || t == Transform::Rotate270 ||
+               t == Transform::FlippedRotate90 || t == Transform::FlippedRotate270;
+    };
+
+    bool wasSwapped = isShapeSwapped(monitor.getTransform());
+    bool nowSwapped = isShapeSwapped(transform);
+
+    // Only update dimensions if we switch shape type (from normal to swapped or vice versa)
+    if (wasSwapped != nowSwapped) {
+        monitor.setHeight(oldWidth);
+        monitor.setWidth(oldHeight);
     }
+
+    monitor.setTransform(transform);
 }
+
 
 }  // namespace core

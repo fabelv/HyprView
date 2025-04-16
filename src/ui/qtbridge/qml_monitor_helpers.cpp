@@ -11,7 +11,7 @@ namespace qtbridge {
 
 QList<QString> QmlMonitorHelpers::getAvailableMirrorMonitors(QmlMonitor* selectedQmlMonitor,
                                                              const QList<QObject*>& qmlMonitors) {
-    if (!selectedQmlMonitor) return {};
+    if (selectedQmlMonitor == nullptr) return {};
 
     const core::Monitor selectedMonitor = *selectedQmlMonitor->getMonitor();
     std::vector<core::Monitor> monitors;
