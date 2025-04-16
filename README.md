@@ -1,6 +1,6 @@
+
 # HyprView
 
-<!-- Badges -->
 [![Code Coverage](https://app.deepsource.com/gh/fabelv/HyprView.svg/?label=code+coverage&show_trend=true&token=fKkgwXDw-xh90oVJeIu92EW7)](https://app.deepsource.com/gh/fabelv/HyprView/)
 [![Active Issues](https://app.deepsource.com/gh/fabelv/HyprView.svg/?label=active+issues&show_trend=true&token=fKkgwXDw-xh90oVJeIu92EW7)](https://app.deepsource.com/gh/fabelv/HyprView/)
 [![Resolved Issues](https://app.deepsource.com/gh/fabelv/HyprView.svg/?label=resolved+issues&show_trend=true&token=fKkgwXDw-xh90oVJeIu92EW7)](https://app.deepsource.com/gh/fabelv/HyprView/)
@@ -12,13 +12,14 @@
 
 ---
 
-A Qt-based monitor layout manager for Hyprland  
+**HyprView** is a Qt-based monitor layout manager for [Hyprland](https://github.com/hyprwm/Hyprland).  
 Easily visualize and configure multi-monitor setups with a modern UI.
 
-![App Screenshot](./res/app.png)
+<p align="center">
+  <img src="./res/app.png" alt="App Screenshot" width="600"/>
+</p>
 
 ---
-
 
 ## Setup
 
@@ -28,3 +29,57 @@ cd HyprView
 nix develop
 make
 ```
+
+That's it — the project will be built and ready to run!
+
+To launch:
+```bash
+./build/hyprview
+```
+
+---
+
+## Project Structure
+
+- `src/` - Main application logic
+- `lib/` - Core components (logic, models, managers)
+- `include/` - Header files
+- `test/` - Unit and integration tests
+- `res/` - Assets like images and QML resources
+- `flake.nix` / `shell.nix` - Nix Flake setup for reproducible dev environments
+- `CMakeLists.txt` - Build configuration
+
+---
+
+## Dev Tools
+
+- Qt 6
+- C++23
+- CMake + Ninja
+- GoogleTest for unit testing
+- Clangd + `compile_commands.json` for IDE support
+- DeepSource & SonarCloud for static analysis
+
+---
+
+## CI & Quality Checks
+
+GitHub Actions runs:
+- Build & test
+- Static analysis with cppcheck & clang-tidy
+- Code coverage reports (optional)
+
+See `.github/workflows/ci.yaml` for details.
+
+---
+
+## Testing
+
+To run tests locally:
+```bash
+make test
+```
+
+---
+
+
