@@ -57,7 +57,7 @@ jobs:
       - name: Report results to DeepSource
         run: |
           curl https://deepsource.io/cli | sh
-          ./bin/deepsource report --analyzer test-coverage --key cxx --value-file coverage.xml
+          ./bin/deepsource report --analyzer test-coverage --key cxx --value-file coverage.lcov
         env:
           DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
 
