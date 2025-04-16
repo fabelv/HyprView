@@ -28,9 +28,13 @@ in pkgs.stdenv.mkDerivation {
     cmake --build .
   '';
 
+
   installPhase = ''
     mkdir -p $out/bin
     cp hyprview $out/bin/
+
+    mkdir -p $out/share/hyprview/qml
+    cp -r src/ui/qml/* $out/share/hyprview/qml
   '';
 
   env = {

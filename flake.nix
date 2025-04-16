@@ -1,17 +1,22 @@
 {
-  inputs = { nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; };
-
-  outputs = { self, nixpkgs }: let
-    systems = [ "x86_64-linux" ];
-    forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f system (import nixpkgs { inherit system; }));
-  in {
-    packages = forAllSystems (system: pkgs: {
-      hyprview = pkgs.callPackage ./default.nix {};
-    });
-
-    devShells = forAllSystems (system: pkgs: {
-      default = pkgs.callPackage ./shell.nix {};
-    });
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
   };
+
+  outputs = { self, nixpkgs, flake-utils }: flake-utils.lib.eachDefaultSystem (system:
+    let
+      pkgs = import nixpkgs { inherit system; };
+    in {
+      packages.hyprview = pkgs.callPackage ./default.nix {};
+
+      devShells.default = pkgs.callPackage ./shell.nix {};
+
+      apps.default = flake-utils.lib.mkApp {
+        drv = pkgs.callPackage ./default.nix {};
+        name = "hyprview";
+      };
+    }
+  );
 }
 
