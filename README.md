@@ -1,39 +1,30 @@
-# HyprView  
+# HyprView
 
-[![DeepSource](https://app.deepsource.com/gh/fabelv/HyprView.svg/?label=code+coverage&show_trend=true&token=fKkgwXDw-xh90oVJeIu92EW7)](https://app.deepsource.com/gh/fabelv/HyprView/)
-[![DeepSource](https://app.deepsource.com/gh/fabelv/HyprView.svg/?label=active+issues&show_trend=true&token=fKkgwXDw-xh90oVJeIu92EW7)](https://app.deepsource.com/gh/fabelv/HyprView/)
-[![DeepSource](https://app.deepsource.com/gh/fabelv/HyprView.svg/?label=resolved+issues&show_trend=true&token=fKkgwXDw-xh90oVJeIu92EW7)](https://app.deepsource.com/gh/fabelv/HyprView/)
+<!-- Badges -->
+[![Code Coverage](https://app.deepsource.com/gh/fabelv/HyprView.svg/?label=code+coverage&show_trend=true&token=fKkgwXDw-xh90oVJeIu92EW7)](https://app.deepsource.com/gh/fabelv/HyprView/)
+[![Active Issues](https://app.deepsource.com/gh/fabelv/HyprView.svg/?label=active+issues&show_trend=true&token=fKkgwXDw-xh90oVJeIu92EW7)](https://app.deepsource.com/gh/fabelv/HyprView/)
+[![Resolved Issues](https://app.deepsource.com/gh/fabelv/HyprView.svg/?label=resolved+issues&show_trend=true&token=fKkgwXDw-xh90oVJeIu92EW7)](https://app.deepsource.com/gh/fabelv/HyprView/)
 
-HyprView is a Qt-based C++ application for managing monitor layouts in Hyprland.  
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=fabelv_HyprView&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fabelv_HyprView)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fabelv_HyprView&metric=bugs)](https://sonarcloud.io/summary/new_code?id=fabelv_HyprView)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=fabelv_HyprView&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=fabelv_HyprView)
+[![Duplicated Lines](https://sonarcloud.io/api/project_badges/measure?project=fabelv_HyprView&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=fabelv_HyprView)
 
-![App](./res/app.png)
+---
 
-## Setup  
+A Qt-based monitor layout manager for Hyprland  
+Easily visualize and configure multi-monitor setups with a modern UI.
 
-### Development Shell  
-Run the following command to enter the development environment:  
-`nix develop`  
+![App Screenshot](./res/app.png)
 
-This provides:  
-- Qt5 for UI development  
-- Clangd for LSP support  
-- CMake and Ninja for building  
+---
 
-### Build the Project  
-To build the project manually, run:  
-```
-cmake -B build  
-cmake --build build  
-./build/hyprview  
-```
 
-### Generate `compile_commands.json`  
-To enable Clangd autocompletion in Neovim, generate the compilation database with:  
-`sh compile_commands_cmake.sh`  
+## Setup
 
-### Build with Nix  
-To build using Nix Flakes, run:  
-```
-nix build .#hyprview  
-./result/bin/hyprview  
+```bash
+git clone https://github.com/fabelv/HyprView.git
+cd HyprView
+nix develop
+make
 ```
