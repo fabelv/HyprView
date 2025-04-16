@@ -21,6 +21,13 @@ Easily visualize and configure multi-monitor setups with a modern UI.
 
 ---
 
+## Try out Tool
+```
+nix run github:fabelv/HyprView
+```
+
+---
+
 ## Setup
 
 ```bash
