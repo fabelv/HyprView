@@ -26,7 +26,8 @@ int main(int argc, char *argv[]) {
     qmlRegisterSingletonType<TransformHelper>(
         "Core", 1, 0, "TransformHelper",
         [](QQmlEngine *, QJSEngine *) { return new TransformHelper; });
-    engine.load(QUrl::fromLocalFile("src/ui/qml/Main.qml"));
+    QString qmlPath = QCoreApplication::applicationDirPath() + "/../share/hyprview/qml/Main.qml";
+    engine.load(QUrl::fromLocalFile(qmlPath));
 
     return app.exec();
 }
