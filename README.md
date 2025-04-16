@@ -1,4 +1,3 @@
-
 # HyprView
 
 [![Code Coverage](https://app.deepsource.com/gh/fabelv/HyprView.svg/?label=code+coverage&show_trend=true&token=fKkgwXDw-xh90oVJeIu92EW7)](https://app.deepsource.com/gh/fabelv/HyprView/)
@@ -22,8 +21,47 @@ Easily visualize and configure multi-monitor setups with a modern UI.
 ---
 
 ## Try out Tool
-```
+
+Run directly without installing:
+
+```bash
 nix run github:fabelv/HyprView
+```
+
+---
+
+## Install on NixOS (Flake-based)
+
+To make `HyprView` available system-wide on your NixOS system:
+
+1. Add the flake input to your `flake.nix`:
+
+```nix
+inputs.hyprview.url = "github:fabelv/HyprView";
+```
+
+2. Use it in your `configuration.nix` (or a module it imports):
+
+```nix
+{ pkgs, inputs, ... }:
+
+{
+  environment.systemPackages = with pkgs; [
+    inputs.hyprview.packages.${pkgs.system}.hyprview
+  ];
+}
+```
+
+3. Rebuild your system:
+
+```bash
+sudo nixos-rebuild switch --flake .#your-hostname
+```
+
+Once installed, launch it with:
+
+```bash
+hyprview
 ```
 
 ---
@@ -88,5 +126,4 @@ make test
 ```
 
 ---
-
 
