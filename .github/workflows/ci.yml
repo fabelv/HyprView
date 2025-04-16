@@ -47,10 +47,17 @@ jobs:
       - name: Run tests
         run: nix develop --command make test
 
+      - name: Generate coverage report
+        run: |
+          nix develop --command gcovr -r . \
+            --exclude '.*_autogen/.*' \
+            --exclude 'qrc_.*\.cpp' \
+            --lcov -o coverage.lcov
+
       - name: Report results to DeepSource
         run: |
           curl https://deepsource.io/cli | sh
-          ./bin/deepsource report --analyzer test-coverage --key cxx --value-file coverage.xml
+          ./bin/deepsource report --analyzer test-coverage --key cxx --value-file coverage.lcov
         env:
           DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
 
