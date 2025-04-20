@@ -275,7 +275,7 @@ TEST(MonitorTest, FullSetterGetterCoverage) {
     m.setRefreshRate(165.0);
     m.setPositionX(100);
     m.setPositionY(200);
-    m.setScale(1.5);
+    m.setScale(2);
     m.setTransform(Transform::Normal);
     m.setDpmsStatus(true);
     m.setVrrEnabled(true);
@@ -294,12 +294,12 @@ TEST(MonitorTest, FullSetterGetterCoverage) {
     EXPECT_EQ(m.getMake(), "ASUS");
     EXPECT_EQ(m.getModel(), "ROG Swift");
     EXPECT_EQ(m.getSerial(), "XYZ12345");
-    EXPECT_EQ(m.getWidth(), 1920);
-    EXPECT_EQ(m.getHeight(), 1080);
+    EXPECT_EQ(m.getWidth(), 960);
+    EXPECT_EQ(m.getHeight(), 540);
     EXPECT_DOUBLE_EQ(m.getRefreshRate(), 165.0);
     EXPECT_EQ(m.getPositionX(), 100);
     EXPECT_EQ(m.getPositionY(), 200);
-    EXPECT_DOUBLE_EQ(m.getScale(), 1.5);
+    EXPECT_DOUBLE_EQ(m.getScale(), 2);
     EXPECT_EQ(m.getTransform(), Transform::Normal);
     EXPECT_TRUE(m.getDpmsStatus());
     EXPECT_TRUE(m.getVrrEnabled());

@@ -112,7 +112,11 @@ auto Monitor::setPositionY(int value) -> void { positionY_ = value; }
 
 auto Monitor::getScale() const -> const double { return scale_; }
 
-auto Monitor::setScale(double value) -> void { scale_ = value; }
+auto Monitor::setScale(double value) -> void {
+    scale_ = value;
+    width_ = width_ / scale_;
+    height_ = height_ / scale_;
+}
 
 auto Monitor::getTransform() const -> const Transform { return transform_; }
 
