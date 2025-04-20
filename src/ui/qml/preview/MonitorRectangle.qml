@@ -47,10 +47,7 @@ Item {
             }
 
             transform: Scale {
-                xScale: (monitor?.transform_ === TransformHelper.Flipped ||
-                         monitor?.transform_ === TransformHelper.FlippedRotate90 ||
-                         monitor?.transform_ === TransformHelper.FlippedRotate180 ||
-                         monitor?.transform_ === TransformHelper.FlippedRotate270) ? -1 : 1
+                xScale: (monitor?.transform_ === TransformHelper.Flipped || monitor?.transform_ === TransformHelper.FlippedRotate90 || monitor?.transform_ === TransformHelper.FlippedRotate180 || monitor?.transform_ === TransformHelper.FlippedRotate270) ? -1 : 1
                 yScale: 1
             }
         }
@@ -58,15 +55,15 @@ Item {
 
     onXChanged: {
         if (dragArea.drag.active && monitor) {
-            let newX = (x - xOffset) / scaleFactor
-            monitor.positionX_ = Math.round(newX)
+            let newX = (x - xOffset) / scaleFactor;
+            monitor.positionX_ = Math.round(newX);
         }
     }
 
     onYChanged: {
         if (dragArea.drag.active && monitor) {
-            let newY = (y - yOffset) / scaleFactor
-            monitor.positionY_ = Math.round(newY)
+            let newY = (y - yOffset) / scaleFactor;
+            monitor.positionY_ = Math.round(newY);
         }
     }
 
@@ -79,25 +76,24 @@ Item {
         cursorShape: Qt.OpenHandCursor
 
         onPressed: {
-            cursorShape = Qt.ClosedHandCursor
-            monitorManager.setSelectedMonitor(monitor)
+            cursorShape = Qt.ClosedHandCursor;
+            monitorManager.setSelectedMonitor(monitor);
         }
 
         onReleased: {
-            cursorShape = Qt.OpenHandCursor
+            cursorShape = Qt.OpenHandCursor;
 
-    if (monitor) {
-        const newX = Math.round((monitorItem.x - xOffset) / scaleFactor)
-        const newY = Math.round((monitorItem.y - yOffset) / scaleFactor)
+            if (monitor) {
+                const newX = Math.round((monitorItem.x - xOffset) / scaleFactor);
+                const newY = Math.round((monitorItem.y - yOffset) / scaleFactor);
 
-        const snappedPos = monitorManager.getSnappedPosition(monitor.name_, Math.round(newX), Math.round(newY))
+                const snappedPos = monitorManager.getSnappedPosition(monitor.name_, Math.round(newX), Math.round(newY));
 
-        monitor.positionX_ = Math.round(snappedPos.x)
-        monitor.positionY_ = Math.round(snappedPos.y)
+                monitor.positionX_ = Math.round(snappedPos.x);
+                monitor.positionY_ = Math.round(snappedPos.y);
 
-        monitor.positionUpdatedByDragAndDrop()
-    }
+                monitor.positionUpdatedByDragAndDrop();
+            }
         }
     }
 }
-

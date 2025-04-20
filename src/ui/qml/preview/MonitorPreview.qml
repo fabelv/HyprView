@@ -1,4 +1,3 @@
-
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -15,20 +14,20 @@ Item {
 
     function recalculateScaleAndOffset() {
         if (!monitorManager) {
-            console.warn("[Preview] monitorManager is undefined")
-            return
+            console.warn("[Preview] monitorManager is undefined");
+            return;
         }
 
-        const prevScale = scaleFactor
-        const prevXOffset = xOffset
-        const prevYOffset = yOffset
+        const prevScale = scaleFactor;
+        const prevXOffset = xOffset;
+        const prevYOffset = yOffset;
 
-        const newScale = monitorManager.calculatePreviewScaleFactor(width, height, 0.9)
-        const newOffset = monitorManager.calculateOffsetToCenter(newScale, width, height)
+        const newScale = monitorManager.calculatePreviewScaleFactor(width, height, 0.9);
+        const newOffset = monitorManager.calculateOffsetToCenter(newScale, width, height);
 
-        scaleFactor = newScale
-        xOffset = newOffset.x
-        yOffset = newOffset.y
+        scaleFactor = newScale;
+        xOffset = newOffset.x;
+        yOffset = newOffset.y;
     }
 
     function connectMonitorSignals() {
@@ -55,14 +54,15 @@ Item {
     onHeightChanged: recalculateScaleAndOffset()
 
     Component.onCompleted: {
-        connectMonitorSignals()
-        recalculateScaleAndOffset()
+        connectMonitorSignals();
+        recalculateScaleAndOffset();
     }
 
     Connections {
         target: monitorManager
         function onMonitorsChanged() {
-            recalculateScaleAndOffset()
+            recalculateScaleAndOffset();
+            connectMonitorSignals();
         }
     }
 
@@ -80,4 +80,3 @@ Item {
         }
     }
 }
-
